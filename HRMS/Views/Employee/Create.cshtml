@@ -1,0 +1,491 @@
+﻿@model Models.EmployeeModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form asp-action="Create" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="userTypeId" class="control-label"></label>
+                <select asp-for="userTypeId" class="form-control" id="userTypeId" asp-items="@ViewBag.userTypes" onchange="ShowFields()"></select>
+                <span asp-validation-for="userTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="firstName" class="control-label"></label>
+                <input asp-for="firstName" class="form-control" />
+                <span asp-validation-for="firstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="lastName" class="control-label"></label>
+                <input asp-for="lastName" class="form-control" />
+                <span asp-validation-for="lastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DOB" class="control-label"></label>
+                <input asp-for="DOB" class="form-control" />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="radio" asp-for="Gender" value="1" />
+                <label for="1">Male</label>
+                <input type="radio" asp-for="Gender" value="2" />
+                <label for="2">Female</label>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="joiningDate" class="control-label"></label>
+                <input type="text" asp-for="joiningDate" id="joiningDate" class="form-control" />
+                <span asp-validation-for="joiningDate" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="divprobationPeriod" style="display:none">
+                <label asp-for="probationPeriod" class="control-label"></label>
+                <input asp-for="probationPeriod" class="form-control" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="probationPeriod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="phoneNumber" class="control-label"></label>
+                <input asp-for="phoneNumber" class="form-control" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="phoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="phoneNumber_1" class="control-label"></label>
+                <input asp-for="phoneNumber_1" class="form-control" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="phoneNumber_1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="emergencyphoneNumber" class="control-label"></label>
+                <input asp-for="emergencyphoneNumber" class="form-control" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="emergencyphoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="emergencyphoneNumber_1" class="control-label"></label>
+                <input asp-for="emergencyphoneNumber_1" class="form-control" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="emergencyphoneNumber_1" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+            <label asp-for="isdeleted" class="control-label"></label>
+            <input class="form-check-input" asp-for="isdeleted" /> @Html.DisplayNameFor(model => model.isdeleted)
+            <span asp-validation-for="isdeleted" class="text-danger"></span>
+            </div>*@
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="addressLine_1" class="control-label"></label>
+                <input asp-for="addressLine_1" class="form-control" />
+                <span asp-validation-for="addressLine_1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="addressLine_2" class="control-label"></label>
+                <input asp-for="addressLine_2" class="form-control" />
+                <span asp-validation-for="addressLine_2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="city" class="control-label"></label>
+                <input asp-for="city" class="form-control" />
+                <span asp-validation-for="city" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="postalCode" class="control-label"></label>
+                <input asp-for="postalCode" class="form-control" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="postalCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="state" class="control-label"></label>
+                <input asp-for="state" class="form-control" />
+                <span asp-validation-for="state" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="country" class="control-label"></label>
+                <input asp-for="country" class="form-control" />
+                <span asp-validation-for="country" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="aadharNumber" class="control-label"></label>
+                <input asp-for="aadharNumber" class="form-control" maxlength="12" onkeypress="return isNumberKey(event)" />
+                <span asp-validation-for="aadharNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="panNumber" class="control-label"></label>
+                <input asp-for="panNumber" class="form-control" maxlength="10" />
+                <span asp-validation-for="panNumber" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="email" class="control-label"></label>
+                <input type="email" asp-for="email" class="form-control" />
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="password" class="control-label"></label>
+                <input type="password" asp-for="password" class="form-control" />
+                <span asp-validation-for="password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="employeeTypeId" class="control-label"></label>
+                <select asp-for="employeeTypeId" class="form-control" asp-items="@ViewBag.employeeType"></select>
+                <span asp-validation-for="employeeTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="employeeImage" class="control-label"></label>
+                <input asp-for="employeeImage" class="form-control" type="file" id="EmployeePic" />
+                <span asp-validation-for="employeeImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div id="dvPreview" style="display:none"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="aadharImage" class="control-label"></label>
+                <input asp-for="aadharImage" class="form-control" type="file" id="EmployeeAadhar" />
+                <span asp-validation-for="aadharImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div id="dvPreviewAadhar" style="display:none"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="panImage" class="control-label"></label>
+                <input asp-for="panImage" class="form-control" type="file" id="EmployeePan" />
+                <span asp-validation-for="panImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div id="dvPreviewpan" style="display:none"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <select asp-for="status" id="status" class="form-control" onchange="ShowRequired()">
+                    <option selected value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                    <option value="Suspend">Suspend</option>
+                    <option value="Resigned">Resigned</option>
+                </select>
+                <span asp-validation-for="status" class="text-danger"></span>
+            </div>
+            <div id="divresign" style="display:none">
+                <div class="form-group">
+                    <label asp-for="resignDate" class="control-label"></label>
+                    <input type="date" asp-for="resignDate" class="form-control" />
+                    <span asp-validation-for="resignDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="resignreason" class="control-label"></label>
+                    <input asp-for="resignreason" class="form-control" />
+                    <span asp-validation-for="resignreason" class="text-danger"></span>
+                </div>
+            </div>
+            <div id="divsuspend" style="display:none">
+                <div class="form-group">
+                    <label asp-for="suspendedDate" class="control-label"></label>
+                    <input type="date" asp-for="suspendedDate" class="form-control" />
+                    <span asp-validation-for="suspendedDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="suspendreason" class="control-label"></label>
+                    <input asp-for="suspendreason" class="form-control" />
+                    <span asp-validation-for="suspendreason" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                var currentDate = new Date();
+                $('#joiningDate').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    endDate: "currentDate",
+                    maxDate: currentDate
+                }).on('changeDate', function (ev) {
+                    $(this).datepicker('hide');
+                });
+                $('#joiningDate').keyup(function () {
+                    if (this.value.match(/[^0-9]/g)) {
+                        this.value = this.value.replace(/[^0-9^-]/g, '');
+                    }
+                });
+            });
+
+            ShowRequired();
+            ShowFields();
+        })
+        function ShowRequired() {
+            if ($("#status").val() == "Resigned") {
+                $("#divresign").show();
+            }
+            else if ($("#status").val() == "Suspend") {
+                $("#divsuspend").show();
+            }
+            else {
+                $("#divsuspend").hide();
+                $("#divresign").hide();
+            }
+        }
+
+        function ShowFields() {
+            if ($("#userTypeId").val() == 4)
+                $("#divprobationPeriod").show();
+            else
+                $("#divprobationPeriod").hide();
+        }
+
+        function isValidFileInput(FileInput) {
+            if (FileInput.replace(/[^.]/g, "").length > 2) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode != 46 && (charCode < 48 || charCode > 57)))
+                return false;
+            return true;
+        }
+
+        $("#EmployeePic").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            var myfile = $("#EmployeePic").val();
+            if (isValidFileInput(myfile) == true) {
+                $("#EmployeePic").val('');
+                $("#EmployeePic").focus();
+                alert("SELECT VALID FILE");
+                return false;
+            }
+            else {
+                myfile = $(this).val();
+                var ext = myfile.split('.').pop();
+
+                if (ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG") {
+                    showFileSizeLatest(ext);
+                }
+                else {
+                    $("#EmployeePic").val('');
+                    $("#EmployeePic").focus();
+                    alert("SELECT IMAGE FILE");
+                    input = document.getElementById('EmployeePic');
+                    input.value = "";
+                }
+            }
+
+        });
+
+        function showEPicFileSizeLatest(ext) {
+            if (ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG" || ext.toUpperCase() == "PDF") {
+                var input, file, fileUpload;
+                var fileUpload = $("#EmployeePic").get(0);
+                input = document.getElementById('EmployeePic');
+                file = fileUpload.files[0];
+                var size = parseFloat($("#EmployeePic")[0].files[0].size / 1024).toFixed(2);
+                if (size <= 1000) {
+                    EpicimagesPreviewDoc(input);
+                }
+                else {
+                    $("#EmployeePic").val('');
+                    $("#EmployeePic").focus();
+                    alert("FILE SIZE MUST BE LESS THEN EQUAL TO 1Mb.");
+                    return false;
+                }
+            }
+            else if (ext.toUpperCase() == "DOC" || ext.toUpperCase() == "DOCX") {
+                $("#EmployeePic").val('');
+                $("#EmployeePic").focus();
+                alert("SELECT ONLY IMAGE");
+                return false;
+            }
+        }
+        function EpicimagesPreviewDoc(input) {
+            if (input.files) {
+                var ul = document.getElementById("dvPreview");
+                var filesAmount = input.files.length;
+                for (var i = 0; i < filesAmount; i++) {
+                    var filename = input.files[i].name;
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var img = document.createElement("img");
+                        img.height = "100";
+                        img.width = "100";
+                        img.alt = "100x100"
+                        img.src = event.target.result;
+                        var a = document.createElement("a");
+                        a.href = filename;
+                        a.appendChild(img);
+                        ul.appendChild(a);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        }
+
+        $("#EmployeeAadhar").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            var myfile = $("#EmployeeAadhar").val();
+            if (isValidFileInput(myfile) == true) {
+                $("#EmployeeAadhar").val('');
+                $("#EmployeeAadhar").focus();
+                alert("SELECT VALID FILE");
+                return false;
+            }
+            else {
+                myfile = $(this).val();
+                var ext = myfile.split('.').pop();
+
+                if (ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG") {
+                    showEAAdFileSizeLatest(ext);
+                }
+                else {
+                    $("#EmployeeAadhar").val('');
+                    $("#EmployeeAadhar").focus();
+                    alert("SELECT IMAGE FILE");
+                    input = document.getElementById('EmployeeAadhar');
+                    input.value = "";
+                }
+            }
+
+        });
+
+        function showEAAdFileSizeLatest(ext) {
+            if (ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG" || ext.toUpperCase() == "PDF") {
+                var input, file, fileUpload;
+                var fileUpload = $("#EmployeeAadhar").get(0);
+                input = document.getElementById('EmployeeAadhar');
+                file = fileUpload.files[0];
+                var size = parseFloat($("#EmployeeAadhar")[0].files[0].size / 1024).toFixed(2);
+                if (size <= 1000) {
+                    EAadimagesPreviewDoc(input);
+                }
+                else {
+                    $("#EmployeeAadhar").val('');
+                    $("#EmployeeAadhar").focus();
+                    alert("FILE SIZE MUST BE LESS THEN EQUAL TO 1Mb.");
+                    return false;
+                }
+            }
+            else if (ext.toUpperCase() == "DOC" || ext.toUpperCase() == "DOCX") {
+                $("#EmployeeAadhar").val('');
+                $("#EmployeeAadhar").focus();
+                alert("SELECT ONLY IMAGE");
+                return false;
+            }
+        }
+        function EAadimagesPreviewDoc(input) {
+            if (input.files) {
+                var ul = document.getElementById("dvPreviewAadhar");
+                var filesAmount = input.files.length;
+                for (var i = 0; i < filesAmount; i++) {
+                    var filename = input.files[i].name;
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var img = document.createElement("img");
+                        img.height = "100";
+                        img.width = "100";
+                        img.alt = "100x100"
+                        img.src = event.target.result;
+                        var a = document.createElement("a");
+                        a.href = filename;
+                        a.appendChild(img);
+                        ul.appendChild(a);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        }
+
+        $("#EmployeePan").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            var myfile = $("#EmployeePan").val();
+            if (isValidFileInput(myfile) == true) {
+                $("#EmployeePan").val('');
+                $("#EmployeePan").focus();
+                alert("SELECT VALID FILE");
+                return false;
+            }
+            else {
+                myfile = $(this).val();
+                var ext = myfile.split('.').pop();
+
+                if (ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG") {
+                    showEPanFileSizeLatest(ext);
+                }
+                else {
+                    $("#EmployeePan").val('');
+                    $("#EmployeePan").focus();
+                    alert("SELECT IMAGE FILE");
+                    input = document.getElementById('EmployeePan');
+                    input.value = "";
+                }
+            }
+
+        });
+
+        function showEPanFileSizeLatest(ext) {
+            if (ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG" || ext.toUpperCase() == "PDF") {
+                var input, file, fileUpload;
+                var fileUpload = $("#EmployeePanEmployeePan").get(0);
+                input = document.getElementById('EmployeePic');
+                file = fileUpload.files[0];
+                var size = parseFloat($("#EmployeEmployeePanePic")[0].files[0].size / 1024).toFixed(2);
+                if (size <= 1000) {
+                    EPanimagesPreviewDoc(input);
+                }
+                else {
+                    $("#EmployeePan").val('');
+                    $("#EmployeePan").focus();
+                    alert("FILE SIZE MUST BE LESS THEN EQUAL TO 1Mb.");
+                    return false;
+                }
+            }
+            else if (ext.toUpperCase() == "DOC" || ext.toUpperCase() == "DOCX") {
+                $("#EmployeePan").val('');
+                $("#EmployeePan").focus();
+                alert("SELECT ONLY IMAGE");
+                return false;
+            }
+        }
+        function EPanimagesPreviewDoc(input) {
+            if (input.files) {
+                var ul = document.getElementById("dvPreviewpan");
+                var filesAmount = input.files.length;
+                for (var i = 0; i < filesAmount; i++) {
+                    var filename = input.files[i].name;
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var img = document.createElement("img");
+                        img.height = "100";
+                        img.width = "100";
+                        img.alt = "100x100"
+                        img.src = event.target.result;
+                        var a = document.createElement("a");
+                        a.href = filename;
+                        a.appendChild(img);
+                        ul.appendChild(a);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        }
+
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

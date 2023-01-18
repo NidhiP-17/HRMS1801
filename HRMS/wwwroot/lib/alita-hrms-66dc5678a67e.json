@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "alita-hrms",
+  "private_key_id": "66dc5678a67e57f60229071c5eebdaaeb9fece2b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+4dNCF+EDLpgQ\n3NOt9ZHoopat6SfJlGjZvyLknddbRzRLYQ+9UJadPVlJznLh0q7Zcwzl/46dhNeG\nO1LSg2KPfFu09LygRilqoHAZOVXX7sIYwS9kzSoSwzEYrQt9DI4d+QTkYleMDeI6\nmGze6jrJWN9tpwx5HXdmVaPaj/jC69QxYbVqNcFmYfNjYLtmvpGu5Y5ATaLryzON\n4IhmtrvOCdhL9hisw6veXKNpR5cr5uj9XB9rnI4Ss1k1n9olbKnXUifmQKnM475y\nmzIOcUTX0+IhNbVc61Z6GniJLOFAoOYJoWPbLyeZWVkrpaeGRFxv/aUp2uY85nY1\nwIQ/3Qv5AgMBAAECggEAU96Of8ZVMBw7ZYFZouA47XHu6df9iuUiEraYQsIVmz4U\nfKBXlZOAsfMANd03fgCfodyayL36cDyrpAeR0vw2hJwcAUzdSkC5tudqibK3BKsb\n7luHku9QcrD/8/sohpfLI+FD5INPOzLoeV16zJE3Jjvd4+SXpumrCjRLy98haqcI\nqjx8WF2k0H0KnIqXBNCDgNIVw2ESdMLGHXkBu1AsmBV44aPqnJL65Sy+mz806ABE\nbW9Ye579t//FINCAMbR28YZCSaDTE4veZ2FkObl8mNm1trS79uyfFrOnYFYqxuET\n4Y4ozOt+1JeUZo8EfqeSH2E5z8H2QimECjxKZTpoHwKBgQDg4tWzzUY5AXSpc87A\nwysQDxLcfFrbH8Awp8tEua61TYTef+HixoccSWXDRgJHndVEptxuXJPa2WOPZ3kL\n9Jipg4xNx2ApTrPouejI8PLgyYH5vUKEzXXzCo4rW2KFIdpoEz6GvoXJ6woil/o5\nBbuUrvUIZp7u51Dr0mxZucqBEwKBgQDZSp215502L0Z+M3anfTJS6pAULBctwJKP\n/6Vel8MfQ3uOjF5abNbJBUYkqOAhD7f/Wa3Yo3dfRMRTTBA96Jj/57EjrOKDhW2w\nfJ0hexNJbA+N+0NQ9aft9g9sajnnuCpBpSoMF4ihNMsgPkQTxngWGZz/j3j9JuKx\nbEhk61osQwKBgQC8z7Z876w10HMSkpjUXwiYww8i74WY1F+Yeki/uuZkcmFMLjKJ\nJAXsSfOWsADaADo/GZmZT0EUTdC5ZjbLQuGp8TirVOn3xIxoqS45B5PkB0uJUs22\nkoqlNAeJf4CIJpQpLX8hwnSxwxUPVmpP1fBYNUylcQOfsbbPSCyQaN0M4QKBgHnM\n2ZqdugIlfd4/+sLn6s2PrjOgg12iFIWjR48+gqGDsj61cC4/1CXaTvc9smTV6s23\n9zr4ZnGAmowWlwQc3aaUuTbGMjKHGHVVZL7fvm/pos5zichX60n4I60h3lOFaCpj\n6q3cgznZ3gK05HQxTB8XPGoEgk1k/q11hR8Mzf8BAoGBAKsSj8C5hVqQiOaFadgc\ny9rxt4/0RVYYmdYIEXK6jGdd7KsmuCkAk2V/awR0n8Uvs3t/v3rFC8Gf6rkQjosA\n321plCWhwZiBM74b46olLUN6dmBYlaCIIoPGqSiLDG9wjrpzS1GFiA9c4PLfSsJw\nkZtizecWUzFF0gQETZ92IuTI\n-----END PRIVATE KEY-----\n",
+  "client_email": "alitaholiday@alita-hrms.iam.gserviceaccount.com",
+  "client_id": "115867193924023995056",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/alitaholiday%40alita-hrms.iam.gserviceaccount.com"
+}

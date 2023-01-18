@@ -1,0 +1,119 @@
+﻿@model PaginatedList<HRMS.Models.Item>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .multiBoxes {
+            margin: 0 0 2rem;
+            padding-left: 300px;
+        }
+
+        .row {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+
+        .multiBoxesDiv {
+            border: 1px solid var(--bdrColor);
+            border-radius: var(--Radius6);
+            padding: 13px 18px 13px 94px;
+            position: relative;
+            min-height: 90px;
+            width: 32%;
+            margin: 0px 5px;
+            margin-bottom: 10px;
+        }
+
+        multiBoxesDiv ul li {
+            display: flex;
+        }
+
+        .nest-btn {
+            margin: 20px 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next_btn {
+            width: 100px;
+        }
+
+        .nest-btna > a {
+            margin: 10px !important;
+        }
+
+        .ul-multi {
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+   @* <main class="main">*@
+        <div class="alert alert-danger" role="alert">
+            1. this is the messgae.<br />
+            2. this msg is not preperly wokred<br />
+            3. demo
+
+        </div>
+        <div class="row multi-wpr-box">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <div class="ul-multi">
+                        <div class="multi-inner-box flex">
+                            <ul class="multi-content">
+                                <li class="flex">
+                                    <div class="product-img">
+                                        <span><img decoding="async" src="@("~/itemImage/"+item.ImageName)" asp-append-version="true" width="90px" height="70px" /></span>
+                                    </div>
+                                    <div class="product-content">
+                                        <h3>@item.ItemName</h3>
+                                        <p>@item.Amount</p>
+                                    </div>
+                                </li>
+
+                            </ul>
+                            <a asp-action="OrderNow" asp-route-id="@item.ItemId" asp-route-pageNumber="@(Model.PageIndex)" class="btn btn-primary">ADD</a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            }
+        </div>
+        @{
+            var prevDisable = !Model.HasPrevpage ? "disabled" : "";
+            var nextDisable = !Model.HasNextPage ? "disabled" : "";
+        }
+        <div class="nest-btn">
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn  @prevDisable">
+                Previous
+            </a>
+
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn next_btn @nextDisable">
+                Next
+            </a>
+        </div>
+   @* </main>*@
+
+</body>
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewBag.Message");
+        };
+
+    </script>
+}
+</html>

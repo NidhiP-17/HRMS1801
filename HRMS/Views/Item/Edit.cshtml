@@ -1,0 +1,169 @@
+﻿@model Models.ItemModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>ItemModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ItemId" class="control-label"></label>
+                <input type="hidden" asp-for="ItemId" class="form-control" />
+                <span asp-validation-for="ItemId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemName" class="control-label"></label>
+                <input asp-for="ItemName" class="form-control" />
+                <span asp-validation-for="ItemName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemDesc" class="control-label"></label>
+                <input asp-for="ItemDesc" class="form-control" />
+                <span asp-validation-for="ItemDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemCatID" class="control-label"></label>
+                <select asp-for="ItemCatID" class="form-control" asp-items="@ViewBag.Categories"></select>
+                <span asp-validation-for="ItemCatID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+               
+                @if (Model.ImageName != null)
+                {
+                    <img id="imgPhoto" src="~/itemImage/@Model.ImageName" style="height: 150px; width: 150px;" />
+                    <input type="hidden" asp-for="ImageName" value="@Model.ImageName" id="hdnPhoto" />
+                    <label class="control-label" id="OldImageName">@Model.ImageName</label>
+                    <input asp-for="ImageFile" class="form-control" accept="image/*" id="ItemPic" value="@Model.ImageName" />
+                }
+                else
+                {
+                    <input asp-for="ImageFile" class="form-control" accept="image/*" />
+                    <input type="hidden" asp-for="ImageName" value="@Model.ImageName" id="hdnPhoto" />
+                }
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $("#ItemPic").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            var myfile = $("#ItemPic").val();
+            if (isValidFileInput(myfile) == true) {
+                $("#ItemPic").val('');
+                $("#ItemPic").focus();
+                alert("SELECT VALID FILE");
+                return false;
+            }
+            else {
+                myfile = $(this).val();
+                var ext = myfile.split('.').pop();
+
+                if (ext.toUpperCase() == "GIF" || ext.toUpperCase() == "TIFF" || ext.toUpperCase() == "PSD" || ext.toUpperCase() == "EPS" || ext.toUpperCase() == "AI" || ext.toUpperCase() == "INDD" || ext.toUpperCase() == "JFIF" || ext.toUpperCase() == "RAW" || ext.toUpperCase() == "WEBP" || ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG" || ext.toUpperCase() == "PDF") {
+                    showFileSizeLatest(ext);
+                }
+                else {
+                    $("#ItemPic").val('');
+                    $("#ItemPic").focus();
+                    alert("SELECT IMAGE FILE");
+                    input = document.getElementById('ItemPic');
+                    input.value = "";
+                }
+            }
+
+        });
+        function isValidFileInput(FileInput) {
+            if (FileInput.replace(/[^.]/g, "").length > 2) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        function showFileSizeLatest(ext) {
+            if (ext.toUpperCase() == "GIF" || ext.toUpperCase() == "TIFF" || ext.toUpperCase() == "PSD" || ext.toUpperCase() == "EPS" || ext.toUpperCase() == "AI" || ext.toUpperCase() == "INDD" || ext.toUpperCase() == "JFIF" || ext.toUpperCase() == "RAW" || ext.toUpperCase() == "WEBP" || ext.toUpperCase() == "JPG" || ext.toUpperCase() == "JPEG" || ext.toUpperCase() == "PNG" || ext.toUpperCase() == "PDF") {
+                var input, file, fileUpload;
+                var fileUpload = $("#ItemPic").get(0);
+                input = document.getElementById('ItemPic');
+                file = fileUpload.files[0];
+                var size = parseFloat($("#ItemPic")[0].files[0].size / 1024).toFixed(2);
+                if (size <= 1000) {
+                    imagesPreviewDoc(input);
+                }
+                else {
+                    $("#ItemPic").val('');
+                    $("#ItemPic").focus();
+                    alert("FILE SIZE MUST BE LESS THEN EQUAL TO 1Mb.");
+                    return false;
+                }
+            }
+            else if (ext.toUpperCase() == "DOC" || ext.toUpperCase() == "DOCX") {
+                $("#ItemPic").val('');
+                $("#ItemPic").focus();
+                alert("SELECT ONLY IMAGE");
+                return false;
+            }
+        }
+        function imagesPreviewDoc(input) {
+            if (input.files) {
+                //var ul = document.getElementById("dvPreview");
+                var filesAmount = input.files.length;
+                for (var i = 0; i < filesAmount; i++) {
+                    var filename = input.files[i].name;
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        //var img = document.createElement("img");
+                        //img.height = "100";
+                        //img.width = "100";
+                        //img.alt = "100x100"
+                        //img.src = event.target.result;
+                        //var a = document.createElement("a");
+                        //a.href = filename;
+                        //a.appendChild(img);
+                        //ul.appendChild(a);
+                        $("#OldImageName").hide();
+                        $("#OldImageName").val('');
+                        $('#imgPhoto').attr('src', event.target.result);
+                        $('#imgPhoto').attr('height', "100");
+                        $('#imgPhoto').attr('width', "100");
+                        $('#imgPhoto').attr('alt', "100x100");
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+                //$("#dvPreview").show();
+            }
+        }
+
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

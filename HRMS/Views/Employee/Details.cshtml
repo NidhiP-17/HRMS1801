@@ -1,0 +1,198 @@
+﻿@model Models.EmployeeModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    dt {
+        text-align: right
+    }
+</style>
+
+<div>
+    <dl class="row">
+        <div class="col-md-4">
+            <div class="row">
+                @Html.HiddenFor(model => model.employeeId)
+                @Html.HiddenFor(model => model.userTypeId)
+                @Html.HiddenFor(model => model.employeeTypeId)
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.userType)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.userType)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.employeeCode)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.employeeCode)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.firstName)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.firstName)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.lastName)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.lastName)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.DOB)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.DOBVal)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Gender)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.GenderValue)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.joiningDate)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.joiningDateVal)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.phoneNumber)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.phoneNumberVal)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.phoneNumber_1)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.phoneNumber_1Val)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.emergencyphoneNumber)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.emergencyphoneNumber_1)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.emergencyphoneNumber_1)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.emergencyphoneNumber_1)
+                </dd>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.addressLine_1)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.addressLine_1)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.addressLine_2)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.addressLine_2)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.city)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.city)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.state)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.state)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.country)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.country)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.employeeType)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.employeeType)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.aadharNumber)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.aadharNumber)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.panNumber)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.panNumber)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.postalCode)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.postalCodeVal)
+                </dd>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.email)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.email)
+                </dd>
+                @*  <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.password)
+                </dt>
+                <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.password)
+                </dd>*@
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.employeeImage)
+                </dt>
+                <dd class="col-sm-6">
+                    <a href="~/EmployeeDocs/@Model.employeeImageName" target="_blank" title=@Model.firstName>@Model.employeeImageName</a>
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.aadharImage)
+                </dt>
+                <dd class="col-sm-6">
+                    <a href="~/EmployeeDocs/@Model.aadharImageName" target="_blank" title=@Model.firstName>@Model.aadharImageName</a>
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.panImage)
+                </dt>
+                <dd class="col-sm-6">
+                    <a href="~/EmployeeDocs/@Model.panImageName" target="_blank" title=@Model.firstName>@Model.panImageName</a>
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.status)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.status)
+                </dd>
+            </div>
+        </div>
+        @*<dt class="col-sm-6">
+        @Html.DisplayNameFor(model => model.isdeleted)
+        </dt>
+        <dd class="col-sm-6">
+        @Html.DisplayFor(model => model.isdeleted)
+        </dd>*@
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.employeeId  }) |
+    <a asp-action="Index">Back to List</a>
+</div>

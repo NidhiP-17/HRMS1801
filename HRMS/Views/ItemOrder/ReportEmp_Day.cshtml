@@ -1,0 +1,132 @@
+﻿@model PaginatedList<HRMS.Models.Item>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .inner-form {
+            padding: 0px 48px 48px 326px;
+        }
+
+        .nest-btn {
+            margin: 20px 0px;
+            display: flex;
+            justify-content: inherit;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next_btn {
+            width: 100px;
+        }
+
+
+        .employeetable-wapper {
+            max-width: 350px;
+            display: flex;
+            gap: 10px;
+            padding: 20px 0px;
+        }
+    </style>
+
+
+</head>
+<body>
+    @*<div class="inner-form">*@
+        <h5>Day wise order(@ViewBag.Date)</h5>
+        <form asp-action="ReportEmp_Day">
+            <div class="employeetable-wapper">
+                <input type="date" name="date" id="ReportDate" class="form-control" />
+                <input type="submit" class="btn btn-info" value="Report" />
+            </div>
+        </form>
+
+        <table class="table">
+            <thead align="center">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Quantity
+                    </th>
+                    <th>
+                        Rate
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    @if (ViewBag.Date != null)
+                    {
+                        if (ViewBag.Date == @DateTime.Today.ToString("dd-MM-yyyy"))
+                        {
+                            <th>
+                                Action
+                            </th>
+                        }
+                    }
+
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.ItemName
+                        </td>
+                        <td>
+                            @item.Quantity
+                        </td>
+                        <td>
+                            @item.Rate
+                        </td>
+                        <td>
+                            @item.Amount
+                        </td>
+
+                        @if (ViewBag.Date != null)
+                        {
+                            if (ViewBag.Date == @DateTime.Today.ToString("dd-MM-yyyy"))
+                            {
+                                <td>
+                                    <a asp-action="DeleteOrder" asp-route-id="@item.ItemId">Delete</a>
+                                </td>
+                            }
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @{
+            var prevDisable = !Model.HasPrevpage ? "disabled" : "";
+            var nextDisable = !Model.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-action="ReportEmp_Day" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn @prevDisable">
+            Previous
+        </a>
+
+        <a asp-action="ReportEmp_Day" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn next_btn @nextDisable">
+            Next
+        </a>
+    @*</div>*@
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+        </script>
+    }
+
+</body>
+</html>

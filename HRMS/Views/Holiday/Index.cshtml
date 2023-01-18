@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Models.HolidayModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+</p>
+<hr/>
+<table class="table" id="demoGrid">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.holidayId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.day)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hours)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.holidayId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.day)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.hours)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "Holiday",new {  id=item.holidayId  })">
+                        <i style="font-size: 20px; text-align: center;color:#378753" class="fa fa-edit"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", "Holiday",new {  id=item.holidayId  })">
+                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                    </a>
+                    @*@Html.ActionLink("Edit", "Edit", new {  id=item.holidayId  }) |*@
+                    @*@Html.ActionLink("Details", "Details", new {  id=item.holidayId  }) |*@
+                    @*@Html.ActionLink("Delete", "Delete", new {  id=item.holidayId  })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts{
+        <script>
+            $(document).ready(function () {
+
+                $('#demoGrid').dataTable({
+                });
+
+                var ViewBagmsg = '@ViewBag.msg'
+                if (ViewBagmsg != null) {
+                    if (ViewBagmsg != "") {
+                        alert(ViewBagmsg);
+                    }
+                }
+            });
+        </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+      }

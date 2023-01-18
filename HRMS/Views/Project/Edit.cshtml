@@ -1,0 +1,201 @@
+﻿@model Models.ProjectModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .multiselect dropdown-toggle btn btn-default {
+        display: block;
+        width: 100%;
+        /* height: calc(1.5em + 0.75rem + 2px); */
+        padding: 0.375rem 0.75rem;
+        /* font-size: 1rem; */
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+</style>
+<h4>@Model.projectName @Model.projectCode</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="hidden" asp-for="projectId" class="form-control" />
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="projectCode" class="control-label"></label>
+                <input asp-for="projectCode" class="form-control" />
+                <span asp-validation-for="projectCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="projectName" class="control-label"></label>
+                <input asp-for="projectName" class="form-control" />
+                <span asp-validation-for="projectName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12" id="divtech">
+                        <div class="form-group">
+                            <label asp-for="technology" class="control-label"></label>
+                            <select asp-for="technology" multiple="multiple" id="technology" class="form-control" asp-items="@ViewBag.Technology" onchange="AddNew(this)">
+                            </select>
+                            <input type="hidden" id="techs" asp-for="technology" />
+                            <input type="hidden" id="altertechs" asp-for="technologies" />
+                            <span asp-validation-for="technology" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6" id="divtxt" style="display:none">
+                        <div class="form-group">
+                            <label asp-for=technology hidden class="control-label"></label>
+                            <input class="form-control" id="txtOther" onchange="AddTech()" style="display:none" type="text" placeholder="Technology" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="clientName" class="control-label"></label>
+                <input asp-for="clientName" class="form-control" />
+                <span asp-validation-for="clientName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <select asp-for="status" class="form-control" asp-items="@ViewBag.status">
+                </select>
+                <span asp-validation-for="status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="startDate" class="control-label"></label>
+                <input type="text" id="startDate" asp-for="startDate" class="form-control" />
+                <span asp-validation-for="startDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#technology').multiselect();
+            var currentDate = new Date();
+            $('#startDate').datepicker({
+                autoclose: true,
+                //endDate: "currentDate",
+                startDate: '+1d'
+            }).on('changeDate', function (ev) {
+                $(this).datepicker('hide');
+            });
+
+            var hidValue = $("#techs").val();
+            var selectedOptions = hidValue.split(",");
+            for (var i in selectedOptions) {
+                debugger
+                var optionVal = selectedOptions[i];
+                $("#technology").find("option[value=" + optionVal + "]").attr("selected", "selected");
+            }
+            $('#technology').multiselect({
+                multiple: true,
+            });
+
+            $("#technology").multiselect('reload');
+
+        });
+        function AddNew() {
+            if ($("#technology option:selected").text() == "Other") { }
+            else {
+                var selected = $("#technology :selected").map((_, e) => e.value).get();
+                $("#altertechs").val(selected);
+            }
+        }
+        function AddTech() {
+            if ($('#txtOther').val() != "") {
+                var Name = $('#txtOther').val();
+
+                $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: '/Technology/CreateTechnology',
+                    data: { item: Name },
+                    success: function (result) {
+                        debugger
+                        if (result.includes("exists")) {
+                            alert(result);
+                            $('#txtOther').focus();
+                            $('#txtOther').val('');
+                            return false;
+                        }
+                        else {
+                            alert("Technology is added");
+                            $.getJSON('@Url.Action("GetTechnology", "Project")', function (result) {
+                                FillDropdown("technology", JSON.parse(result), Name)
+                            });
+
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+            else
+                alert("Add Technology");
+        }
+        // Generic code for any dropdown to fill called by ajax
+        function FillDropdown(selector, vData, name) {
+            if (vData.length > 0) {
+                var vItems = [];
+                for (var i in vData) {
+                    debugger
+                    if (vData[i].Name == name)
+                        vItems.push('<option selected=selected value="' + vData[i].technologyId + '">' + vData[i].Name + '</option>');
+                }
+                $('#' + selector).append(vItems.join(''));
+                $('#technology').multiselect('refresh');
+            }
+        }
+
+        function AddNew() {
+            var s = $("#technology :selected").text();
+            var selected = $("#technology :selected").map((_, e) => e.value).get();
+            var selectedtext = $("#technology :selected").map((_, e) => e.text).get();
+            if (selectedtext.includes('Other')) {
+                $("#divtech").removeClass("col-md-12");
+                $("#divtech").addClass("col-md-6");
+                $("#txtOther").show();
+                $("#divtxt").show();
+            }
+            else {
+                $("#techs").val(selected);
+                $("#divtech").removeClass("col-md-6");
+                $("#divtech").addClass("col-md-12");
+                $("#txtOther").hide();
+                $("#divtxt").hide();
+            }
+        }
+
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

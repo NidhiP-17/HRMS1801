@@ -1,0 +1,284 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Alita Infotech</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-multiselect.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/lib/datatable/jquery.datatables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/font-awesome/4.5.0/css/font-awesome.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!-- <title>Trustree</title> -->
+    <style>
+        .sideeffect {
+            height: 100vh !important;
+        }
+
+        button {
+            background-color: dodgerblue;
+            width: 100px;
+            height: auto;
+            color: black;
+            padding: 10px;
+            margin: 10px 0px;
+            border: none;
+            cursor: pointer;
+            border-radius: revert;
+            text-align: center;
+            vertical-align: middle
+        }
+
+            button:hover {
+                opacity: 0.7;
+            }
+
+        .dropbtn {
+            background-color: #164665;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+            .dropbtn:hover, .dropbtn:focus {
+                background-color: #0069d9;
+            }
+
+            .dropbtn:hover, .dropbtn:focus {
+                background-color: none !important;
+            }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown a:hover {
+            background-color: none !important;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .menu-parent ul ul li a:hover {
+            background-color: none !important;
+        }
+
+    </style>
+
+    <script>
+        /* When the user clicks on the button,
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+    <aside class="main-sidebar sidebar">
+        <div class="sidebar-brand">
+            <a href="#">
+                <img src="~/images/alita-logo.svg" alt="">
+            </a>
+
+
+        </div>
+        <div id="accordian" class="menu-parent">
+            <ul class="nav-ul">
+
+                @*  <li class="nav-item active">
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>*@
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "Timesheet")">Timesheet</a>
+                </li>
+                @{
+                    string x = Context.Session.GetString("usertypeId");
+                    if (x != "3")
+                    {
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Holiday")">Holiday</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Project")">Projects</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Task")">Tasks</a>
+                        </li>
+                        <li class="nav-item"><a href="@Url.Action("Index", "Employee")"><strong>Employee</strong></a></li>
+                        <li class="nav-item">
+                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <strong>Items</strong>
+                            </a>
+                            <div class="sidebar-submenu dropdown-menu">
+                                <ul class="nav-ul">
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Index", "ItemCategory")"><strong>Items Category</strong></a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Index", "Item")"><strong>Items</strong></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <strong>Report</strong>
+                            </a>
+                            <div class="sidebar-submenu dropdown-menu">
+                                <ul class="nav-ul">
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpDay", "ItemOrder")">Food Report Of Employees</a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Print1", "ItemOrder")">Today's Order Report</a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpData", "ItemOrder")">Order Details</a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportMonthWiseData", "ItemOrder")">Month Details</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                    }
+                }
+                <li class="nav-item">
+                    <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                        <strong>Order</strong>
+                    </a>
+                    <div class="sidebar-submenu dropdown-menu">
+                        <ul class="nav-ul">
+                            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Index", "ItemOrder")"><strong>Order</strong></a></li>
+                            <li> <a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmp_Day", "ItemOrder")"><strong>Check Order</strong></a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("ResetPassword", "Login")"><strong>Change Password</strong></a>
+                </li>
+                <li class="nav-item"><a href="@Url.Action("Logout", "Home")"><strong>Log out</strong></a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="main">
+        <div class="container-fluid">
+            <div class="title-wpr flex">
+                <div class="col-md-6">
+                    @{
+                        <h5>Welcome @ViewBag.loginUserName</h5>
+                    }
+                </div>
+                <div class="col-md-4">
+                    @{
+                        var controller = @ViewBag.controller;
+                        if (controller == "itemorder")
+                        {
+                            <div class="btn-order-custom">
+
+                                <div class="dropdown" style="float:right !important">
+                                    @if (ViewBag.Order != null)
+                                    {
+                                        <button onclick="myFunction()" class="dropbtn btn btn-primary ">
+                                            Order(@ViewBag.Order.Count)
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button onclick="myFunction()" class="dropbtn  btn btn-primary ">
+                                            Order(0)
+                                        </button>
+
+                                    }
+                                    <div id="myDropdown" class="dropdown-content">
+                                        @if (ViewBag.Order != null)
+                                        {
+                                            @foreach (var item in ViewBag.Order)
+                                            {
+                                                <table style="width: 100%">
+                                                    <tr>
+                                                        <td><a href="#home">@item.ItemName (@item.Quantity) </a></td>
+                                                        <td style="float: right;"><a asp-action="Delete" asp-route-id="@item.ItemId" asp-route-pageNumber="@(Model.PageIndex)" class="">X</a></td>
+                                                    </tr>
+                                                </table>
+                                            }
+
+                                        }
+                                        <a href="@Url.Action("PlaceOrder", "ItemOrder")" class="btn btn-primary" style="color:#fff !important;padding:0px !important;margin:10px !important">Place Order</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }
+                </div>
+            </div>
+
+            @RenderSection("something", required: false)
+            @RenderBody()
+        </div>
+        <!-- ==========categories row"=====categories row"==end========== -->
+    </main>
+
+    <script type="text/javascript" src="~/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="~/js/moment.min.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap-datepicker.min.js"></script>
+    @*<script type="text/javascript" src="~/js/bootstrap-select.min.js"></script>*@
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/lib/datatable/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatable/buttons.print.min.js"></script>
+    <script src="~/lib/datatable/buttons.flash.min.js"></script>
+    <script src="~/lib/datatable/vfs_fonts.js"></script>
+    <script src="~/lib/datatable/pdfmake.min.js"></script>
+    <script src="~/lib/datatable/jszip.min.js"></script>
+    <script src="~/js/bootstrap-multiselect.js"></script>
+    <script src="~/js/bootstrap-multiselect.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    @*    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>*@
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/js/bootstrap-select.min.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

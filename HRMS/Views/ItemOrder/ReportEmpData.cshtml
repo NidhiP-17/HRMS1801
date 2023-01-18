@@ -1,0 +1,96 @@
+﻿@model HRMS.Models.ReportFilter
+
+@{
+    ViewData["Title"] = "Day wise order details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .div {
+            background: #f1f1f1;
+            width: 550px;
+            height: auto;
+            padding: 50px;
+            border-radius: 15px;
+            margin: 0 auto;
+        }
+
+        .inner-form {
+            padding: 0px 48px 48px 326px;
+        }
+
+        .save-btn-form > input {
+            width: 200px;
+            padding: 15px 0px;
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            background: #164665;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+            .save-btn-form > input:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .check-boxes {
+            justify-content: initial;
+            align-items: center;
+            gap: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+  @*  <div class="inner-form">*@
+
+        @*<div class="div">*@
+
+            <h4 class="mb-3">@ViewData["Title"]</h4>
+
+            <form asp-action="PrintEmployeeData">
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Month"></label>
+                    @Html.DropDownListFor(x => x.Month, ViewBag.MonthListItem as SelectList, new { @class = "form-control" })
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Year"></label>
+                    @Html.DropDownListFor(x => x.Year, ViewBag.YearListItem as SelectList, new { @class = "form-control" })
+                </div>
+                <div class="save-btn-form">
+                    <input type="submit" value="Show" class="" />
+                </div>
+            </form>
+
+        @*</div>*@
+
+    @*</div>*@
+</body>
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewBag.Message");
+        };
+    </script>
+}
+
+</html>
+
+
+
+@*@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        //await RenderSectionAsync("Scripts", required: false);
+    }
+    }*@

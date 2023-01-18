@@ -1,0 +1,114 @@
+﻿@model IEnumerable<Models.ItemCategoryModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+</p>
+<hr/>
+<table class="table" id="demoGrid">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.ItemCatID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemCatName)
+            </th>
+            <th readonly>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.ItemCatID)
+                    <input type="hidden" value="@item.ItemCatID" id="">
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemCatName)
+                </td>
+                <td>
+                    <input id="IsActive" type="checkbox" @(item.IsActive?"checked=checked":"") style="" onchange="UpdateStatus(@item.ItemCatID,event)" />
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "ItemCategory",new {  id=item.ItemCatID  })">
+                        <i style="font-size: 20px; text-align: center;color:#378753" class="fa fa-edit"></i>
+                    </a>
+                    <a href="@Url.Action("Details", "ItemCategory",new {  id=item.ItemCatID  })">
+                        <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", "ItemCategory",new {  id=item.ItemCatID  })">
+                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                    </a>
+
+                    @* @Html.ActionLink("Edit", "Edit", new {  id=item.ItemCatID  }) |
+                @Html.ActionLink("Details", "Details", new {  id=item.ItemCatID  }) |
+                @Html.ActionLink("Delete", "Delete", new {  id=item.ItemCatID  })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#demoGrid').dataTable({
+            });
+
+            var ViewBagmsg = '@ViewBag.msg'
+            if (ViewBagmsg != null) {
+                if (ViewBagmsg != "") {
+                    alert(ViewBagmsg);
+                }
+            }
+
+           
+        });
+
+        function UpdateStatus(id, event) {
+            debugger
+            if (!event.currentTarget.checked) {
+                var returnVal = confirm("Are you sure you want to disable this category?");
+                $(this).prop("checked", returnVal);
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: '@Url.Action("EditStatus", "ItemCategory")',
+                    data: { "id": id, "status": false },
+                    success: function (response) {
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            else {
+                var returnVal = confirm("Are you sure you want to active this category?");
+                $(this).prop("checked", returnVal);
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: '@Url.Action("EditStatus", "ItemCategory")',
+                    data: { "id": id, "status": true },
+                    success: function (response) {
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+      }

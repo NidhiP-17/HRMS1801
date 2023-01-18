@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Models.ProjectModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.userTypeId != 3)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-info">Create New</a>
+    </p>
+}
+<hr/>
+<table class="table" id="demoGrid">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.projectId)
+            </th>
+          @*  <th>
+                @Html.DisplayNameFor(model => model.projectCode)
+            </th>*@
+            <th>
+              @Html.DisplayNameFor(model => model.projectName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.technology)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.clientName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.startDate)
+            </th>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.isDeleted)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.projectId)
+                </td>
+                <td>
+                    [@Html.DisplayFor(modelItem => item.projectCode)] - @Html.DisplayFor(modelItem => item.projectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.technologiesname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.clientName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.startDate)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.isDeleted)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "Project",new {  id=item.projectId  })">
+                        <i style="font-size: 20px; text-align: center;color:#378753" class="fa fa-edit"></i>
+                    </a>
+                    <a href="@Url.Action("Details", "Project",new {  id=item.projectId  })">
+                        <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", "Project",new {  id=item.projectId  })">
+                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                    </a>
+                  @*  @Html.ActionLink("Edit", "Edit", new {  id=item.projectId  }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.projectId  }) |
+                    @Html.ActionLink("Delete", "Delete", new {  id=item.projectId  })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#demoGrid').dataTable({
+            });
+
+            var ViewBagmsg = '@ViewBag.msg'
+            if (ViewBagmsg != null) {
+                if (ViewBagmsg != "") {
+                    alert(ViewBagmsg);
+                }
+            }
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+      }

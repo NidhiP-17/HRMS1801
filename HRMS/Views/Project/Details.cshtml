@@ -1,0 +1,59 @@
+﻿@model Models.ProjectModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h4>@Html.DisplayFor(model => model.projectName)</h4>
+    <hr />
+    <dl class="row">
+       @* <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.projectId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.projectId)
+        </dd>*@
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.projectCode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.projectCode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.technology)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.technologiesname)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.clientName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.clientName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.status)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.startDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.startDate)
+        </dd>
+       @* <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.isDeleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.isDeleted)
+        </dd>*@
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.projectId  }) |
+    <a asp-action="Index">Back to List</a>
+</div>

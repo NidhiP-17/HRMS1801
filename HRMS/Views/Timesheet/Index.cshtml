@@ -1,0 +1,197 @@
+﻿@model IEnumerable<Models.TimesheetModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+</p>
+<hr />
+<form method="post">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">Date Range</label>
+                <input type="text" name="daterange" id="daterange" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">Projects</label>
+                <select name="projectId" id="projectId" class="form-control" asp-items="@ViewBag.Projects"></select>
+            </div>
+        </div>
+        @if (ViewBag.userTypeId != 3)
+        {
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Employees</label>
+                    <select name="employeeId" id="employeeId" class="form-control" asp-items="@ViewBag.Employees"></select>
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" name="employeeId" id="employeeId" class="form-control" value="@ViewBag.Employee" />
+        }
+        <div class="col-md-3 m-auto">
+            <div class="form-group" style="margin-bottom:0px">
+                <label class="control-label"></label>
+                <input type="submit" class="btn btn-success" value="Filter" onclick="PopulateTable()" />
+            </div>
+        </div>
+        @if (ViewData["Selected"] != null)
+        {
+            <script type="text/javascript">
+                $(function () {
+                    $("#projectId").val("@ViewData["Selected"]");
+                });
+            </script>
+        }
+    </div>
+</form>
+<table class="table" id="demoGrid">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.timesheetId)
+            </th>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.projectId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.type)
+            </th>
+            <th>
+                Project
+            </th>
+            <th>
+                Employee
+            </th>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.taskId)
+            </th>
+            <th>
+                Task
+            </th>
+            <th>
+                Hours
+            </th>
+            <th>
+                Tracker Status
+            </th>
+            <th>
+                Notes
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.timesheetId)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.projectId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.holidaydate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.projectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.employeeName)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.taskId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.taskName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.hours)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.trackerFlagVal)
+                </td>
+                <td>
+                    @Html.Raw(item.notes.Substring(0, item.notes.Length > 200  ? 200 : item.notes.Length))
+                    @*@Html.DisplayFor(modelItem => item.notes)*@
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Timesheet",new {  id=item.timesheetId  })">
+                        <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", "Timesheet",new {  id=item.timesheetId  })">
+                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            debugger
+            //var data = CKEDITOR.instances.editor1.getData();
+
+            $('#demoGrid').dataTable({
+            });
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+
+            function cb(start, end) {
+                $('#daterange span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
+            }
+
+            $('#daterange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                locale: {
+                    format: 'DD-MM-YYYY'
+                },
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+            }, cb);
+
+            var ViewBagmsg = '@ViewBag.msg'
+            if (ViewBagmsg != null) {
+                if (ViewBagmsg != "") {
+                    alert(ViewBagmsg);
+                }
+            }
+        });
+
+        function PopulateTable() {
+            var projectId = $("#projectId option:selected").val();
+            var employeeId = $("#employeeId option:selected").val();
+            var dateRange = $("#daterange").val();
+            window.location.href = '@Url.Action("Index", "Timesheet")?projectId=' + projectId + '&employeeId=' + employeeId + '&daterange=' + dateRange;
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

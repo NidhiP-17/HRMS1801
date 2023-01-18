@@ -1,0 +1,129 @@
+﻿@model IEnumerable<Models.TaskModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+</p>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <select name="projectId" id="projectId" class="form-control" asp-items="@ViewBag.Projects" onchange="PopulateTable()"></select>
+        </div>
+    </div>
+</div>
+<table class="table" id="demoGrid">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.taskId)
+            </th>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.projectId)
+            </th>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.employeeId)
+            </th>
+            <th>
+                Sr. No.
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.taskName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.projectName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.employeeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.createdDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.taskId)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.projectId)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.employeeId)
+                </td>
+                <td>
+                    @i
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.taskName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.projectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.employeeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.createdDate)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "Task",new {  id=item.taskId  })">
+                        <i style="font-size: 20px; text-align: center;color:#378753" class="fa fa-edit"></i>
+                    </a>
+                    <a href="@Url.Action("Details", "Task",new {  id=item.taskId  })">
+                        <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", "Task",new {  id=item.taskId  })">
+                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                    </a>
+                  @*  @Html.ActionLink("Edit", "Edit", new {  id=item.taskId }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.taskId  }) |
+                    @Html.ActionLink("Delete", "Delete", new {  id=item.taskId })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#demoGrid').dataTable({
+            });
+
+            var ViewBagmsg = '@ViewBag.msg'
+            if (ViewBagmsg != null) {
+                if (ViewBagmsg != "") {
+                    alert(ViewBagmsg);
+                }
+            }
+
+        });
+        function PopulateTable() {
+            var id = $("#projectId option:selected").val();
+            window.location.href = '@Url.Action("Index", "Task")?id=' + id;
+        }
+
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,116 @@
+﻿@model Models.HolidayModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>HolidayModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="date" class="control-label"></label>
+                <input asp-for="date"  class="form-control" />
+                <span asp-validation-for="date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="day" class="control-label"></label>
+                <input asp-for="day" class="form-control" />
+                <span asp-validation-for="day" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="type" class="control-label"></label>
+                <select asp-for="type" id="type" class="form-control" onchange="ShowHours()">
+                    <option value="Holiday">Holiday</option>
+                    <option value="Working">Working</option>
+                </select>
+                <span asp-validation-for="type" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="hours" style="display:none">
+                <label asp-for="hours" class="control-label"></label>
+                <input asp-for="hours" class="form-control"  />
+                <span asp-validation-for="hours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var currentDate = new Date();
+            $('#date').datepicker({
+                autoclose: true,
+                //endDate: "currentDate",
+                startDate: '+1d'
+            }).on('changeDate', function (ev) {
+                $(this).datepicker('hide');
+            });
+        });
+
+        function ShowHours() {
+            var type = $("#type option:selected").text();
+            if (type == 'Working') {
+                $("#hours").show();
+            }
+            else
+                $("#hours").hide();
+        }
+
+        function validatenumber(event, obj) {
+
+            var code = (event.which) ? event.which : event.keyCode;
+            var character = String.fromCharCode(code);
+
+            if ((code >= 48 && code <= 57)) { // check digits
+
+                // Disallow all numbers if the entry is 0
+                if (obj.value == "0")
+                    return false;
+
+                if (!isNaN(obj.value)) {
+                    if (obj.value == "0.0" && code == 48) {
+                        alert("Value cannot be less than 0.01");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else if (code == 46) { // Check dot
+                if (obj.value.indexOf(".") < 0) {
+                    if (obj.value.length == 0)
+                        obj.value = "0";
+
+                    return true;
+                }
+            }
+            else if (code == 8 || code == 116) { // Allow backspace, F5
+                return true;
+            }
+            else if (code >= 37 && code <= 40) { // Allow directional arrows
+                return true;
+            }
+            return false;
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

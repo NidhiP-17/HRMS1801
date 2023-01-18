@@ -1,0 +1,120 @@
+﻿@model IEnumerable<Models.EmployeeModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.userTypeId != 3)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-info">Create New</a>
+    </p>
+}
+<hr/>
+<table class="table" id="demoGrid">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.employeeId)
+            </th>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.userTypeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.employeeCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.lastName)
+            </th>
+           @* <th>
+                @Html.DisplayNameFor(model => model.DOB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>*@
+
+            <th hidden>
+                @Html.DisplayNameFor(model => model.employeeTypeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.email)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.employeeId)
+                </td>
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.userTypeId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.employeeCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.userType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.lastName)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.DOBVal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GenderValue)
+                </td>*@
+                <td hidden>
+                    @Html.DisplayFor(modelItem => item.employeeTypeId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.email)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "Employee",new {  id=item.employeeId  })">
+                        <i style="font-size: 20px; text-align: center;color:#378753" class="fa fa-edit"></i>
+                    </a>
+                    <a href="@Url.Action("Details", "Employee",new {  id=item.employeeId  })">
+                        <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", "Employee",new {  id=item.employeeId  })">
+                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#demoGrid').dataTable({
+            });
+
+            var ViewBagmsg = '@ViewBag.msg'
+            if (ViewBagmsg != null) {
+                if (ViewBagmsg != "") {
+                    alert(ViewBagmsg);
+                }
+            }
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

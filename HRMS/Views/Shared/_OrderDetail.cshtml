@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="btn-order-custom">
+
+    <div class="dropdown ">
+        @if (ViewBag.Order != null)
+        {
+            <button onclick="myFunction()" class="dropbtn btn btn-primary ">
+                Order(@ViewBag.Order.Count)
+            </button>
+        }
+        else
+        {
+            <button onclick="myFunction()" class="dropbtn  btn btn-primary ">
+                Order(0)
+            </button>
+
+        }
+        <div id="myDropdown" class="dropdown-content">
+            @if (ViewBag.Order != null)
+            {
+                @foreach (var item in ViewBag.Order)
+                {
+                    <table style="width: 100%">
+                        <tr>
+                            <td><a href="#home">@item.ItemName (@item.Quantity) </a></td>
+                            <td style="float: right;"><a asp-action="Delete" asp-route-id="@item.ItemId" asp-route-pageNumber="@(Model.PageIndex)" class="">X</a></td>
+                        </tr>
+                    </table>
+                }
+
+            }
+        </div>
+
+    </div>
+    <a href="@Url.Action("PlaceOrder", "ItemOrder")"><strong class="btn btn-primary">Place Order</strong></a>
+</div>
