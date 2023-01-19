@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System;
 
 namespace HRMS.Controllers
 {
@@ -54,10 +55,21 @@ namespace HRMS.Controllers
                 {
                     ViewBag.Message = Msg;
                 }
-
+                var client = new TcpClient("time.nist.gov", 13);
+                DateTime localDateTime;
                 objItem = new Item();
                 listItem = new List<Item>();
 
+                using (var streamReader = new StreamReader(client.GetStream()))
+                {
+                    var response = streamReader.ReadToEnd();
+                    var utcDateTimeString = response.Substring(7, 17);
+                    localDateTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                }
+                if (localDateTime.Hour >= 16 || localDateTime.Hour <= 14)
+                {
+                    HttpContext.Session.Remove("cartItems");
+                }
                 objItem.mstrSource = strSource;
                 listItem = objItem.getAllItems("", configuration.GetConnectionString("DefaultConnection"));
 
@@ -66,7 +78,6 @@ namespace HRMS.Controllers
 
                 objItem = null;
                 return View(PaginatedList<Item>.Create(listItem, pageNumber ?? 1, pageSize));
-
             }
             catch (Exception ex)
             {
@@ -95,11 +106,13 @@ namespace HRMS.Controllers
                     localDateTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
                 }
                 var date = DateTime.Now;
-                if (localDateTime == date)
-                {
-                    int intHour = date.Hour;
 
-                    if (intHour >= 14 && intHour < 16)
+                int intHour = date.Hour;
+
+                if (intHour >= 16 && intHour < 18)
+                {
+                    var diffInSeconds = (localDateTime - date).TotalSeconds;
+                    if (diffInSeconds <= 5)
                     {
                         objItem = new Item();
                         List<Item> listItems = new List<Item>();
@@ -166,20 +179,23 @@ namespace HRMS.Controllers
 
                         ViewBag.Order = mlstItem;
 
+                        Msg = "Item ordered successfully.";
 
                     }
                     else
                     {
-                        Msg = "You may order between 2 to 4 only!";
+                        Msg = "You change the system date! You can not order now";
+                        return RedirectToAction("Index", new { pageNumber = pageNumber, Msg = Msg });
                     }
-                    Msg = "Item ordered successfully.";
-                    return RedirectToAction("Index", new { pageNumber = pageNumber, Msg = Msg });
+
                 }
                 else
                 {
-                    Msg = "You change the system date! You can not order now";
-                    return RedirectToAction("Index", new { pageNumber = pageNumber, Msg = Msg });
+                    Msg = "You may order between 2 to 4 only!";
                 }
+
+                return RedirectToAction("Index", new { pageNumber = pageNumber, Msg = Msg });
+
             }
             catch (Exception ex)
             {

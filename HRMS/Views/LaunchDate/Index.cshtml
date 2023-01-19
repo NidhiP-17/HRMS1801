@@ -1,0 +1,22 @@
+﻿@model Models.LaunchDateModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+</p>
+<hr />
+<div>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.launchdate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.launchdate)
+        </dd>
+    </dl>
+</div>
+

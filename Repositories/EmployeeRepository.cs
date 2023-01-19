@@ -114,7 +114,7 @@ namespace Repositories
             var epass = EncodePasswordToBase64(password);
             var result = new ResponseSingleModel<bool>();
             message = string.Empty;
-            result.Response = instance.ResetPassword(userid, password, out message);
+            result.Response = instance.ResetPassword(userid, epass, out message);
             result.Status = message == "Password changed." ? Constants.WebApiStatusOk : Constants.WebApiStatusFail;
             result.Message = message;
             return result;

@@ -384,5 +384,12 @@ namespace HRMS.Controllers
             var response = timesheet.GetJoiningDate(employeeId);
             return new JsonResult(JsonConvert.SerializeObject(response.Response));
         }
+
+        public JsonResult GetLaunchDate()
+        {
+            LaunchDateRepository timesheet = new LaunchDateRepository();
+            var response = timesheet.GetLaunchDate();
+            return new JsonResult(JsonConvert.SerializeObject(response.Response));
+        }
     }
 }

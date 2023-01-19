@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<form asp-action="Create" id="frm">
+<form asp-action="Create" id="frm" autocomplete="off">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-md-5">
@@ -95,7 +95,7 @@
             <div class="row form-group">
                 <div class="col-md-12">
                     <label asp-for="notes" class="control-label"></label>
-                    <textarea asp-for="notes" id="notes" class="ckeditor" name="notes" rows="200"></textarea>
+                    <textarea asp-for="notes" id="notes" class="ckeditor" name="notes" rows="100"></textarea>
                     <span asp-validation-for="notes" class="text-danger"></span>
                 </div>
             </div>
@@ -115,7 +115,7 @@
                     <span asp-validation-for="reasonCode" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row form-group" hidden>
                 <div class="col-md-4">
                     <label asp-for="type" class="control-label"></label>
                 </div>
@@ -177,8 +177,10 @@
         var startingdate;
         var totalfilledDays = [];
         var minDate;
+        var launchdate;
         const today = new Date();
         function GetFilledDates() {
+            $('#date').datepicker("refresh");
             const yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!
             let dd = today.getDate();
@@ -196,11 +198,10 @@
             else {
 
                 id = $("#employeeId option:selected").val();
-                var url = "/Timesheet/GetJoiningDate";
-                var data = { employeeId: id };
 
             }
-
+            debugger
+            launchdate = GetLaunchdate();
             if (id != undefined && id != "0") {
                 $.ajax({
                     cache: false,
@@ -219,7 +220,7 @@
 
                             if ('@ViewBag.usertypeId' == '3') {
                                 var d = totalfilledDays[totalfilledDays.length - 1];
-                                if (d < formattedToday)
+                                if (d < launchdate)
                                     $("#lblMessage").html("You have not filled timesheet for " + d);
                                 $("#date").attr("disabled", "disabled");
                             }
@@ -229,12 +230,13 @@
                             var url = "/Timesheet/GetJoiningDate";
                             var data = { employeeId: id };
                             $.get(url, data, function (data) {
+                                debugger
                                 var dates = JSON.parse(data);
                                 joiningDate = dates;
                                 var d1 = new Date(joiningDate);
-                                var d2 = new Date(formattedToday);
+                                var d2 = new Date(launchdate);
                                 if (d1.getTime() < d2.getTime())
-                                    startingdate = formattedToday;
+                                    startingdate = launchdate;
                                 else
                                     startingdate = joiningDate;
 
@@ -245,7 +247,7 @@
 
                                     if ('@ViewBag.usertypeId' == '3') {
                                         var d = startingdate;
-                                        if (d < formattedToday)
+                                        if (d < launchdate)
                                             $("#lblMessage").html("You have not filled timesheet for " + d);
                                         $("#date").attr("disabled", "disabled");
                                     }
@@ -254,11 +256,12 @@
                                     }
                                 }
                                 else {
+                                    debugger
                                     $('#date').val(startingdate);
                                     $('#hdnDate').val(startingdate);
                                     if ('@ViewBag.usertypeId' == '3') {
                                         var d = startingdate;
-                                        if (d < formattedToday)
+                                        if (d < launchdate)
                                             $("#lblMessage").html("You have not filled timesheet for " + d);
                                         $("#date").attr("disabled", "disabled");
                                     }
@@ -274,9 +277,11 @@
                                     numberOfMonths: 1,
                                     format: 'MM/DD/YYYY',
                                     autoclose: true,
+                                    //startDate: minDate,
                                     //endDate: "today",
-                                    maxDate: today,
-                                    minDate: minDate
+                                    minDate: minDate,
+                                    maxDate: '+28D',
+                                    setDate: minDate
                                 }).on('changeDate', function (ev) {
                                     $(this).datepicker('hide');
                                 });
@@ -290,10 +295,11 @@
                                 debugger
                                 var dates = JSON.parse(data);
                                 joiningDate = dates;
+
                                 var d1 = new Date(joiningDate);
-                                var d2 = new Date(formattedToday);
+                                var d2 = new Date(launchdate);
                                 if (d1.getTime() < d2.getTime())
-                                    startingdate = formattedToday;
+                                    startingdate = launchdate;
                                 else
                                     startingdate = joiningDate;
                                 if (totalfilledDays.length == 0) {
@@ -303,7 +309,7 @@
 
                                     if ('@ViewBag.usertypeId' == '3') {
                                         var d = startingdate;
-                                        if (d < formattedToday)
+                                        if (d < launchdate)
                                             $("#lblMessage").html("You have not filled timesheet for " + d);
                                         $("#date").attr("disabled", "disabled");
                                     }
@@ -316,7 +322,7 @@
                                     $('#hdnDate').val(startingdate);
                                     if ('@ViewBag.usertypeId' == '3') {
                                         var d = startingdate;
-                                        if (d < formattedToday)
+                                        if (d < launchdate)
                                             $("#lblMessage").html("You have not filled timesheet for " + d);
                                         $("#date").attr("disabled", "disabled");
                                     }
@@ -332,9 +338,11 @@
                                     numberOfMonths: 1,
                                     format: 'MM/DD/YYYY',
                                     autoclose: true,
+                                    //startDate: minDate,
                                     //endDate: "today",
-                                    maxDate: today,
-                                    minDate: minDate
+                                    minDate: minDate,
+                                    maxDate: '+28D',
+                                    setDate: minDate
                                 }).on('changeDate', function (ev) {
                                     $(this).datepicker('hide');
                                 });
@@ -350,6 +358,15 @@
 
 
 
+        }
+
+        function GetLaunchdate() {
+            var url = "/Timesheet/GetLaunchDate";
+            $.get(url, null, function (data) {
+                var dates = JSON.parse(data);
+                launchdate = dates.launchdate;
+            });
+            return launchdate
         }
 
         function ShowReason() {
@@ -435,17 +452,17 @@
             var joiningDate = "";
             $('.select2').select2();
 
-            $('#date').datepicker({
-                beforeShowDay: noSundaysOrHolidays,
-                numberOfMonths: 1,
-                format: 'MM/DD/YYYY',
-                autoclose: true,
-                //endDate: "today",
-                maxDate: today,
-                minDate: minDate
-            }).on('changeDate', function (ev) {
-                $(this).datepicker('hide');
-            });
+            //$('#date').datepicker({
+            //    beforeShowDay: noSundaysOrHolidays,
+            //    numberOfMonths: 1,
+            //    format: 'MM/DD/YYYY',
+            //    autoclose: true,
+            //    //endDate: "today",
+            //    maxDate: today,
+            //    minDate: minDate
+            //}).on('changeDate', function (ev) {
+            //    $(this).datepicker('hide');
+            //});
 
             if ('@ViewBag.usertypeId' == '3') {
                 $("#employeeId").val(parseInt('@ViewBag.userId'));

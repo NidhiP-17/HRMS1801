@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using NuGet.Protocol.Plugins;
 using Repositories;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,6 +9,8 @@ using WebSite.Common;
 
 namespace HRMS.Controllers
 {
+
+
     public class LoginController : Controller
     {
         #region "Login"
@@ -16,27 +19,7 @@ namespace HRMS.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            //HttpContext.Session.Clear();
-            ////Session["UserSession"] = null;
-            ////Session["userId"] = null;
-            ////Session.Clear();
-            //UserLogin userLogin = new UserLogin();
-            //if (Request.Cookies["emailaddress"] != null)
-            //{
-            //    userLogin.emailaddress = Request.Cookies["emailaddress"];
-            //    userLogin.remember = true;
-            //}
-            //else
-            //{
-            //    userLogin.remember = false;
-            //}
-
-            //return View(userLogin);
-
             HttpContext.Session.Clear();
-            //Session["UserSession"] = null;
-            //Session["userId"] = null;
-            //Session.Clear();
             UserLoginWithId userLogin = new UserLoginWithId();
             if (Request.Cookies["loginId"] != null)
             {
@@ -55,12 +38,14 @@ namespace HRMS.Controllers
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Index(UserLoginWithId login)
+        public async Task<ActionResult> Index(UserLoginWithId login)
         {
+            //ViewBag.ReturnUrl = returnUrl;
             try
             {
                 if (ModelState.IsValid)
                 {
+                    //var result =  await repository.LoginUsingId(login.Email, login.Password);
                     var message = string.Empty;
                     EmployeeRepository repository = new EmployeeRepository();
                     var user = repository.LoginUsingId(login.Email, login.Password);
@@ -76,10 +61,12 @@ namespace HRMS.Controllers
                             HttpContext.Session.Set("loginUserName", Constants.ObjectToByteArray(session.LoginUserName));
                             HttpContext.Session.SetString("usertypeId", session.userTypeId.ToString());
                             HttpContext.Session.SetString("joiningDate", session.userTypeId.ToString());
-                            //if(session.userTypeId == 3 )
-                            //    return RedirectToAction(nameof(Index), "ItemOrder");
-                            //else
-                            return RedirectToAction("Index", "Timesheet");// ("~/User/Index");
+
+                            if (session.userTypeId == 3)
+                                return RedirectToAction(nameof(Index), "ItemOrder");
+                            else
+                                return RedirectToAction("Index", "Timesheet");// ("~/User/Index");
+
                         }
                         else
                         {
@@ -190,53 +177,65 @@ namespace HRMS.Controllers
         //}
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult ResetPassword(string key)
+        public ActionResult ResetPassword(int id)
         {
+            ViewBag.userId = id;
             HttpContext.Session.Clear();
-            ResetPasswordModel resetPasswordModel = new ResetPasswordModel();
-            resetPasswordModel.ResetCode = key;
-            return View(resetPasswordModel);
+            return View();
         }
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
         [HttpPost]
         public ActionResult ResetPassword(ResetPasswordModel resetPasswordModel)
         {
-            HttpContext.Session.Clear();
-            if (string.IsNullOrWhiteSpace(resetPasswordModel.ResetCode))
+            try
             {
-                return RedirectToAction("Index", "Opps");// ("~/Opps/Index");
+                if (ModelState.IsValid)
+                {
+                    var message = string.Empty;
+                    EmployeeRepository repository = new EmployeeRepository();
+                    var user = repository.ResetPassword(Convert.ToInt32(resetPasswordModel.userId), resetPasswordModel.NewPassword, out message);
+                    if (user.Message == "Success")
+                    {
+                        return RedirectToAction("ResetPasswordSuccess", "Login");// ("~/Login/ResetPasswordSuccess");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Opps");// ("~/Opps/Index");
+                    }
+                }
             }
-            else
+            catch (Exception exp)
             {
-                try
-                {
-                    //if (ModelState.IsValid)
-                    //{
-                    //    var message = string.Empty;
-                    //    EmployeeRepository repository = new EmployeeRepository();
-                    //    var user = repository.ResetPassword(Convert.ToInt32(userId), resetPasswordModel.NewPassword, out message);
-                    //    if (user.Response)
-                    //    {
-                    //        return RedirectToAction("ResetPasswordSuccess", "Login");// ("~/Login/ResetPasswordSuccess");
-                    //    }
-                    //    else
-                    //    {
-                    //        return RedirectToAction("Index", "Opps");// ("~/Opps/Index");
-                    //    }
-                    //}
-                }
-                catch (Exception exp)
-                {
-                    ModelState.AddModelError(string.Empty, exp.Message + "Internal server error, Please try after some time.");
-                }
-                return View(resetPasswordModel);
+                ModelState.AddModelError(string.Empty, exp.Message + "Internal server error, Please try after some time.");
+            }
+            return View(resetPasswordModel);
 
-            }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult ResetPasswordSuccess()
+        {
+            return View();
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult ResetPasswordNotification()
+        {
+            return View();
+        }
+        #endregion
+        #region 
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult Setting(int Id)
+        {
+            return View();
+        }
 
         #endregion
+
         #region "Generate Key"
 
         private const string _alg = "HmacSHA256";

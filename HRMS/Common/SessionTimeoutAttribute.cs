@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Models;
 using Repositories;
@@ -15,7 +16,6 @@ namespace WebSite.Common
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-
             if (filterContext.HttpContext.Session.GetString("UserSession") == null)
             {
                 if (filterContext.Controller is Controller controller)
@@ -26,11 +26,28 @@ namespace WebSite.Common
                     controller.ViewBag.logoutTime = 0;
                     controller.ViewBag.userId = 0;
                 }
+                //if (filterContext.RouteData.Values.ContainsKey("controller") && filterContext.RouteData.Values.ContainsKey("action"))
+                //{
+                //    var controller1 = filterContext.RouteData.Values["controller"].ToString();
+                //    var action1 = filterContext.RouteData.Values["action"].ToString();
+
+                //    filterContext.HttpContext.Session.SetString("controllername", controller1); 
+                //    filterContext.HttpContext.Session.SetString("actionname", action1); 
+
+                //    //filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
+                //    //{
+                //    //    controller = controller1,
+                //    //    action = action1
+                //    //}));
+                //}
+                //else
+                //{
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
                 {
                     controller = "Login",
                     action = "Index"
                 }));
+                //}
                 //filterContext.Result = new RedirectResult("~/Login/Index");
                 return;
             }
@@ -42,8 +59,8 @@ namespace WebSite.Common
 
                 if (filterContext.Controller is Controller controller)
                 {
-                    var controllerName = controller.RouteData.Values["controller"].ToString().ToLower();
-                    var actionName = controller.RouteData.Values["action"].ToString().ToLower();
+                    var controllerName = controller.RouteData.Values["controller"].ToString();
+                    var actionName = controller.RouteData.Values["action"].ToString();
 
                     controller.ViewBag.loginUserName = user.LoginUserName;
                     controller.ViewBag.userId = user.UserId;
@@ -54,34 +71,34 @@ namespace WebSite.Common
                     //controller.ViewBag.isAdmin = user.AccessLevel == "Administrator" ? true : false;
                     //bool isAdmin = user.AccessLevel == "Administrator" ? true : false;
 
-
                     if (controller.ViewBag.userTypeId == 3)
                     {
-                        if (controllerName == "employee" && actionName == "index")
+                        if (controllerName.ToLower() == "employee" && actionName.ToLower() == "index")
                         {
                             filterContext.Result = new RedirectResult("~/Opps/Accessdenied");
                             return;
                         }
-                        if (controllerName == "employee" && actionName == "create")
+                        if (controllerName.ToLower() == "employee" && actionName.ToLower() == "create")
                         {
                             filterContext.Result = new RedirectResult("~/Opps/Accessdenied");
                             return;
                         }
-                        if (controllerName == "project" && actionName == "index")
+                        if (controllerName.ToLower() == "project" && actionName.ToLower() == "index")
                         {
                             filterContext.Result = new RedirectResult("~/Opps/Accessdenied");
                             return;
                         }
-                        if (controllerName == "project" && actionName == "create")
+                        if (controllerName.ToLower() == "project" && actionName.ToLower() == "create")
                         {
                             filterContext.Result = new RedirectResult("~/Opps/Accessdenied");
                             return;
                         }
-                        if (controllerName == "task" && actionName == "create")
+                        if (controllerName.ToLower() == "task" && actionName.ToLower() == "create")
                         {
                             filterContext.Result = new RedirectResult("~/Opps/Accessdenied");
                             return;
                         }
+                     
                     }
 
                 }

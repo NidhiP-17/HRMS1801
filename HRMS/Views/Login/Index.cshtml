@@ -65,7 +65,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false" >
     @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { style = "width: -webkit-fill-available;" }))
     {
         @Html.AntiForgeryToken()
@@ -100,5 +100,52 @@
         </script>
     }
 </body>
+@*<script disable-devtool-auto
+            src='https://cdn.jsdelivr.net/npm/disable-devtool'
+            md5='xxx'
+            url='xxx'
+            tk-name='xxx'
+            interval='xxx'
+            disable-menu='xxx'
+            detectors='xxx'
+            clear-log='true'
+            disable-select='true'
+            disable-copy='true'
+            disable-cut='true'
+            disable-paste='true'></script>*@
+@*    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+    <script>
+        DisableDevtool({
+            // The parameters are the same as in 3.1
+        })
+    </script>*@
+<script>
+    $(document).bind("contextmenu", function (e) {
+        e.preventDefault();
+    });
+    $(document).keydown(function (e) {
+        if (e.ctrlKey && (e.which === 83)) {
+            e.preventDefault();
+            return false;
+        }
+    });
 
+    document.onkeydown = function (e) {
+        if (event.keyCode == 123) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+            return false;
+        }
+    }
+</script>
 </html>

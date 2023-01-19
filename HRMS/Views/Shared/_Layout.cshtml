@@ -121,7 +121,7 @@
     </script>
 
 </head>
-<body>
+<body oncontextmenu="return false">
     <aside class="main-sidebar sidebar">
         <div class="sidebar-brand">
             <a href="#">
@@ -192,7 +192,10 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="@Url.Action("ResetPassword", "Login")"><strong>Change Password</strong></a>
+                    <a href="@Url.Action("ResetPassword", "Login",new { id = ViewBag.userId })"><strong>Change Password</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("Create", "LaunchDate")"><strong>Setting</strong></a>
                 </li>
                 <li class="nav-item"><a href="@Url.Action("Logout", "Home")"><strong>Log out</strong></a></li>
             </ul>
@@ -256,7 +259,25 @@
         </div>
         <!-- ==========categories row"=====categories row"==end========== -->
     </main>
-
+   @* <script disable-devtool-auto
+            src='https://cdn.jsdelivr.net/npm/disable-devtool'
+            md5='xxx'
+            url='xxx'
+            tk-name='xxx'
+            interval='xxx'
+            disable-menu='xxx'
+            detectors='xxx'
+            clear-log='true'
+            disable-select='true'
+            disable-copy='true'
+            disable-cut='true'
+            disable-paste='true'></script>*@
+    @*<script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>*@
+    @*<script>
+        DisableDevtool({
+            // The parameters are the same as in 3.1
+        })
+    </script>*@
     <script type="text/javascript" src="~/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="~/js/moment.min.js"></script>
@@ -279,6 +300,45 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="~/js/bootstrap-select.min.js"></script>
     <script src="~/ckeditor/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).bind("contextmenu", function (e) {
+                e.preventDefault();
+            });
+            $(document).keydown(function (e) {
+                if (e.ctrlKey && (e.which === 83)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            document.onkeydown = function (e) {
+                if (event.keyCode == 123) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
+                }
+            }
+            $(document).keypress("u", function (e) {
+                if (e.ctrlKey) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            });
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
