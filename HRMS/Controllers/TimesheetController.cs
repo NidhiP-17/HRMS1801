@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Models;
 using Newtonsoft.Json;
@@ -14,7 +15,9 @@ namespace HRMS.Controllers
     [SessionTimeoutAttribute]
     public class TimesheetController : Controller
     {
+
         long loginedempId = 0;
+        [HttpGet]
         public IActionResult Index(string daterange, string projectId, string employeeId)
         {
             string mesg = "";
@@ -23,20 +26,30 @@ namespace HRMS.Controllers
             var response1 = project.ListProjects(ViewBag.userId, out mesg);
             ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName");
 
+            ViewBag.daterange = daterange;
+
+            EmployeeRepository employee = new EmployeeRepository();
+            var response2 = employee.ListEmployees(ViewBag.userId, out mesg);
             if (ViewBag.userTypeId != 3)
             {
-                EmployeeRepository employee = new EmployeeRepository();
-                var response2 = employee.ListEmployees(ViewBag.userId, out mesg);
+
                 ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName");
             }
             else if (employeeId == null || ViewBag.userTypeId == 3)
             {
-                EmployeeRepository employee = new EmployeeRepository();
-                var response2 = employee.ListEmployees(ViewBag.userId, out mesg);
                 ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", ViewBag.userId);
                 loginedempId = ViewBag.userId;
                 employeeId = ViewBag.userId.ToString();
             }
+
+            TaskRepository task = new TaskRepository();
+            var responsetask = task.ListTasks(0, ViewBag.userId, out mesg);
+            ViewBag.Tasks = new SelectList(responsetask.Response, "taskId", "taskName");
+
+            TimesheetRepository timesheet = new TimesheetRepository();
+            var response3 = timesheet.ListReasons(ViewBag.userId, out mesg);
+            ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode");
+
             TimesheetRepository repository = new TimesheetRepository();
             if (TempData["msg"] != null)
                 ViewBag.msg = TempData["msg"].ToString();
@@ -44,13 +57,15 @@ namespace HRMS.Controllers
             var now = DateTime.Now; // get the current DateTime 
 
             //Get the number of days in the current month
-            int daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+            //int daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
 
             //First day of the month is always 1
-            var firstDay = new DateTime(now.Year, now.Month, 1);
+            var firstDay = now;
+            //var firstDay = new DateTime(now.Year, now.Month, 1);
 
             //Last day will be similar to the number of days calculated above
-            var lastDay = new DateTime(now.Year, now.Month, daysInMonth);
+            var lastDay = now;
+            //var lastDay = new DateTime(now.Year, now.Month, daysInMonth);
             string startDate;
             string endDate;
             if (daterange != null)
@@ -70,18 +85,20 @@ namespace HRMS.Controllers
                 projectId = "ALL";
             var response = repository.GetTimesheet(projectId, employeeId, startDate, endDate, ViewBag.userId, out mesg);
 
+            ViewBag.TimesheetList = response.Response;
             if (projectId.Equals("0") == false && projectId.Equals("ALL") == false)
                 ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName", projectId);
             if (employeeId.Equals("0") == false && employeeId.Equals("ALL") == false)
             {
-                EmployeeRepository employee = new EmployeeRepository();
-                var response2 = employee.ListEmployees(ViewBag.userId, out mesg);
                 ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", employeeId);
             }
 
-            return View(response.Response);
-        }
+            TimesheetModel t = new TimesheetModel();
+            t.TimeSheetList = response.Response;
 
+            return View(t);
+            //return View(response.Response);
+        }
 
 
         public IActionResult Create()
@@ -111,6 +128,35 @@ namespace HRMS.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TimesheetModel timesheet)
         {
+            String mesg = "";
+            string startDate;
+            string endDate;
+            var now = DateTime.Now;
+            var firstDay = now;
+            var lastDay = now;
+            string employeeId = "";
+            string projectId = "";
+            if (timesheet.daterange != null)
+            {
+                startDate = timesheet.daterange.Split(" - ")[0];
+                endDate = timesheet.daterange.Split(" - ")[1];
+            }
+            else
+            {
+                startDate = firstDay.ToShortDateString();
+                endDate = lastDay.ToShortDateString();
+            }
+            if (timesheet.employeeId == null)
+                employeeId = "ALL";
+
+            if (timesheet.projectId == null)
+                projectId = "ALL";
+
+            TimesheetRepository repositorys = new TimesheetRepository();
+            var responses = repositorys.GetTimesheet(projectId, employeeId, startDate, endDate, ViewBag.userId, out mesg);
+
+            timesheet.TimeSheetList = responses.Response;
+
             if (ModelState.IsValid)
             {
                 if (timesheet.employeeId != 0 && timesheet.projectId == 0 && timesheet.reasonCode == "0")
@@ -133,7 +179,7 @@ namespace HRMS.Controllers
                     ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode", timesheet.reasonCode);
 
                     ModelState.AddModelError("projectId", "Select Project OR Leave Reason");
-                    return View("Create", timesheet);
+                    return View("Index", timesheet);
                 }
                 else
                 {
@@ -164,7 +210,7 @@ namespace HRMS.Controllers
                                 ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode", timesheet.reasonCode);
 
                                 ModelState.AddModelError("hours", "Time Limit Exceed. You can add till " + r + " hours");
-                                return View("Create", timesheet);
+                                return View("Index", timesheet);
                             }
                             else
                             {
@@ -178,7 +224,7 @@ namespace HRMS.Controllers
                                     h = timesheet.hours;
                                 else if (t == "Leave")
                                     h = timesheet.leavehours;
-                                var rest = repository.GetTotalHoursOfDay(timesheet.employeeId, (decimal)h, timesheet.date.ToString());
+                                var rest = repository.GetTotalHoursOfDay((int)timesheet.employeeId, (decimal)h, timesheet.date.ToString());
                                 if (rest.Message == "Success")
                                 {
                                     var response = repository.CreateTimesheet(timesheet, ViewBag.userId);
@@ -207,7 +253,7 @@ namespace HRMS.Controllers
                                         ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode", timesheet.reasonCode);
 
                                         ModelState.AddModelError("TaskName", response.Message);
-                                        return View("Create", timesheet);
+                                        return View("Index", timesheet);
                                     }
                                 }
                                 else
@@ -233,7 +279,7 @@ namespace HRMS.Controllers
                                         ModelState.AddModelError("hours", rest.Message);
                                     else if (t == "Leave")
                                         ModelState.AddModelError("leavehours", rest.Message);
-                                    return View("Create", timesheet);
+                                    return View("Index", timesheet);
                                 }
 
                             }
@@ -251,7 +297,7 @@ namespace HRMS.Controllers
                             h = timesheet.hours;
                         else if (t == "Leave")
                             h = timesheet.leavehours;
-                        var rest = repository.GetTotalHoursOfDay(timesheet.employeeId, (decimal)h, timesheet.date.ToString());
+                        var rest = repository.GetTotalHoursOfDay((int)timesheet.employeeId, (decimal)h, timesheet.date.ToString());
                         if (rest.Message == "Success")
                         {
                             var response = repository.CreateTimesheet(timesheet, ViewBag.userId);
@@ -280,7 +326,7 @@ namespace HRMS.Controllers
                                 ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode", timesheet.reasonCode);
 
                                 ModelState.AddModelError("TaskName", response.Message);
-                                return View("Create", timesheet);
+                                return View("Index", timesheet);
                             }
                         }
                         else
@@ -305,7 +351,7 @@ namespace HRMS.Controllers
                                 ModelState.AddModelError("hours", rest.Message);
                             else if (t == "Leave")
                                 ModelState.AddModelError("leavehours", rest.Message);
-                            return View("Create", timesheet);
+                            return View("Index", timesheet);
                         }
                     }
 

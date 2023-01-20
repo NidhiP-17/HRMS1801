@@ -127,10 +127,16 @@
             <a href="#">
                 <img src="~/images/alita-logo.svg" alt="">
             </a>
-
-
         </div>
         <div id="accordian" class="menu-parent">
+            <ul class="nav-ul">
+                <li class="nav-item">
+            @{
+                <h5 style="color:#fff">Welcome @ViewBag.loginUserName</h5>
+            }
+            </li>
+            </ul>
+            <hr style="border-top:1px solid rgb(255 255 255) !important;" />
             <ul class="nav-ul">
 
                 @*  <li class="nav-item active">
@@ -205,9 +211,7 @@
         <div class="container-fluid">
             <div class="title-wpr flex">
                 <div class="col-md-6">
-                    @{
-                        <h5>Welcome @ViewBag.loginUserName</h5>
-                    }
+                   
                 </div>
                 <div class="col-md-4">
                     @{
@@ -299,7 +303,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="~/js/bootstrap-select.min.js"></script>
-    <script src="~/ckeditor/ckeditor.js"></script>
+    @*<script src="~/ckeditor/ckeditor.js"></script>*@
+  
     <script>
         $(document).ready(function () {
             $(document).bind("contextmenu", function (e) {

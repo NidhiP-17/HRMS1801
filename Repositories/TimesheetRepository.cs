@@ -32,6 +32,7 @@ namespace Repositories
             var result = new ResponseCollectionModel<TimesheetModel>();
             var dt = instance.GetTimesheet(projectId, employeeId , startDate, endDate, userId, out message);
             var lst = DataAccessUtility.ConvertToList<TimesheetModel>(dt);
+            IEnumerable<TimesheetModel> tlist = lst;
             result.Response = lst;
             result.Status = Constants.WebApiStatusOk;
             result.Message = "";

@@ -9,25 +9,24 @@ using ExpressiveAnnotations.Attributes;
 
 namespace Models
 {
-    public class TimesheetModel
+    public partial class TimesheetModel
     {
         public int timesheetId { get; set; }
         public int? reasonId { get; set; }
         [Required(ErrorMessage = "Employee is required")]
-        [DisplayName("Employee Name")]
-        public int employeeId { get; set; }
-        //public int employeeId { get; set; }
-        [DisplayName("Project Name")]
-        [RequiredIf("taskId != 0", ErrorMessage = "Project is required")]
+        [DisplayName("Employee")]
+        public int? employeeId { get; set; }
+        [DisplayName("Project")]
+        [RequiredIf("employeeId != 0", ErrorMessage = "Project is required")]
         public int? projectId { get; set; }
-        [DisplayName("Project Name")]
+        [DisplayName("Project")]
         public string? projectName { get; set; }
-        [DisplayName("Employee Name")]
+        [DisplayName("Employee")]
         public string? employeeName { get; set; }
-        [DisplayName("Task Name")]
+        [DisplayName("Task")]
         [RequiredIf("projectId != 0", ErrorMessage = "Task is required")]
         public int? taskId { get; set; }
-        [DisplayName("Task Name")]
+        [DisplayName("Task")]
         public string? taskName { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         [Required(ErrorMessage = "Date is required")]
@@ -59,6 +58,9 @@ namespace Models
         public string? createdDate { get; set; }
         public string? holidaydate { get; set; }
         public string? isWorkingDay { get; set; }
-     
+        public string? daterange { get; set; }
+
+        public IEnumerable<Models.TimesheetModel>? TimeSheetList { get; set; }
+
     }
 }

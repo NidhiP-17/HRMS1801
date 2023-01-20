@@ -69,7 +69,7 @@ img {
 }
 
 .sidebar-brand {
-    padding: 25px 25px 25px 25px;
+    padding: 15px 55px 15px 55px;
 }
 
 .nav-ul {
@@ -189,14 +189,14 @@ span.num {
 
 main.main {
     margin-left: 326px;
-    margin-top: 48px;
+    margin-top: 0px;
     padding-right: 48px;
 }
 
 .title-wpr {
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .worx-header {

@@ -1,48 +1,256 @@
-﻿@model IEnumerable<Models.TimesheetModel>
+﻿@model Models.TimesheetModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script src="~/ckeditor/ckeditor.js"></script>
+<style>
+    .cke_top,
+    .cke_bottom {
+        background-color: #fff !important;
+    }
 
-<p>
-    <a asp-action="Create" class="btn btn-info">Create New</a>
-</p>
-<hr />
-<form method="post">
+    .cke_top {
+        border-bottom-color: rgba(216, 226, 239, 0.4) !important;
+    }
+
+    .cke_bottom {
+        border-top-color: rgba(216, 226, 239, 0.4) !important;
+    }
+
+    .cke {
+        border: 1px solid #ced4da !important;
+        border-radius: 0 !important;
+        overflow: hidden !important;
+    }
+
+        .cke a {
+            border-radius: 0 !important;
+        }
+
+            .cke a,
+            .cke a * {
+                cursor: pointer !important;
+            }
+
+                .cke a.cke_button_off:hover, .cke a.cke_button_off:focus, .cke a.cke_button_off:active {
+                    background: #76daff !important;
+                    border-color: #76daff !important;
+                }
+
+                .cke a.cke_button_on {
+                    background: #76daff !important;
+                    border-color: #76daff !important;
+                }
+
+        .cke .cke_combo {
+            border-radius: 0 !important;
+        }
+
+            .cke .cke_combo.cke_combo_off .cke_combo_button:hover, .cke .cke_combo.cke_combo_off .cke_combo_button:focus, .cke .cke_combo.cke_combo_off .cke_combo_button:active {
+                background: #76daff !important;
+                border-color: #76daff !important;
+            }
+
+            .cke .cke_combo.cke_combo_on a.cke_combo_button {
+                background: #76daff !important;
+                border-color: #76daff !important;
+            }
+
+        .cke .cke_toolbar.cke_toolbar_last {
+            display: none !important;
+        }
+
+    .cke_combo:after,
+    .cke_toolbar_separator {
+        border-right-color: #dde9fb !important;
+    }
+</style>
+<form asp-action="Create" id="frm" autocomplete="off" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
+        <div class="col-md-6">
+            <h5 style="color:red;font-weight:500" id="lblMessage" class="label-control"></h5>
+        </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="control-label">Date Range</label>
-                <input type="text" name="daterange" id="daterange" class="form-control" />
+                <input type="hidden" id="hdnrange" asp-for="daterange" value="@ViewBag.daterange" />
+                <label asp-for="employeeId" class="control-label"></label>
+                @{
+                    string x = Context.Session.GetString("usertypeId");
+                    if (x != "3")
+                    {
+                        <select asp-for="employeeId" name="employeeId" id="employeeId" class="form-control select2" asp-items="@ViewBag.Employees" onchange="GetFilledDates()"></select>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="employeeId" name="employeeId" id="employeeId" />
+                        <label>@ViewBag.loginUserName</label>
+                    }
+                }
+                <span asp-validation-for="employeeId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="control-label">Projects</label>
-                <select name="projectId" id="projectId" class="form-control" asp-items="@ViewBag.Projects"></select>
+                <label asp-for="date" class="control-label"></label>
+                <input type="text" class="form-control" id="date" />
+                <input asp-for="date" type="hidden" class="form-control" id="hdnDate" />
+                <span asp-validation-for="date" class="text-danger"></span>
             </div>
         </div>
-        @if (ViewBag.userTypeId != 3)
-        {
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">Employees</label>
-                    <select name="employeeId" id="employeeId" class="form-control" asp-items="@ViewBag.Employees"></select>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="projectId" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <select asp-for="projectId" name="projectId" id="projectId" class="form-control select2" asp-items="@ViewBag.Projects" onchange="PopulateTask()"></select>
+                    <span asp-validation-for="projectId" class="text-danger"></span>
                 </div>
             </div>
-        }
-        else
-        {
-            <input type="hidden" name="employeeId" id="employeeId" class="form-control" value="@ViewBag.Employee" />
-        }
-        <div class="col-md-3 m-auto">
-            <div class="form-group" style="margin-bottom:0px">
-                <label class="control-label"></label>
-                <input type="submit" class="btn btn-success" value="Filter" onclick="PopulateTable()" />
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="taskId" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <select asp-for="taskId" name="taskId" id="taskId" class="form-control select2"></select>
+                    <span asp-validation-for="taskId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group" hidden>
+                <div class="col-md-4">
+                    <label asp-for="type" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" asp-for="type" id="type" class="form-control" value="WorkingHours" />
+                    <span asp-validation-for="type" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <input type="radio" name="trackerFlag" value="1" asp-for="trackerFlag" />
+                    <label for="1">With Tracker</label>
+                    <input type="radio" name="trackerFlag" value="2" asp-for="trackerFlag" />
+                    <label for="2">Without Tracker</label>
+                    <span asp-validation-for="trackerFlag" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="hours" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <input type="number" asp-for="hours" id="hours" class="form-control" maxlength="5" onchange="CalculateHours()" />
+                    <span asp-validation-for="hours" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12" style="text-align:right">
+                    <label class="control-label" style="color:orange"> Hours should be calculated based on 100 </label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    @*<label asp-for="notes" class="control-label"></label>*@
+                    <textarea asp-for="notes" id="notes" class="inlineEditor"></textarea>
+                    <span asp-validation-for="notes" class="text-danger"></span>
+
+                </div>
+            </div>
+
+            @* <div class="row form-group">
+            <div class="col-md-12">
+            <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            </div>*@
+        </div>
+        <div class="col-md-6">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="reasonCode" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <select asp-for="reasonCode" id="reasonCode" class="form-control select2" asp-items="@ViewBag.Reasons"></select>
+                    <span asp-validation-for="reasonCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group" hidden>
+                <div class="col-md-4">
+                    <label asp-for="type" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" asp-for="type" id="leavetype" class="form-control" value="Leave" />
+                    <span asp-validation-for="type" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="leavehours" class="control-label"></label>
+                </div>
+                <div class="col-md-8">
+                    <input type="number" asp-for="leavehours" id="leavehours" name="editor" class="form-control" maxlength="5" onchange="CalculateLeaveHours()" />
+                    <span asp-validation-for="leavehours" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12" style="text-align:right">
+                    <label class="control-label" style="color:orange"> Hours should be calculated based on 100 </label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    @*<label asp-for="leavenotes" class="control-label"></label>*@
+                    @*<div id="editor"></div>*@
+                    <textarea asp-for="leavenotes" id="leavenotes" class="inlineEditor"></textarea>
+                    <span asp-validation-for="leavenotes" class="text-danger"></span>
+
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <input type="hidden" asp-for="isWorkingDay" id="isWorkingDay" value="false" />
+                    <input type="submit" value="Create" class="btn btn-primary" id="btnCreate" style="float:right" />
+                </div>
             </div>
         </div>
+    </div>
+</form>
+<hr />
+<form method="get" asp-action="Index" autocomplete="off">
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-1">  <label class="control-label">Date</label></div>
+                <div class="col-md-3">
+                    <input type="text" name="daterange" id="daterange" class="form-control" />
+                </div>
+                <div class="col-md-1"> <label class="control-label">Projects</label></div>
+                <div class="col-md-3">
+                    <select name="projectId" id="projectId" class="form-control" asp-items="@ViewBag.Projects"></select>
+                </div>
+                @if (ViewBag.userTypeId != 3)
+                {
+                    <div class="col-md-1">  <label class="control-label">Employees</label></div>
+                    <div class="col-md-3">
+                        <select name="employeeId" id="employeeId" class="form-control" asp-items="@ViewBag.Employees"></select>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" name="employeeId" id="employeeId" class="form-control" value="@ViewBag.Employee" />
+                }
+                <div class="col-md-12" style="text-align:right"> <input type="submit" class="btn btn-success" value="Filter" onclick="PopulateTable()" /></div>
+            </div>
+        </div>
+
         @if (ViewData["Selected"] != null)
         {
             <script type="text/javascript">
@@ -52,101 +260,395 @@
             </script>
         }
     </div>
-</form>
-<table class="table" id="demoGrid">
-    <thead>
-        <tr>
-            <th hidden>
-                @Html.DisplayNameFor(model => model.timesheetId)
-            </th>
-            <th hidden>
-                @Html.DisplayNameFor(model => model.projectId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.type)
-            </th>
-            <th>
-                Project
-            </th>
-            <th>
-                Employee
-            </th>
-            <th hidden>
-                @Html.DisplayNameFor(model => model.taskId)
-            </th>
-            <th>
-                Task
-            </th>
-            <th>
-                Hours
-            </th>
-            <th>
-                Tracker Status
-            </th>
-            <th>
-                Notes
-            </th>
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table" id="demoGrid">
+        <thead>
             <tr>
-                <td hidden>
-                    @Html.DisplayFor(modelItem => item.timesheetId)
-                </td>
-                <td hidden>
-                    @Html.DisplayFor(modelItem => item.projectId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.holidaydate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.projectName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.employeeName)
-                </td>
-                <td hidden>
-                    @Html.DisplayFor(modelItem => item.taskId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.taskName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.hours)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.trackerFlagVal)
-                </td>
-                <td>
-                    @Html.Raw(item.notes.Substring(0, item.notes.Length > 100  ? 100 : item.notes.Length))
-                    @*@Html.DisplayFor(modelItem => item.notes)*@
-                </td>
-                <td>
-                    <a href="@Url.Action("Details", "Timesheet",new {  id=item.timesheetId  })">
-                        <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
-                    </a>
-                    <a href="@Url.Action("Delete", "Timesheet",new {  id=item.timesheetId  })">
-                        <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                <th hidden>
+                    @Html.DisplayNameFor(model => model.timesheetId)
+                </th>
+                <th hidden>
+                    @Html.DisplayNameFor(model => model.projectId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.type)
+                </th>
+                <th>
+                    Project
+                </th>
+                <th>
+                    Employee
+                </th>
+                <th hidden>
+                    @Html.DisplayNameFor(model => model.taskId)
+                </th>
+                <th>
+                    Task
+                </th>
+                <th>
+                    Hours
+                </th>
+                <th>
+                    Tracker Status
+                </th>
+                <th>
+                    Notes
+                </th>
 
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TimeSheetList)
+            {
+                <tr>
+                    <td hidden>
+                        @Html.DisplayFor(modelItem => item.timesheetId)
+                    </td>
+                    <td hidden>
+                        @Html.DisplayFor(modelItem => item.projectId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.holidaydate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.projectName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.employeeName)
+                    </td>
+                    <td hidden>
+                        @Html.DisplayFor(modelItem => item.taskId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.taskName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.hours)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.trackerFlagVal)
+                    </td>
+                    <td>
+                        @Html.Raw(item.notes.Substring(0, item.notes.Length > 100  ? 100 : item.notes.Length))
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Details", "Timesheet",new {  id=item.timesheetId  })">
+                            <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
+                        </a>
+                        <a href="@Url.Action("Delete", "Timesheet",new {  id=item.timesheetId  })">
+                            <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
 @section scripts{
     <script>
+        var elements = CKEDITOR.document.find('.inlineEditor'),
+            i = 0,
+            element;
+        while ((element = elements.getItem(i++))) {
+            CKEDITOR.config.width = 500;
+            CKEDITOR.inline(element);
+        }
+
+    </script>
+
+    <script>
+        function ShowTotalhours(date) {
+            date = date.value;
+            var id = $("#employeeId option:selected").val();
+            if (id == undefined)
+                id = 0;
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("ShowTotalhours", "Timesheet")',
+                data: { "employeeId": id, "date": date },
+                success: function (response) {
+                    response = JSON.parse(response).Response;
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        var startingdate;
+        var totalfilledDays = [];
+        var minsetDate;
+        var launchdate;
+        const today = new Date();
+
+        function GetFilledDates() {
+            $('#date').datepicker("refresh");
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday = mm + '/' + dd + '/' + yyyy;
+
+            var id;
+            if ('@ViewBag.usertypeId' == '3') {
+                joiningDate = '@ViewBag.joiningDate';
+                id = '@ViewBag.userId';
+            }
+            else {
+
+                id = $("#employeeId option:selected").val();
+
+            }
+            launchdate = GetLaunchdate();
+            if (id != undefined && id != "0") {
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: '@Url.Action("GetRemainingDays", "Timesheet")',
+                    data: { "employeeId": id },
+                    success: function (response) {
+                        if (response != '[]') {
+                            debugger
+                            response = JSON.parse(response);
+                            $.each(response, function (i, day) {
+                                totalfilledDays.push(day.holidaydate);
+                            });
+
+                            $('#date').val(totalfilledDays[totalfilledDays.length - 1]);
+                            $('#hdnDate').val(totalfilledDays[totalfilledDays.length - 1]);
+
+                            if ('@ViewBag.usertypeId' == '3') {
+                                var d = totalfilledDays[totalfilledDays.length - 1];
+                                if (d < launchdate)
+                                    $("#lblMessage").html("You have not filled timesheet for " + d);
+                                $("#date").attr("disabled", "disabled");
+                            }
+                            else {
+                                $("#date").removeAttr("disabled");
+                            }
+                            var url = "/Timesheet/GetJoiningDate";
+                            var data = { employeeId: id };
+                            $.get(url, data, function (data) {
+                                debugger
+                                var dates = JSON.parse(data);
+                                joiningDate = dates;
+                                var d1 = new Date(joiningDate);
+                                var d2 = new Date(launchdate);
+                                if (d1.getTime() < d2.getTime())
+                                    startingdate = launchdate;
+                                else
+                                    startingdate = joiningDate;
+
+                                if (totalfilledDays.length == 0) {
+
+                                    $('#date').val(startingdate);
+                                    $('#hdnDate').val(startingdate);
+
+                                    if ('@ViewBag.usertypeId' == '3') {
+                                        var d = startingdate;
+                                        if (d < launchdate)
+                                            $("#lblMessage").html("You have not filled timesheet for " + d);
+                                        $("#date").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#date").removeAttr("disabled");
+                                    }
+                                }
+                                else {
+                                    debugger
+                                    $('#date').val(startingdate);
+                                    $('#hdnDate').val(startingdate);
+                                    if ('@ViewBag.usertypeId' == '3') {
+                                        var d = startingdate;
+                                        if (d < launchdate)
+                                            $("#lblMessage").html("You have not filled timesheet for " + d);
+                                        $("#date").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#date").removeAttr("disabled");
+                                    }
+                                }
+
+                                minsetDate = new Date(startingdate);
+
+                                $('#date').datepicker({
+                                    beforeShowDay: noSundaysOrHolidays,
+                                    numberOfMonths: 1,
+                                    format: 'MM/DD/YYYY',
+                                    autoclose: true,
+                                    //startDate: minDate,
+                                    //endDate: "today",
+                                    minDate: 0,
+                                    maxDate: '+28D',
+                                    setDate: minsetDate
+                                }).on('changeDate', function (ev) {
+                                    $(this).datepicker('hide');
+                                });
+                            });
+
+                        }
+                        else {
+                            var url = "/Timesheet/GetJoiningDate";
+                            var data = { employeeId: id };
+                            $.get(url, data, function (data) {
+                                debugger
+                                var dates = JSON.parse(data);
+                                joiningDate = dates;
+
+                                var d1 = new Date(joiningDate);
+                                var d2 = new Date(launchdate);
+                                if (d1.getTime() < d2.getTime())
+                                    startingdate = launchdate;
+                                else
+                                    startingdate = joiningDate;
+                                if (totalfilledDays.length == 0) {
+
+                                    $('#date').val(startingdate);
+                                    $('#hdnDate').val(startingdate);
+
+                                    if ('@ViewBag.usertypeId' == '3') {
+                                        var d = startingdate;
+                                        if (d < launchdate)
+                                            $("#lblMessage").html("You have not filled timesheet for " + d);
+                                        $("#date").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#date").removeAttr("disabled");
+                                    }
+                                }
+                                else {
+                                    $('#date').val(startingdate);
+                                    $('#hdnDate').val(startingdate);
+                                    if ('@ViewBag.usertypeId' == '3') {
+                                        var d = startingdate;
+                                        if (d < launchdate)
+                                            $("#lblMessage").html("You have not filled timesheet for " + d);
+                                        $("#date").attr("disabled", "disabled");
+                                    }
+                                    else {
+                                        $("#date").removeAttr("disabled");
+                                    }
+                                }
+
+                                minsetDate = new Date(startingdate);
+
+                                $('#date').datepicker({
+                                    beforeShowDay: noSundaysOrHolidays,
+                                    numberOfMonths: 1,
+                                    format: 'MM/DD/YYYY',
+                                    autoclose: true,
+                                    //startDate: minDate,
+                                    //endDate: "today",
+                                    minDate: 0,
+                                    maxDate: '+28D',
+                                    setDate: minsetDate
+                                }).on('changeDate', function (ev) {
+                                    $(this).datepicker('hide');
+                                });
+                            });
+
+
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            }
+
+
+
+        }
+
+        function GetLaunchdate() {
+            var url = "/Timesheet/GetLaunchDate";
+            $.get(url, null, function (data) {
+                var dates = JSON.parse(data);
+                launchdate = dates.launchdate;
+            });
+            return launchdate
+        }
+
+        function ShowReason() {
+            if ($("#type option:selected").val() == "Leave") {
+                $("#divreasonCode").show();
+                $("#divProjectDetail").hide();
+            }
+            else {
+                $("#divProjectDetail").show();
+                $("#divreasonCode").hide();
+            }
+        }
+
+        var totalleavehours = 0;
+        var remaininghours = 0;
+
+        function SetHours(leaveType) {
+            if (leaveType == 'FirstHalf') {
+                remaininghours = 8.45 - 4.15;
+                $("#hours").removeAttr("disabled");
+                $("#leavehours").removeAttr("disabled", "disabled");
+            }
+            else if (leaveType == 'SecondHalf') {
+                remaininghours = 8.45 - 4.30;
+                $("#hours").removeAttr("disabled");
+                $("#leavehours").removeAttr("disabled", "disabled");
+            }
+            else if (leaveType == 'FullDay') {
+                remaininghours = 0;
+                $("#hours").val(0);
+                $("#hours").attr("disabled", "disabled");
+                $("#leavehours").val(0);
+                $("#leavehours").attr("disabled", "disabled");
+            }
+            remaininghours = remaininghours.toFixed(2);
+            $("#leavehours").val(remaininghours);
+        }
+
+        function CalculateHours() {
+            var totalhours = $("#hours").val();
+            var th = timeConvert(totalhours);
+            $("#hours").val(th);
+        }
+
+        function timeConvert(n) {
+            debugger
+            var n1 = n.split(".");
+            var nv1 = n1[1];
+            var val = Math.round(nv1.toString() * 100 / 60);
+            if (val < 10) val = '0' + val;
+            if (val == 100)
+                return parseInt(n1[0]) + 1;
+            else if (val > 100) {
+                val = (val / 100);
+                return (parseInt(n1[0]) + val);
+            }
+            else
+                return n1[0] + "." + val;
+        }
+
+        function CalculateLeaveHours() {
+            var totalhours = $("#leavehours").val();
+            var th = timeConvert(totalhours);
+            $("#leavehours").val(th);
+        }
+
+        var holidays = [];
+        var saturdays = [];
+        var isWorkingDay;
+
         $(document).ready(function () {
+
             $(document).bind("contextmenu", function (e) {
                 e.preventDefault();
             });
@@ -178,7 +680,7 @@
 
             $('#demoGrid').dataTable({
             });
-            var start = moment().subtract(29, 'days');
+            var start = moment();
             var end = moment();
 
             function cb(start, end) {
@@ -201,14 +703,120 @@
                 },
 
             }, cb);
-
+            $('#hdnrange').val($('#daterange').val());
             var ViewBagmsg = '@ViewBag.msg'
             if (ViewBagmsg != null) {
                 if (ViewBagmsg != "") {
                     alert(ViewBagmsg);
                 }
             }
+
+            PopulateTask();
+            GetFilledDates();
+
+            var joiningDate = "";
+            $('.select2').select2();
+            if ('@ViewBag.usertypeId' == '3') {
+                $("#employeeId").val(parseInt('@ViewBag.userId'));
+                $("#date").attr("disabled", "disabled");
+            }
+            else {
+                $("#date").removeAttr("disabled");
+            }
+
+
+            var url = "/Timesheet/HolidayList";
+            $.get(url, null, function (data) {
+                var dates = JSON.parse(data);
+                $.each(dates, function (i, holiday) {
+                    holidays.push(holiday.holidaydate);
+                });
+            });
+
+            var url = "/Holiday/SaturdaysList";
+            $.get(url, null, function (data) {
+                var dates = JSON.parse(data);
+                $.each(dates, function (i, saturday) {
+                    saturdays.push(saturday.holidaydate);
+                });
+            });
+
+
+
         });
+
+        var sat = new Array();
+
+        function noSundaysOrHolidays(date) {
+            var day = date.getDay();
+            if (day != 0) {
+                var d = ('0' + date.getDate()).slice(-2);
+                var m = ('0' + (date.getMonth() + 1)).slice(-2);
+                var y = date.getFullYear();
+                if (day != 6 && $.inArray(m + '/' + d + '/' + y, holidays) != -1) {
+                    return [false, "Highlighted", "Holiday"];
+                }
+                else if (day == 6) {
+                    if ($.inArray(m + '/' + d + '/' + y, saturdays) != -1) {
+                        $("#isWorkingDay").val(true);
+                        if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
+                            return [false, "Highlighted", "Holiday"];
+                        }
+                        else
+                            return [true];
+                    }
+                    else
+                        return [false];
+                }
+                else {
+                    if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
+                        return [false, "Highlighted", "Holiday"];
+                    }
+                    else
+                        return [true]
+                }
+            } else {
+                return [day != 0, ''];
+            }
+
+        }
+
+        function convertDate(inputFormat) {
+            function pad(s) { return (s < 10) ? '0' + s : s; }
+            var d = new Date(inputFormat)
+            return [pad(d.getMonth() + 1), pad(d.getDate()), d.getFullYear()].join('/')
+        }
+
+        function disablelastsaturday() {
+            var cnt = sat.length;
+            var lastsatday = sat[sat.length - 1];
+            return lastsatday;
+        }
+
+        function PopulateTask() {
+            var id = $("#projectId option:selected").val();
+            if (id != 0) {
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: '@Url.Action("GetTask", "Timesheet")',
+                    data: { "projectId": id },
+                    success: function (response) {
+                        response = JSON.parse(response).Response;
+                        $("#taskId").empty();
+                        if (response.length > 0) {
+                            $.each(response, function (index, element) {
+                                $("#taskId").append('<option value="' + element.taskId + '">' + element.taskName + '</option>');
+                            });
+                        }
+                        $("#taskId").prop("disabled", false);
+                    },
+                    error: function () {
+                        alert("Data Not Found");
+                    }
+                });
+            }
+        }
 
         function PopulateTable() {
             var projectId = $("#projectId option:selected").val();

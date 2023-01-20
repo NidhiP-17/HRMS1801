@@ -4,16 +4,40 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #cke_1_contents {
+        height: 116px !important;
+    }
+
+    #cke_2_contents {
+        height: 150px !important;
+    }
+</style>
 <form asp-action="Create" id="frm" autocomplete="off">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-6">
             <h5 style="color:red;font-weight:500" id="lblMessage" class="label-control"></h5>
         </div>
-        <div class="col-md-3" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
-            <a href="http://alitahelpdesk.tk/hoursCalculator.php" target="_blank" class="btn btn-info">Hours Calculator</a>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="employeeId" class="control-label"></label>
+                @{
+                    string x = Context.Session.GetString("usertypeId");
+                    if (x != "3")
+                    {
+                        <select asp-for="employeeId" name="employeeId" id="employeeId" class="form-control select2" asp-items="@ViewBag.Employees" onchange="GetFilledDates()"></select>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="employeeId" name="employeeId" id="employeeId" />
+                        <label>@ViewBag.loginUserName</label>
+                    }
+                }
+                <span asp-validation-for="employeeId" class="text-danger"></span>
+            </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label asp-for="date" class="control-label"></label>
                 <input type="text" class="form-control" id="date" />
@@ -24,26 +48,6 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="row form-group">
-                <div class="col-md-4">
-                    <label asp-for="employeeId" class="control-label"></label>
-                </div>
-                <div class="col-md-8">
-                    @{
-                        string x = Context.Session.GetString("usertypeId");
-                        if (x != "3")
-                        {
-                            <select asp-for="employeeId" name="employeeId" id="employeeId" class="form-control select2" asp-items="@ViewBag.Employees" onchange="GetFilledDates()"></select>
-                        }
-                        else
-                        {
-                            <input type="hidden" asp-for="employeeId" name="employeeId" id="employeeId" />
-                            <label>@ViewBag.loginUserName</label>
-                        }
-                    }
-                    <span asp-validation-for="employeeId" class="text-danger"></span>
-                </div>
-            </div>
             <div class="row form-group">
                 <div class="col-md-4">
                     <label asp-for="projectId" class="control-label"></label>
@@ -88,22 +92,29 @@
                     <label asp-for="hours" class="control-label"></label>
                 </div>
                 <div class="col-md-8">
-                    <input type="number" asp-for="hours" id="hours" class="form-control" maxlength="4" onchange="CalculateHours()" />
+                    <input type="number" asp-for="hours" id="hours" class="form-control" maxlength="5" onchange="CalculateHours()" />
                     <span asp-validation-for="hours" class="text-danger"></span>
                 </div>
             </div>
             <div class="row form-group">
-                <div class="col-md-12">
-                    <label asp-for="notes" class="control-label"></label>
-                    <textarea asp-for="notes" id="notes" class="ckeditor" name="notes" rows="100"></textarea>
-                    <span asp-validation-for="notes" class="text-danger"></span>
+                <div class="col-md-12" style="text-align:right">
+                    <label class="control-label" style="color:orange"> Hours should be calculated based on 100 </label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                    @*<label asp-for="notes" class="control-label"></label>*@
+                    <textarea asp-for="notes" id="notes" class="inlineEditor"></textarea>
+                    <span asp-validation-for="notes" class="text-danger"></span>
+
                 </div>
             </div>
+
+            @* <div class="row form-group">
+            <div class="col-md-12">
+            <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            </div>*@
         </div>
         <div class="col-md-6">
             <div class="row form-group">
@@ -129,21 +140,28 @@
                     <label asp-for="leavehours" class="control-label"></label>
                 </div>
                 <div class="col-md-8">
-                    <input type="number" asp-for="leavehours" id="leavehours" class="form-control" maxlength="4" onchange="CalculateLeaveHours()" />
+                    <input type="number" asp-for="leavehours" id="leavehours" name="editor" class="form-control" maxlength="5" onchange="CalculateLeaveHours()" />
                     <span asp-validation-for="leavehours" class="text-danger"></span>
                 </div>
             </div>
             <div class="row form-group">
+                <div class="col-md-12" style="text-align:right">
+                    <label class="control-label" style="color:orange"> Hours should be calculated based on 100 </label>
+                </div>
+            </div>
+            <div class="row form-group">
                 <div class="col-md-12">
-                    <label asp-for="leavenotes" class="control-label"></label>
-                    <textarea asp-for="leavenotes" id="leavenotes" class="ckeditor" rows="200"></textarea>
+                    @*<label asp-for="leavenotes" class="control-label"></label>*@
+                    @*<div id="editor"></div>*@
+                    <textarea asp-for="leavenotes" id="leavenotes" class="inlineEditor"></textarea>
                     <span asp-validation-for="leavenotes" class="text-danger"></span>
+
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
                     <input type="hidden" asp-for="isWorkingDay" id="isWorkingDay" value="false" />
-                    <input type="submit" value="Create" class="btn btn-primary" id="btnCreate" />
+                    <input type="submit" value="Create" class="btn btn-primary" id="btnCreate" style="float:right" />
                 </div>
             </div>
         </div>
@@ -200,7 +218,7 @@
                 id = $("#employeeId option:selected").val();
 
             }
-            debugger
+            
             launchdate = GetLaunchdate();
             if (id != undefined && id != "0") {
                 $.ajax({
@@ -427,6 +445,11 @@
         var saturdays = [];
         var isWorkingDay;
         $(document).ready(function () {
+
+            var config = {};
+            config.placeholder = 'Enter Notes here';
+            CKEDITOR.replace("ckeditor", config);
+
             PopulateTask();
             GetFilledDates();
 
