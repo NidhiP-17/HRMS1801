@@ -34,7 +34,7 @@ namespace WebSite.Common
 
         public void SetValue(EmployeeModel user)
         {
-            this.UserId = user.employeeId;
+            this.UserId = Convert.ToInt64(user.employeeId);
             this.LoginUserName = string.Concat(user.firstName, " ", user.lastName);
             this.EmailAddress = user.email;
             this.FirstName = user.firstName;

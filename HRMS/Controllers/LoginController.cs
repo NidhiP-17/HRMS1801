@@ -63,7 +63,7 @@ namespace HRMS.Controllers
                             HttpContext.Session.SetString("joiningDate", session.userTypeId.ToString());
 
                             if (session.userTypeId == 3)
-                                return RedirectToAction(nameof(Index), "ItemOrder");
+                                return RedirectToAction(nameof(Index), "Timesheet");
                             else
                                 return RedirectToAction("Index", "Timesheet");// ("~/User/Index");
 

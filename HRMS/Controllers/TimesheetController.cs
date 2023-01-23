@@ -85,15 +85,24 @@ namespace HRMS.Controllers
                 projectId = "ALL";
             var response = repository.GetTimesheet(projectId, employeeId, startDate, endDate, ViewBag.userId, out mesg);
 
-            ViewBag.TimesheetList = response.Response;
-            if (projectId.Equals("0") == false && projectId.Equals("ALL") == false)
-                ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName", projectId);
-            if (employeeId.Equals("0") == false && employeeId.Equals("ALL") == false)
-            {
-                ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", employeeId);
-            }
+            //ViewBag.TimesheetList = response.Response;
+            //if (projectId.Equals("0") == false || projectId.Equals("ALL") == false)
+            //    ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName", projectId);
+            //if (employeeId.Equals("0") == false && employeeId.Equals("ALL") == false)
+            //{
+            //    ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", employeeId);
+            //}
 
             TimesheetModel t = new TimesheetModel();
+            //if (employeeId != "ALL")
+            //    t.employeeId = Convert.ToInt32(employeeId);
+            //else
+            //    t.employeeId = 0;
+            //if (projectId != "ALL")
+            //    t.projectId = Convert.ToInt32(projectId);
+            //else
+            //    t.projectId = 0;
+            //t.taskId = 0;
             t.TimeSheetList = response.Response;
 
             return View(t);
@@ -357,6 +366,7 @@ namespace HRMS.Controllers
 
                 }
             }
+
             string msg1 = "";
             ProjectRepository project1 = new ProjectRepository();
             var response11 = project1.ListProjects(ViewBag.userId, out msg1);

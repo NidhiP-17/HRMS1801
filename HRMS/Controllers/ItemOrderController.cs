@@ -109,7 +109,7 @@ namespace HRMS.Controllers
 
                 int intHour = date.Hour;
 
-                if (intHour >= 16 && intHour < 18)
+                if (intHour >= 14 && intHour < 16)
                 {
                     var diffInSeconds = (localDateTime - date).TotalSeconds;
                     if (diffInSeconds <= 5)

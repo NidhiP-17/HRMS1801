@@ -9,7 +9,7 @@ using ExpressiveAnnotations.Attributes;
 
 namespace Models
 {
-    public partial class TimesheetModel
+    public class TimesheetModel
     {
         public int timesheetId { get; set; }
         public int? reasonId { get; set; }
@@ -17,7 +17,7 @@ namespace Models
         [DisplayName("Employee")]
         public int? employeeId { get; set; }
         [DisplayName("Project")]
-        [RequiredIf("employeeId != 0", ErrorMessage = "Project is required")]
+        [RequiredIf("taskId != 0", ErrorMessage = "Project is required")]
         public int? projectId { get; set; }
         [DisplayName("Project")]
         public string? projectName { get; set; }

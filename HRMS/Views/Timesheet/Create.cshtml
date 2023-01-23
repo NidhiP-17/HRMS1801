@@ -218,7 +218,7 @@
                 id = $("#employeeId option:selected").val();
 
             }
-            
+
             launchdate = GetLaunchdate();
             if (id != undefined && id != "0") {
                 $.ajax({
@@ -310,16 +310,21 @@
                             var url = "/Timesheet/GetJoiningDate";
                             var data = { employeeId: id };
                             $.get(url, data, function (data) {
-                                debugger
                                 var dates = JSON.parse(data);
                                 joiningDate = dates;
 
                                 var d1 = new Date(joiningDate);
                                 var d2 = new Date(launchdate);
-                                if (d1.getTime() < d2.getTime())
-                                    startingdate = launchdate;
+                                if (d1.getTime() < d2.getTime()) {
+                                    var today = new Date();
+                                    if (today > launchdate)
+                                        startingdate = today;
+                                    else
+                                        startingdate = launchdate;
+                                }
                                 else
                                     startingdate = joiningDate;
+
                                 if (totalfilledDays.length == 0) {
 
                                     $('#date').val(startingdate);

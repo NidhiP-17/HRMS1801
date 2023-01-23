@@ -6,68 +6,9 @@
 }
 
 <script src="~/ckeditor/ckeditor.js"></script>
-<style>
-    .cke_top,
-    .cke_bottom {
-        background-color: #fff !important;
-    }
-
-    .cke_top {
-        border-bottom-color: rgba(216, 226, 239, 0.4) !important;
-    }
-
-    .cke_bottom {
-        border-top-color: rgba(216, 226, 239, 0.4) !important;
-    }
-
-    .cke {
-        border: 1px solid #ced4da !important;
-        border-radius: 0 !important;
-        overflow: hidden !important;
-    }
-
-        .cke a {
-            border-radius: 0 !important;
-        }
-
-            .cke a,
-            .cke a * {
-                cursor: pointer !important;
-            }
-
-                .cke a.cke_button_off:hover, .cke a.cke_button_off:focus, .cke a.cke_button_off:active {
-                    background: #76daff !important;
-                    border-color: #76daff !important;
-                }
-
-                .cke a.cke_button_on {
-                    background: #76daff !important;
-                    border-color: #76daff !important;
-                }
-
-        .cke .cke_combo {
-            border-radius: 0 !important;
-        }
-
-            .cke .cke_combo.cke_combo_off .cke_combo_button:hover, .cke .cke_combo.cke_combo_off .cke_combo_button:focus, .cke .cke_combo.cke_combo_off .cke_combo_button:active {
-                background: #76daff !important;
-                border-color: #76daff !important;
-            }
-
-            .cke .cke_combo.cke_combo_on a.cke_combo_button {
-                background: #76daff !important;
-                border-color: #76daff !important;
-            }
-
-        .cke .cke_toolbar.cke_toolbar_last {
-            display: none !important;
-        }
-
-    .cke_combo:after,
-    .cke_toolbar_separator {
-        border-right-color: #dde9fb !important;
-    }
-</style>
+@*<script src="http://cdn.ckeditor.com/4.6.2/standard-all/ckeditor.js"></script>*@
+<link href="http://sdk.ckeditor.com/theme/css/sdk-inline.css" rel="stylesheet">
+@*<link href="~/ckeditor/contents.css" rel="stylesheet" />*@
 <form asp-action="Create" id="frm" autocomplete="off" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
@@ -159,8 +100,13 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    @*<label asp-for="notes" class="control-label"></label>*@
-                    <textarea asp-for="notes" id="notes" class="inlineEditor"></textarea>
+                    <label asp-for="notes" class="control-label"></label>
+                    @* <div id="main">
+                    <div id="editor1" contenteditable="true">
+                    <p>Enter Notes</p>
+                    </div>
+                    </div>*@
+                    <textarea asp-for="notes" id="notes" class="ckeditor"></textarea>
                     <span asp-validation-for="notes" class="text-danger"></span>
 
                 </div>
@@ -207,9 +153,12 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    @*<label asp-for="leavenotes" class="control-label"></label>*@
-                    @*<div id="editor"></div>*@
-                    <textarea asp-for="leavenotes" id="leavenotes" class="inlineEditor"></textarea>
+                    <label asp-for="leavenotes" class="control-label"></label>
+
+                    <div id="editor2" contenteditable="true">
+                        <p>Enter Leave Notes</p>
+                    </div>
+
                     <span asp-validation-for="leavenotes" class="text-danger"></span>
 
                 </div>
@@ -353,13 +302,47 @@
 </form>
 @section scripts{
     <script>
-        var elements = CKEDITOR.document.find('.inlineEditor'),
-            i = 0,
-            element;
-        while ((element = elements.getItem(i++))) {
-            CKEDITOR.config.width = 500;
-            CKEDITOR.inline(element);
-        }
+
+        // Turn off automatic editor creation first.
+        //CKEDITOR.disableAutoInline = true;
+        //CKEDITOR.inline('editor1');
+
+
+        CKEDITOR.inline('editor2');
+        CKEDITOR.config.removePlugins = "imagebase,easyimage,link,about";
+        $("#cke_50").attr("disabled", "true");
+        //var introduction = document.getElementById('editor2');
+        //introduction.setAttribute('contenteditable', true);
+
+        //CKEDITOR.inline('introduction', {
+        //    // Allow some non-standard markup that we used in the introduction.
+        //    extraAllowedContent: 'a(documentation);abbr[title];code',
+        //    removePlugins: 'stylescombo',
+        //    extraPlugins: 'sourcedialog',
+        //    removeButtons: 'PasteFromWord',
+        //    // Show toolbar on startup (optional).
+        //    startupFocus: true
+        //});
+        //CKEDITOR.editorConfig = function (config) {
+        //    config.startupFocus = true;
+        //    config.startupFocus = 'start';
+        //    config.removeDialogTabs = 'link:upload;image:Upload';
+        //    config.removePlugins = "about,basicstyles,notification,button,toolbar,clipboard,enterkey,entities,floatingspace,wysiwygarea,indent,indentlist,fakeobjects,link,list,undo,lineutils,widgetselection,widget,filetools,imagebase,balloonpanel,balloontoolbar,xml,ajax,cloudservices,easyimage"
+        //}
+        //debugger
+        //CKEDITOR.replace('editor1',
+        //    {
+        //        toolbar: 'Basic', /* this does the magic */
+        //        uiColor: '#9AB8F3'
+        //    });
+
+        //var elements = CKEDITOR.document.find('.inlineEditor'),
+        //    i = 0,
+        //    element;
+        //while ((element = elements.getItem(i++))) {
+        //    CKEDITOR.config.width = 500;
+        //    CKEDITOR.inline(element);
+        //}
 
     </script>
 
@@ -508,8 +491,22 @@
 
                                 var d1 = new Date(joiningDate);
                                 var d2 = new Date(launchdate);
-                                if (d1.getTime() < d2.getTime())
-                                    startingdate = launchdate;
+                                if (d1.getTime() < d2.getTime()) {
+                                    var today = new Date();
+                                    if (today > d2) {
+                                        const yyyy = today.getFullYear();
+                                        let mm = today.getMonth() + 1; // Months start at 0!
+                                        let dd = today.getDate();
+
+                                        if (dd < 10) dd = '0' + dd;
+                                        if (mm < 10) mm = '0' + mm;
+
+                                        const formattedToday = mm + '/' + dd + '/' + yyyy;
+                                        startingdate = formattedToday;
+                                    }
+                                    else
+                                        startingdate = launchdate;
+                                }
                                 else
                                     startingdate = joiningDate;
                                 if (totalfilledDays.length == 0) {
