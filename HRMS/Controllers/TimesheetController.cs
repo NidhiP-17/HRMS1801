@@ -441,6 +441,13 @@ namespace HRMS.Controllers
             return new JsonResult(JsonConvert.SerializeObject(response.Response));
         }
 
+        public JsonResult GetLastDayOftimeSheet(int employeeId)
+        {
+            TimesheetRepository timesheet = new TimesheetRepository();
+            var response = timesheet.GetLastDayOftimeSheet(employeeId);
+            return new JsonResult(JsonConvert.SerializeObject(response.Response));
+        }
+
         public JsonResult GetLaunchDate()
         {
             LaunchDateRepository timesheet = new LaunchDateRepository();

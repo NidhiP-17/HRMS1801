@@ -214,6 +214,19 @@ namespace DataAccess
             return message;
         }
 
+        public string GetLastDayOftimeSheet(long id, out string message)
+        {
+            int rowEffected = 0;
+            using (DBConnector connector = new DBConnector("sp_GetLastDayOftimeSheet", true))
+            {
+                connector.AddInParameterWithValue("@employeeId", id);
+                connector.AddOutParameterWithType("@Message", SqlDbType.VarChar);
+                rowEffected = connector.ExceuteNonQuery();
+                message = connector.GetParamaeterValue("@Message").ToString();
+            }
+
+            return message;
+        }
 
         #region ========================= Dispose Method ==============
         public void Dispose()

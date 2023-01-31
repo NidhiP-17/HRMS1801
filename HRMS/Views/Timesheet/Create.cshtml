@@ -514,40 +514,6 @@
 
         var sat = new Array();
 
-        function noSundaysOrHolidays(date) {
-            var day = date.getDay();
-            if (day != 0) {
-                var d = ('0' + date.getDate()).slice(-2);
-                var m = ('0' + (date.getMonth() + 1)).slice(-2);
-                var y = date.getFullYear();
-                if (day != 6 && $.inArray(m + '/' + d + '/' + y, holidays) != -1) {
-                    return [false, "Highlighted", "Holiday"];
-                }
-                else if (day == 6) {
-                    if ($.inArray(m + '/' + d + '/' + y, saturdays) != -1) {
-                        $("#isWorkingDay").val(true);
-                        if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
-                            return [false, "Highlighted", "Holiday"];
-                        }
-                        else
-                            return [true];
-                    }
-                    else
-                        return [false];
-                }
-                else {
-                    if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
-                        return [false, "Highlighted", "Holiday"];
-                    }
-                    else
-                        return [true]
-                }
-            } else {
-                return [day != 0, ''];
-            }
-
-        }
-
         function convertDate(inputFormat) {
             function pad(s) { return (s < 10) ? '0' + s : s; }
             var d = new Date(inputFormat)
