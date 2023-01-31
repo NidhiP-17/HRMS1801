@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
+@*<style>
     #cke_1_contents {
         height: 116px !important;
     }
@@ -12,7 +12,7 @@
     #cke_2_contents {
         height: 150px !important;
     }
-</style>
+</style>*@
 <form asp-action="Create" id="frm" autocomplete="off">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
@@ -21,17 +21,18 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label asp-for="employeeId" class="control-label"></label>
+               
                 @{
                     string x = Context.Session.GetString("usertypeId");
                     if (x != "3")
                     {
+                        <label asp-for="employeeId" class="control-label"></label>
                         <select asp-for="employeeId" name="employeeId" id="employeeId" class="form-control select2" asp-items="@ViewBag.Employees" onchange="GetFilledDates()"></select>
                     }
                     else
                     {
                         <input type="hidden" asp-for="employeeId" name="employeeId" id="employeeId" />
-                        <label>@ViewBag.loginUserName</label>
+                        <label hidden>@ViewBag.loginUserName</label>
                     }
                 }
                 <span asp-validation-for="employeeId" class="text-danger"></span>
@@ -103,18 +104,12 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    @*<label asp-for="notes" class="control-label"></label>*@
-                    <textarea asp-for="notes" id="notes" class="inlineEditor"></textarea>
+                    <label asp-for="notes" class="control-label"></label>
+                    <textarea asp-for="notes" id="notes" class="ckeditor"></textarea>
                     <span asp-validation-for="notes" class="text-danger"></span>
 
                 </div>
             </div>
-
-            @* <div class="row form-group">
-            <div class="col-md-12">
-            <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-            </div>*@
         </div>
         <div class="col-md-6">
             <div class="row form-group">
@@ -151,9 +146,8 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    @*<label asp-for="leavenotes" class="control-label"></label>*@
-                    @*<div id="editor"></div>*@
-                    <textarea asp-for="leavenotes" id="leavenotes" class="inlineEditor"></textarea>
+                    <label asp-for="leavenotes" class="control-label"></label>
+                    <textarea asp-for="leavenotes" id="leavenotes" class="ckeditor"></textarea>
                     <span asp-validation-for="leavenotes" class="text-danger"></span>
 
                 </div>
@@ -451,9 +445,9 @@
         var isWorkingDay;
         $(document).ready(function () {
 
-            var config = {};
-            config.placeholder = 'Enter Notes here';
-            CKEDITOR.replace("ckeditor", config);
+            //var config = {};
+            //config.placeholder = 'Enter Notes here';
+            //CKEDITOR.replace("ckeditor", config);
 
             PopulateTask();
             GetFilledDates();

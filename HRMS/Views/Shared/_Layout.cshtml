@@ -131,10 +131,10 @@
         <div id="accordian" class="menu-parent">
             <ul class="nav-ul">
                 <li class="nav-item">
-            @{
-                <h5 style="color:#fff">Welcome @ViewBag.loginUserName</h5>
-            }
-            </li>
+                    @{
+                        <h5 style="color:#fff">Welcome @ViewBag.loginUserName</h5>
+                    }
+                </li>
             </ul>
             <hr style="border-top:1px solid rgb(255 255 255) !important;" />
             <ul class="nav-ul">
@@ -149,6 +149,9 @@
                     string x = Context.Session.GetString("usertypeId");
                     if (x != "3")
                     {
+                        <li class="nav-item">
+                            <a href="@Url.Action("Create", "LaunchDate")"><strong>Setting</strong></a>
+                        </li>
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Holiday")">Holiday</a>
                         </li>
@@ -170,23 +173,24 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                                <strong>Report</strong>
-                            </a>
-                            <div class="sidebar-submenu dropdown-menu">
-                                <ul class="nav-ul">
-                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpDay", "ItemOrder")">Food Report Of Employees</a></li>
-                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Print1", "ItemOrder")">Today's Order Report</a></li>
-                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpData", "ItemOrder")">Order Details</a></li>
-                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportMonthWiseData", "ItemOrder")">Month Details</a></li>
-                                </ul>
-                            </div>
-                        </li>
+                        //<li class="nav-item dropdown">
+                        //    <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                        //        <strong>Report</strong>
+                        //    </a>
+                        //    <div class="sidebar-submenu dropdown-menu">
+                        //        <ul class="nav-ul">
+                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpDay", "ItemOrder")">Food Report Of Employees</a></li>
+                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Print1", "ItemOrder")">Today's Order Report</a></li>
+                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpData", "ItemOrder")">Order Details</a></li>
+                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportMonthWiseData", "ItemOrder")">Month Details</a></li>
+                        //        </ul>
+                        //    </div>
+                        //</li>
 
                     }
                 }
-                <li class="nav-item">
+
+             @*   <li class="nav-item">
                     <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                         <strong>Order</strong>
                     </a>
@@ -196,13 +200,11 @@
                             <li> <a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmp_Day", "ItemOrder")"><strong>Check Order</strong></a></li>
                         </ul>
                     </div>
-                </li>
+                </li>*@
                 <li class="nav-item">
                     <a href="@Url.Action("ResetPassword", "Login",new { id = ViewBag.userId })"><strong>Change Password</strong></a>
                 </li>
-                <li class="nav-item">
-                    <a href="@Url.Action("Create", "LaunchDate")"><strong>Setting</strong></a>
-                </li>
+
                 <li class="nav-item"><a href="@Url.Action("Logout", "Home")"><strong>Log out</strong></a></li>
             </ul>
         </div>
@@ -211,7 +213,6 @@
         <div class="container-fluid">
             <div class="title-wpr flex">
                 <div class="col-md-6">
-                   
                 </div>
                 <div class="col-md-4">
                     @{
@@ -263,24 +264,24 @@
         </div>
         <!-- ==========categories row"=====categories row"==end========== -->
     </main>
-   @* <script disable-devtool-auto
-            src='https://cdn.jsdelivr.net/npm/disable-devtool'
-            md5='xxx'
-            url='xxx'
-            tk-name='xxx'
-            interval='xxx'
-            disable-menu='xxx'
-            detectors='xxx'
-            clear-log='true'
-            disable-select='true'
-            disable-copy='true'
-            disable-cut='true'
-            disable-paste='true'></script>*@
+    @* <script disable-devtool-auto
+    src='https://cdn.jsdelivr.net/npm/disable-devtool'
+    md5='xxx'
+    url='xxx'
+    tk-name='xxx'
+    interval='xxx'
+    disable-menu='xxx'
+    detectors='xxx'
+    clear-log='true'
+    disable-select='true'
+    disable-copy='true'
+    disable-cut='true'
+    disable-paste='true'></script>*@
     @*<script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>*@
     @*<script>
-        DisableDevtool({
-            // The parameters are the same as in 3.1
-        })
+    DisableDevtool({
+    // The parameters are the same as in 3.1
+    })
     </script>*@
     <script type="text/javascript" src="~/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.bundle.min.js"></script>
@@ -303,8 +304,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="~/js/bootstrap-select.min.js"></script>
-    @*<script src="~/ckeditor/ckeditor.js"></script>*@
-  
+    <script src="~/ckeditor/ckeditor.js"></script>
+
     <script>
         $(document).ready(function () {
             $(document).bind("contextmenu", function (e) {

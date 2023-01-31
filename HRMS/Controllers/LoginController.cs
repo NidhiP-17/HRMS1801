@@ -76,8 +76,8 @@ namespace HRMS.Controllers
                     }
                     else
                     {
-                        //ModelState.AddModelError(string.Empty, "Invalid credentials.");
-                        ModelState.AddModelError(string.Empty, user.Message);
+                        ModelState.AddModelError(string.Empty, "Invalid credentials.");
+                        //ModelState.AddModelError(string.Empty, user.Message);
                     }
                 }
             }
