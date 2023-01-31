@@ -9,6 +9,15 @@
 @*<script src="http://cdn.ckeditor.com/4.6.2/standard-all/ckeditor.js"></script>*@
 <link href="http://sdk.ckeditor.com/theme/css/sdk-inline.css" rel="stylesheet">
 @*<link href="~/ckeditor/contents.css" rel="stylesheet" />*@
+<style>
+    #cke_1_contents {
+        height: 100px !important;
+    }
+
+    #cke_2_contents {
+        height: 100px !important;
+    }
+</style>
 <form asp-action="Create" id="frm" autocomplete="off" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
@@ -18,12 +27,12 @@
         <div class="col-md-3">
             <div class="form-group">
                 <input type="hidden" id="hdnrange" asp-for="daterange" value="@ViewBag.daterange" />
-              
+
                 @{
                     string x = Context.Session.GetString("usertypeId");
                     if (x != "3")
                     {
-                          <label asp-for="employeeId" class="control-label"></label>
+                        <label asp-for="employeeId" class="control-label"></label>
                         <select asp-for="employeeId" name="employeeId" id="employeeId" class="form-control select2" asp-items="@ViewBag.Employees" onchange="GetFilledDates()"></select>
                     }
                     else
@@ -102,7 +111,7 @@
             <div class="row form-group">
                 <div class="col-md-12">
                     <label asp-for="notes" class="control-label"></label>
-                   <textarea asp-for="notes" id="notes" class="ckeditor"></textarea>
+                    <textarea asp-for="notes" id="notes" class="ckeditor"></textarea>
                     <span asp-validation-for="notes" class="text-danger"></span>
 
                 </div>
@@ -150,7 +159,7 @@
             <div class="row form-group">
                 <div class="col-md-12">
                     <label asp-for="leavenotes" class="control-label"></label>
-                    <textarea asp-for="leavenotes" id="leavenotes" class="ckeditor"></textarea>
+                    <textarea asp-for="leavenotes" id="leavenotes" class="ckeditor"> </textarea>
                     <span asp-validation-for="leavenotes" class="text-danger"></span>
 
                 </div>
@@ -295,46 +304,10 @@
 @section scripts{
     <script>
 
-        // Turn off automatic editor creation first.
-        //CKEDITOR.disableAutoInline = true;
-        //CKEDITOR.inline('editor1');
-
-
         CKEDITOR.inline('editor2');
         CKEDITOR.config.removePlugins = "imagebase,easyimage,link,about";
         $("#cke_50").attr("disabled", "true");
-        //var introduction = document.getElementById('editor2');
-        //introduction.setAttribute('contenteditable', true);
 
-        //CKEDITOR.inline('introduction', {
-        //    // Allow some non-standard markup that we used in the introduction.
-        //    extraAllowedContent: 'a(documentation);abbr[title];code',
-        //    removePlugins: 'stylescombo',
-        //    extraPlugins: 'sourcedialog',
-        //    removeButtons: 'PasteFromWord',
-        //    // Show toolbar on startup (optional).
-        //    startupFocus: true
-        //});
-        //CKEDITOR.editorConfig = function (config) {
-        //    config.startupFocus = true;
-        //    config.startupFocus = 'start';
-        //    config.removeDialogTabs = 'link:upload;image:Upload';
-        //    config.removePlugins = "about,basicstyles,notification,button,toolbar,clipboard,enterkey,entities,floatingspace,wysiwygarea,indent,indentlist,fakeobjects,link,list,undo,lineutils,widgetselection,widget,filetools,imagebase,balloonpanel,balloontoolbar,xml,ajax,cloudservices,easyimage"
-        //}
-        //debugger
-        //CKEDITOR.replace('editor1',
-        //    {
-        //        toolbar: 'Basic', /* this does the magic */
-        //        uiColor: '#9AB8F3'
-        //    });
-
-        //var elements = CKEDITOR.document.find('.inlineEditor'),
-        //    i = 0,
-        //    element;
-        //while ((element = elements.getItem(i++))) {
-        //    CKEDITOR.config.width = 500;
-        //    CKEDITOR.inline(element);
-        //}
 
     </script>
 
@@ -394,7 +367,6 @@
                     data: { "employeeId": id },
                     success: function (response) {
                         if (response != '[]') {
-                            debugger
                             response = JSON.parse(response);
                             $.each(response, function (i, day) {
                                 totalfilledDays.push(day.holidaydate);

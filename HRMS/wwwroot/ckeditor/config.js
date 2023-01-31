@@ -25,6 +25,7 @@ CKEDITOR.editorConfig = function (config) {
 		{ name: 'others' },
 		{ name: 'about' }
 	];
+
 	config.ImageBrowser = false;
 	config.removeDialogTabs = 'link:target;link:advanced;image:Link;image:advanced';
 	// The default plugins included in the basic setup define some buttons that
