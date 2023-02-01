@@ -105,6 +105,8 @@ namespace HRMS.Controllers
             //t.taskId = 0;
             t.TimeSheetList = response.Response;
             t.daterange = ViewBag.daterange;
+            t.projectId = Convert.ToInt32(projectId);
+            t.employeeId = Convert.ToInt32(employeeId);
             return View(t);
             //return View(response.Response);
         }
