@@ -4,9 +4,6 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<script src="~/ckeditor/ckeditor.js"></script>
-
 <style>
     #cke_1_contents {
         height: 100px !important;
@@ -14,6 +11,10 @@
 
     #cke_2_contents {
         height: 100px !important;
+    }
+
+    .row.form-group {
+        margin-bottom: 18px !important;
     }
 </style>
 
@@ -53,7 +54,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="row form-group">
                 <div class="col-md-4">
                     <label asp-for="projectId" class="control-label"></label>
@@ -63,7 +64,7 @@
                     <span asp-validation-for="projectId" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row form-group" id="divTask" style="display:none">
                 <div class="col-md-4">
                     <label asp-for="taskId" class="control-label"></label>
                 </div>
@@ -122,7 +123,8 @@
             </div>
             </div>*@
         </div>
-        <div class="col-md-6">
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
             <div class="row form-group">
                 <div class="col-md-4">
                     <label asp-for="reasonCode" class="control-label"></label>
@@ -291,7 +293,7 @@
                         <a href="@Url.Action("Details", "Timesheet",new {  id=item.timesheetId  })">
                             <i style="font-size: 20px; text-align: center;color:#323591" class="fa fa-eye"></i>
                         </a>
-                        <a href="@Url.Action("Delete", "Timesheet",new {  id=item.timesheetId  })">
+                        <a href="@Url.Action("Delete", "Timesheet",new {  id=item.timesheetId })">
                             <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
                         </a>
                     </td>
@@ -336,6 +338,8 @@
         const today = new Date();
 
         function GetFilledDates() {
+            totalfilledDays = [];
+            minsetDate = "";
             $('#date').datepicker("refresh");
             const yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!
@@ -364,17 +368,89 @@
                     url: '@Url.Action("GetRemainingDays", "Timesheet")',
                     data: { "employeeId": id },
                     success: function (response) {
+                        
                         if (response != '[]') {
                             response = JSON.parse(response);
                             $.each(response, function (i, day) {
                                 totalfilledDays.push(day.holidaydate);
                             });
 
-                            $('#date').val(totalfilledDays[totalfilledDays.length - 1]);
-                            $('#hdnDate').val(totalfilledDays[totalfilledDays.length - 1]);
+                            $('#date').val(totalfilledDays[0]);
+                            $('#hdnDate').val(totalfilledDays[0]);
+
+                            var d = totalfilledDays[0];
+                            if (d < launchdate)
+                                $("#lblMessage").html("You have not filled timesheet for " + d);
 
                             if ('@ViewBag.usertypeId' == '3') {
-                                var d = totalfilledDays[totalfilledDays.length - 1];
+                                $("#date").attr("disabled", "disabled");
+                            }
+                            else {
+                                $("#date").removeAttr("disabled");
+                            }
+                            //var url = "/Timesheet/GetJoiningDate";
+                            //var data = { employeeId: id };
+                            //$.get(url, data, function (data) {
+                            //debugger
+                            //var dates = JSON.parse(data);
+                            //joiningDate = dates;
+                            //var d1 = new Date(joiningDate);
+                            //var d2 = new Date(launchdate);
+                            //if (d1.getTime() < d2.getTime())
+                            //    startingdate = launchdate;
+                            //else
+                            //    startingdate = joiningDate;
+
+                            //if (totalfilledDays.length == 0) {
+
+                            //    $('#date').val(startingdate);
+                            //    $('#hdnDate').val(startingdate);
+
+                            //    if ('@ViewBag.usertypeId' == '3') {
+                            //        var d = startingdate;
+                            //        if (d < launchdate)
+                            //            $("#lblMessage").html("You have not filled timesheet for " + d);
+                            //        $("#date").attr("disabled", "disabled");
+                            //    }
+                            //    else {
+                            //        $("#date").removeAttr("disabled");
+                            //    }
+                            //}
+                            //else {
+
+                            //$('#date').val(d);
+                            //$('#hdnDate').val(d);
+                            //if ('@ViewBag.usertypeId' == '3') {
+                            //    var d = startingdate;
+                            //    if (d < launchdate)
+                            //        $("#lblMessage").html("You have not filled timesheet for " + d);
+                            //    $("#date").attr("disabled", "disabled");
+                            //}
+                            //else {
+                            //    $("#date").removeAttr("disabled");
+                            //}
+                        }
+
+                        minsetDate = new Date(d);
+                        var r = noSundaysOrHolidays(new Date(d));
+                        if (r[0] == false && r[1] == 'SatDay') {
+
+                            minsetDate = new Date(d);
+                            minsetDate = minsetDate.setDate(minsetDate.getDate() + 2);
+                            minsetDate = new Date(minsetDate);
+                            const yyyy = minsetDate.getFullYear();
+                            let mm = minsetDate.getMonth() + 1; // Months start at 0!
+                            let dd = minsetDate.getDate();
+
+                            if (dd < 10) dd = '0' + dd;
+                            if (mm < 10) mm = '0' + mm;
+
+                            startingdate = mm + '/' + dd + '/' + yyyy;
+
+                            $('#date').val(startingdate);
+                            $('#hdnDate').val(startingdate);
+                            if ('@ViewBag.usertypeId' == '3') {
+                                var d = startingdate;
                                 if (d < launchdate)
                                     $("#lblMessage").html("You have not filled timesheet for " + d);
                                 $("#date").attr("disabled", "disabled");
@@ -382,178 +458,134 @@
                             else {
                                 $("#date").removeAttr("disabled");
                             }
-                            var url = "/Timesheet/GetJoiningDate";
-                            var data = { employeeId: id };
-                            $.get(url, data, function (data) {
-                                debugger
-                                var dates = JSON.parse(data);
-                                joiningDate = dates;
-                                var d1 = new Date(joiningDate);
-                                var d2 = new Date(launchdate);
-                                if (d1.getTime() < d2.getTime())
-                                    startingdate = launchdate;
-                                else
-                                    startingdate = joiningDate;
-
-                                if (totalfilledDays.length == 0) {
-
-                                    $('#date').val(startingdate);
-                                    $('#hdnDate').val(startingdate);
-
-                                    if ('@ViewBag.usertypeId' == '3') {
-                                        var d = startingdate;
-                                        if (d < launchdate)
-                                            $("#lblMessage").html("You have not filled timesheet for " + d);
-                                        $("#date").attr("disabled", "disabled");
-                                    }
-                                    else {
-                                        $("#date").removeAttr("disabled");
-                                    }
-                                }
-                                else {
-
-                                    $('#date').val(startingdate);
-                                    $('#hdnDate').val(startingdate);
-                                    if ('@ViewBag.usertypeId' == '3') {
-                                        var d = startingdate;
-                                        if (d < launchdate)
-                                            $("#lblMessage").html("You have not filled timesheet for " + d);
-                                        $("#date").attr("disabled", "disabled");
-                                    }
-                                    else {
-                                        $("#date").removeAttr("disabled");
-                                    }
-                                }
-
-                                minsetDate = new Date(startingdate);
-
-                                $('#date').datepicker({
-                                    beforeShowDay: noSundaysOrHolidays,
-                                    numberOfMonths: 1,
-                                    format: 'MM/DD/YYYY',
-                                    autoclose: true,
-                                    //startDate: minDate,
-                                    //endDate: "today",
-                                    minDate: minsetDate,
-                                    maxDate: '+28D',
-                                    setDate: minsetDate
-                                }).on('changeDate', function (ev) {
-                                    $(this).datepicker('hide');
-                                });
-                            });
-
                         }
-                        else {
+                        else
+                            minsetDate = new Date(d);
+                        $('#date').datepicker({
+                            beforeShowDay: noSundaysOrHolidays,
+                            numberOfMonths: 1,
+                            format: 'MM/DD/YYYY',
+                            autoclose: true,
+                            //startDate: minDate,
+                            //endDate: "today",
+                            minDate: minsetDate,
+                            maxDate: '+28D',
+                            setDate: minsetDate
+                        }).on('changeDate', function (ev) {
+                            $(this).datepicker('hide');
+                        });
+                        //});
 
-                            var url = "/Timesheet/GetLastDayOftimeSheet";
-                            var data = { employeeId: id };
-                            $.get(url, data, function (data) {
+                        //}
+                        //else {
 
-                                if (data != '""') {
-                                    var dates = JSON.parse(data);
-                                    joiningDate = dates;
-                                    //totalfilledDays.push(dates);
-                                }
-                                else {
-                                    var url = "/Timesheet/GetJoiningDate";
-                                    var data = { employeeId: id };
-                                    $.get(url, data, function (data) {
-                                        var dates = JSON.parse(data);
-                                        joiningDate = dates;
+                        //    var url = "/Timesheet/GetLastDayOftimeSheet";
+                        //    var data = { employeeId: id };
+                        //    $.get(url, data, function (data) {
 
-                                    });
-                                }
-                                var d1 = new Date(joiningDate);
-                                var d2 = new Date(launchdate);
-                                if (d1.getTime() < d2.getTime()) {
+                        //        if (data != '""') {
+                        //            var dates = JSON.parse(data);
+                        //            joiningDate = dates;
+                        //            //totalfilledDays.push(dates);
+                        //        }
+                        //        else {
+                        //            var url = "/Timesheet/GetJoiningDate";
+                        //            var data = { employeeId: id };
+                        //            $.get(url, data, function (data) {
+                        //                var dates = JSON.parse(data);
+                        //                joiningDate = dates;
 
-                                    startingdate = launchdate;
-                                }
-                                else
-                                    startingdate = joiningDate;
+                        //            });
+                        //        }
+                        //        var d1 = new Date(joiningDate);
+                        //        var d2 = new Date(launchdate);
+                        //        if (d1.getTime() < d2.getTime()) {
 
-                                if (totalfilledDays.length == 0) {
+                        //            startingdate = launchdate;
+                        //        }
+                        //        else
+                        //            startingdate = joiningDate;
 
-                                    $('#date').val(startingdate);
-                                    $('#hdnDate').val(startingdate);
+                        //        if (totalfilledDays.length == 0) {
 
-                                    if ('@ViewBag.usertypeId' == '3') {
-                                        var d = startingdate;
-                                        if (d < launchdate)
-                                            $("#lblMessage").html("You have not filled timesheet for " + d);
-                                        $("#date").attr("disabled", "disabled");
-                                    }
-                                    else {
-                                        $("#date").removeAttr("disabled");
-                                    }
-                                }
-                                else {
-                                    $('#date').val(startingdate);
-                                    $('#hdnDate').val(startingdate);
-                                    if ('@ViewBag.usertypeId' == '3') {
-                                        var d = startingdate;
-                                        if (d < launchdate)
-                                            $("#lblMessage").html("You have not filled timesheet for " + d);
-                                        $("#date").attr("disabled", "disabled");
-                                    }
-                                    else {
-                                        $("#date").removeAttr("disabled");
-                                    }
-                                }
+                        //            $('#date').val(startingdate);
+                        //            $('#hdnDate').val(startingdate);
 
-                                var r = noSundaysOrHolidays(new Date(startingdate));
-                                if (r[0] == false && r[1] == 'SatDay') {
+                        //            if ('@ViewBag.usertypeId' == '3') {
+                        //                var d = startingdate;
+                        //                if (d < launchdate)
+                        //                    $("#lblMessage").html("You have not filled timesheet for " + d);
+                        //                $("#date").attr("disabled", "disabled");
+                        //            }
+                        //            else {
+                        //                $("#date").removeAttr("disabled");
+                        //            }
+                        //        }
+                        //        else {
+                        //            $('#date').val(startingdate);
+                        //            $('#hdnDate').val(startingdate);
+                        //            if ('@ViewBag.usertypeId' == '3') {
+                        //                var d = startingdate;
+                        //                if (d < launchdate)
+                        //                    $("#lblMessage").html("You have not filled timesheet for " + d);
+                        //                $("#date").attr("disabled", "disabled");
+                        //            }
+                        //            else {
+                        //                $("#date").removeAttr("disabled");
+                        //            }
+                        //        }
 
-                                    minsetDate = new Date(startingdate);
-                                    minsetDate = minsetDate.setDate(minsetDate.getDate() + 2);
-                                    minsetDate = new Date(minsetDate);
-                                    const yyyy = minsetDate.getFullYear();
-                                    let mm = minsetDate.getMonth() + 1; // Months start at 0!
-                                    let dd = minsetDate.getDate();
+                        //        var r = noSundaysOrHolidays(new Date(startingdate));
+                        //        if (r[0] == false && r[1] == 'SatDay') {
 
-                                    if (dd < 10) dd = '0' + dd;
-                                    if (mm < 10) mm = '0' + mm;
+                        //            minsetDate = new Date(startingdate);
+                        //            minsetDate = minsetDate.setDate(minsetDate.getDate() + 2);
+                        //            minsetDate = new Date(minsetDate);
+                        //            const yyyy = minsetDate.getFullYear();
+                        //            let mm = minsetDate.getMonth() + 1; // Months start at 0!
+                        //            let dd = minsetDate.getDate();
 
-                                    startingdate = mm + '/' + dd + '/' + yyyy;
+                        //            if (dd < 10) dd = '0' + dd;
+                        //            if (mm < 10) mm = '0' + mm;
 
-                                    $('#date').val(startingdate);
-                                    $('#hdnDate').val(startingdate);
-                                    if ('@ViewBag.usertypeId' == '3') {
-                                        var d = startingdate;
-                                        if (d < launchdate)
-                                            $("#lblMessage").html("You have not filled timesheet for " + d);
-                                        $("#date").attr("disabled", "disabled");
-                                    }
-                                    else {
-                                        $("#date").removeAttr("disabled");
-                                    }
-                                }
-                                else
-                                    minsetDate = new Date(startingdate);
-                                $('#date').datepicker({
-                                    beforeShowDay: noSundaysOrHolidays,
-                                    numberOfMonths: 1,
-                                    format: 'MM/DD/YYYY',
-                                    autoclose: true,
-                                    //startDate: minDate,
-                                    //endDate: "today",
-                                    minDate: minsetDate,
-                                    maxDate: '+28D',
-                                    setDate: minsetDate
-                                }).on('changeDate', function (ev) {
-                                    $(this).datepicker('hide');
-                                });
-                            });
-                        }
+                        //            startingdate = mm + '/' + dd + '/' + yyyy;
+
+                        //            $('#date').val(startingdate);
+                        //            $('#hdnDate').val(startingdate);
+                        //            if ('@ViewBag.usertypeId' == '3') {
+                        //                var d = startingdate;
+                        //                if (d < launchdate)
+                        //                    $("#lblMessage").html("You have not filled timesheet for " + d);
+                        //                $("#date").attr("disabled", "disabled");
+                        //            }
+                        //            else {
+                        //                $("#date").removeAttr("disabled");
+                        //            }
+                        //        }
+                        //        else
+                        //            minsetDate = new Date(startingdate);
+                        //        $('#date').datepicker({
+                        //            beforeShowDay: noSundaysOrHolidays,
+                        //            numberOfMonths: 1,
+                        //            format: 'MM/DD/YYYY',
+                        //            autoclose: true,
+                        //            //startDate: minDate,
+                        //            //endDate: "today",
+                        //            minDate: minsetDate,
+                        //            maxDate: '+28D',
+                        //            setDate: minsetDate
+                        //        }).on('changeDate', function (ev) {
+                        //            $(this).datepicker('hide');
+                        //        });
+                        //    });
+                        //}
                     },
                     error: function () {
                     }
                 });
             }
-
-
-
         }
+
 
         function GetLaunchdate() {
             var url = "/Timesheet/GetLaunchDate";
@@ -607,7 +639,7 @@
         }
 
         function timeConvert(n) {
-            debugger
+            
             var n1 = n.split(".");
             var nv1 = n1[1];
             var val = Math.round(nv1.toString() * 100 / 60);
@@ -689,6 +721,8 @@
 
             }, cb);
             $('#hdnrange').val($('#daterange').val());
+            if ('@ViewBag.daterange' != null)
+                $('#daterange').val('@ViewBag.daterange');
             var ViewBagmsg = '@ViewBag.msg'
             if (ViewBagmsg != null) {
                 if (ViewBagmsg != "") {
@@ -733,6 +767,7 @@
         var sat = new Array();
 
         function noSundaysOrHolidays(date) {
+            
             var day = date.getDay();
             if (day != 0) {
                 var d = ('0' + date.getDate()).slice(-2);
@@ -755,11 +790,11 @@
                     }
                 }
                 else {
-                    if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
-                        return [false, "Highlighted", "Holiday"];
-                    }
-                    else
-                        return [true]
+                    //if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
+                    //    return [false, "Highlighted", "Holiday"];
+                    //}
+                    //else
+                    return [true]
                 }
             } else {
                 return [day != 0, ''];
@@ -780,6 +815,7 @@
         }
 
         function PopulateTask() {
+            $("#divTask").hide();
             var id = $("#projectId option:selected").val();
             if (id != 0) {
                 $.ajax({
@@ -795,6 +831,7 @@
                                 $("#taskId").append('<option value="' + element.taskId + '">' + element.taskName + '</option>');
                             });
                         }
+                        $("#divTask").show();
                         $("#taskId").prop("disabled", false);
                     },
                     error: function () {

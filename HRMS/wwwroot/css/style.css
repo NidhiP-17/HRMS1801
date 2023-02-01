@@ -1,4 +1,4 @@
-*, *:before, *:after {
+/**, *:before, *:after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -54,10 +54,10 @@ img {
     color: #292D32;
 }
 
-
+*/
 /* =====sidebar=left-side= */
 
-.main-sidebar {
+/*.main-sidebar {
     background:#171617;
     border-right: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 0px;
@@ -87,30 +87,30 @@ img {
     position: relative;
     cursor: pointer;
 }
-
-.nav-item .icon-menu>svg {
+*/
+/*.nav-item .icon-menu>svg {
     margin-right: 15px;
     margin-left: 12px;
 }
-
-.nav-item>a {
+*/
+/*.nav-item>a {
     color: #fff;
-}
+}*/
 
-.nav-item:hover a {
+/*.nav-item:hover a {
     color: #fff;
     text-decoration-line: none;
-}
-
+}*/
+/*
 .nav-item:hover {
     background: rgba(0, 0, 0, 0.25) !important;
-}
+}*/
 
 
 
 
 
-span.num {
+/*span.num {
     font-family: 'Cairo';
     font-style: normal;
     font-weight: 700;
@@ -132,11 +132,11 @@ span.num {
     position: absolute;
     bottom: 80px;
     width: 100%;
-}
+}*/
 
-.navbar {
+/*.navbar {
     background-color: #000;
-}
+}*/
 
 
 
@@ -145,12 +145,12 @@ span.num {
 .menu-parent li.active>ul {
     display: block;
 }
-.menu-parent ul ul li a {
+/*.menu-parent ul ul li a {
     color: #000;
-}
-.menu-parent ul .nav-item:hover ul li a {
+}*/
+/*.menu-parent ul .nav-item:hover ul li a {
     color: #000;
-}
+}*/
 
 
 .menu-parent ul ul li a {
@@ -161,7 +161,7 @@ span.num {
     /*padding: 10px 25px 10px 25px;*/
     position: relative;
     /*margin: 16px 0px 0px 0px;*/
-    color: #fff;
+    /*color: #fff;*/
 }
 
 
@@ -173,21 +173,21 @@ span.num {
     align-items: center;
 }
 
-.nav-item:hover svg>path {
+/*.nav-item:hover svg>path {
     stroke: #fff;
-}
+}*/
 
-.nav-item>ul>li:hover {
+/*.nav-item>ul>li:hover {
     color: #fff;
 
-}
+}*/
 
 
 
 
 /* ======right==side=== */
 
-main.main {
+/*main.main {
     margin-left: 326px;
     margin-top: 0px;
     padding-right: 48px;
@@ -221,11 +221,11 @@ main.main {
 .ul-Branch-dropdown {
     position: absolute;
     left: 0;
-    top: calc(100% + 25px);
-    box-shadow: 0 0 20px 0 rgb(0 0 0 / 15%);
-    width: 100%;
-    background: #164665;
-    border-radius: 10px;
+    top: calc(100% + 25px);*/
+    /*box-shadow: 0 0 20px 0 rgb(0 0 0 / 15%);*/
+    /*width: 100%;*/
+    /*background: #164665;*/
+    /*border-radius: 10px;
     padding: 6px 0;
     margin: 0;
     list-style: none;
@@ -305,7 +305,7 @@ p.data-content {
     font-size: 16px;
     line-height: 20px;
     padding-left: 6px;
-}
+}*/
 
 
 /* ==================brancess======== */
@@ -374,17 +374,17 @@ p.data-content {
 
 
 /* <!-- ===============box============ --> */
-multi-wpr-box {
+/*multi-wpr-box {
     margin-top: 32px;
     margin-bottom: 32px;
 }
 
-.multi-wpr-box ul {
+.multi-wpr-box ul {*/
     /* display: flex; */
-    align-items: center;
-    list-style: none;
+    /*align-items: center;
+    list-style: none;*/
     /* margin: 0 -8px; */
-    padding: 0;
+    /*padding: 0;
     justify-content: space-between;
 }
 
@@ -526,7 +526,7 @@ tbody.tbody-cstm>tr>td {
 ::-webkit-scrollbar {
     width: 8px;
 
-}
+}*/
 
 
 /* Handle */
@@ -538,9 +538,9 @@ tbody.tbody-cstm>tr>td {
 } 
 
 
- .menu-parent ul ul li a:hover { background: #fff; } 
- .menu-parent ul ul ul {
-    background: #164665;
+ .menu-parent ul ul li a:hover { background: #fff; }
+.menu-parent ul ul ul {
+    background: #fff;
     padding: 0;
     z-index: 999;
 } 
@@ -563,7 +563,7 @@ button.Add-btn {
     width: 100%;
 }
 
-ul.multi-content > li {
+/*ul.multi-content > li {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -597,3 +597,4 @@ ul.multi-content > li {
     padding: 20px;
 }
 
+*/

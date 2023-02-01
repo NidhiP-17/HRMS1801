@@ -104,7 +104,7 @@ namespace HRMS.Controllers
             //    t.projectId = 0;
             //t.taskId = 0;
             t.TimeSheetList = response.Response;
-
+            t.daterange = ViewBag.daterange;
             return View(t);
             //return View(response.Response);
         }

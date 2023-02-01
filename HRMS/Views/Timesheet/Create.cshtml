@@ -242,7 +242,7 @@
                             var url = "/Timesheet/GetJoiningDate";
                             var data = { employeeId: id };
                             $.get(url, data, function (data) {
-                                debugger
+                                
                                 var dates = JSON.parse(data);
                                 joiningDate = dates;
                                 var d1 = new Date(joiningDate);
@@ -528,7 +528,7 @@
 
 
         function PopulateTask() {
-            debugger
+            
             var id = $("#projectId option:selected").val();
             if (id != 0) {
                 $.ajax({

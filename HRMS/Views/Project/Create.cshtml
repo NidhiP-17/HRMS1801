@@ -111,7 +111,7 @@
                     url: '/Technology/CreateTechnology',
                     data: { item: Name },
                     success: function (result) {
-                        debugger
+                        
                         if (result.includes("exists")) {
                             alert(result);
                             $('#txtOther').focus();
@@ -143,7 +143,7 @@
             if (vData.length > 0) {
                 var vItems = [];
                 for (var i in vData) {
-                    debugger
+                    
                     if (vData[i].Name == name)
                         vItems.push('<option selected=selected value="' + vData[i].technologyId + '">' + vData[i].Name + '</option>');
                 }
