@@ -6,9 +6,7 @@
 }
 
 <script src="~/ckeditor/ckeditor.js"></script>
-@*<script src="http://cdn.ckeditor.com/4.6.2/standard-all/ckeditor.js"></script>*@
-<link href="http://sdk.ckeditor.com/theme/css/sdk-inline.css" rel="stylesheet">
-@*<link href="~/ckeditor/contents.css" rel="stylesheet" />*@
+
 <style>
     #cke_1_contents {
         height: 100px !important;
@@ -18,6 +16,7 @@
         height: 100px !important;
     }
 </style>
+
 <form asp-action="Create" id="frm" autocomplete="off" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
@@ -94,7 +93,7 @@
                     <span asp-validation-for="trackerFlag" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row form-group" style="margin-bottom:0px !important">
                 <div class="col-md-4">
                     <label asp-for="hours" class="control-label"></label>
                 </div>
@@ -103,14 +102,14 @@
                     <span asp-validation-for="hours" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row form-group" style="margin-bottom:0px !important">
                 <div class="col-md-12" style="text-align:right">
-                    <label class="control-label" style="color:orange"> Hours should be calculated based on 100 </label>
+                    <label class="control-label" style="color:orange;margin-bottom:0px !important"> Hours should be calculated based on 100 </label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    <label asp-for="notes" class="control-label"></label>
+                    <label asp-for="notes" class="control-label" style="margin-bottom:0px !important"></label>
                     <textarea asp-for="notes" id="notes" class="ckeditor"></textarea>
                     <span asp-validation-for="notes" class="text-danger"></span>
 
@@ -142,7 +141,7 @@
                     <span asp-validation-for="type" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row form-group" style="margin-bottom:0px !important">
                 <div class="col-md-4">
                     <label asp-for="leavehours" class="control-label"></label>
                 </div>
@@ -151,14 +150,14 @@
                     <span asp-validation-for="leavehours" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row form-group" style="margin-bottom:0px !important">
                 <div class="col-md-12" style="text-align:right">
-                    <label class="control-label" style="color:orange"> Hours should be calculated based on 100 </label>
+                    <label class="control-label" style="color:orange;margin-bottom:0px !important"> Hours should be calculated based on 100 </label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    <label asp-for="leavenotes" class="control-label"></label>
+                    <label asp-for="leavenotes" class="control-label" style="margin-bottom:0px !important"></label>
                     <textarea asp-for="leavenotes" id="leavenotes" class="ckeditor"> </textarea>
                     <span asp-validation-for="leavenotes" class="text-danger"></span>
 
@@ -308,7 +307,6 @@
         CKEDITOR.config.removePlugins = "imagebase,easyimage,link,about";
         $("#cke_50").attr("disabled", "true");
 
-
     </script>
 
     <script>
@@ -446,11 +444,11 @@
 
                         }
                         else {
-                            
+
                             var url = "/Timesheet/GetLastDayOftimeSheet";
                             var data = { employeeId: id };
                             $.get(url, data, function (data) {
-                                
+
                                 if (data != '""') {
                                     var dates = JSON.parse(data);
                                     joiningDate = dates;
@@ -468,12 +466,12 @@
                                 var d1 = new Date(joiningDate);
                                 var d2 = new Date(launchdate);
                                 if (d1.getTime() < d2.getTime()) {
-                                 
+
                                     startingdate = launchdate;
                                 }
                                 else
                                     startingdate = joiningDate;
-                                
+
                                 if (totalfilledDays.length == 0) {
 
                                     $('#date').val(startingdate);
@@ -505,7 +503,7 @@
 
                                 var r = noSundaysOrHolidays(new Date(startingdate));
                                 if (r[0] == false && r[1] == 'SatDay') {
-                                    
+
                                     minsetDate = new Date(startingdate);
                                     minsetDate = minsetDate.setDate(minsetDate.getDate() + 2);
                                     minsetDate = new Date(minsetDate);

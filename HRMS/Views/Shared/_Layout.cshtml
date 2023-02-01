@@ -4,10 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Alita Infotech</title>
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HRMS.styles.css" asp-append-version="true" />
+    @*<link rel="stylesheet" href="~/css/bootstrap.min.css">*@
     <link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/style.css" />
-    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="~/css/style.css" />*@
+    @*<link href="~/css/jquery-ui.css" rel="stylesheet" />*@
     <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
     <link href="~/css/bootstrap-multiselect.min.css" rel="stylesheet" />
     <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
@@ -15,113 +19,117 @@
     <link rel="stylesheet" href="~/font-awesome/4.5.0/css/font-awesome.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-    <!-- <title>Trustree</title> -->
     <style>
-        .sideeffect {
-            height: 100vh !important;
+        .row {
+            margin-bottom: 6px !important;
         }
-
-        button {
-            background-color: dodgerblue;
-            width: 100px;
-            height: auto;
-            color: black;
-            padding: 10px;
-            margin: 10px 0px;
-            border: none;
-            cursor: pointer;
-            border-radius: revert;
-            text-align: center;
-            vertical-align: middle
-        }
-
-            button:hover {
-                opacity: 0.7;
-            }
-
-        .dropbtn {
-            background-color: #164665;
-            color: white;
-            padding: 14px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-        }
-
-            .dropbtn:hover, .dropbtn:focus {
-                background-color: #0069d9;
-            }
-
-            .dropbtn:hover, .dropbtn:focus {
-                background-color: none !important;
-            }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f1f1f1;
-            min-width: 160px;
-            overflow: auto;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-            .dropdown-content a {
-                color: black;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-            }
-
-        .dropdown a:hover {
-            background-color: #ddd;
-        }
-
-        .dropdown a:hover {
-            background-color: none !important;
-        }
-
-        .show {
-            display: block;
-        }
-
-        .menu-parent ul ul li a:hover {
-            background-color: none !important;
-        }
-
     </style>
+    <!-- <title>Trustree</title> -->
+    @* <style>
+    .sideeffect {
+    height: 100vh !important;
+    }
 
-    <script>
-        /* When the user clicks on the button,
-        toggle between hiding and showing the dropdown content */
-        function myFunction() {
-            document.getElementById("myDropdown").classList.toggle("show");
-        }
+    button {
+    background-color: dodgerblue;
+    width: 100px;
+    height: auto;
+    color: black;
+    padding: 10px;
+    margin: 10px 0px;
+    border: none;
+    cursor: pointer;
+    border-radius: revert;
+    text-align: center;
+    vertical-align: middle
+    }
 
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function (event) {
-            if (!event.target.matches('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
+    button:hover {
+    opacity: 0.7;
+    }
 
-    </script>
+    .dropbtn {
+    background-color: #164665;
+    color: white;
+    padding: 14px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    }
+
+    .dropbtn:hover, .dropbtn:focus {
+    background-color: #0069d9;
+    }
+
+    .dropbtn:hover, .dropbtn:focus {
+    background-color: none !important;
+    }
+
+    .dropdown {
+    position: relative;
+    display: inline-block;
+    }
+
+    .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    }
+
+    .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    }
+
+    .dropdown a:hover {
+    background-color: #ddd;
+    }
+
+    .dropdown a:hover {
+    background-color: none !important;
+    }
+
+    .show {
+    display: block;
+    }
+
+    .menu-parent ul ul li a:hover {
+    background-color: none !important;
+    }
+
+    </style>*@
+
+    @*<script>
+    /* When the user clicks on the button,
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+    var openDropdown = dropdowns[i];
+    if (openDropdown.classList.contains('show')) {
+    openDropdown.classList.remove('show');
+    }
+    }
+    }
+    }
+
+    </script>*@
 
 </head>
-<body oncontextmenu="return false">
+@*<body oncontextmenu="return false">
     <aside class="main-sidebar sidebar">
         <div class="sidebar-brand">
             <a href="#">
@@ -139,9 +147,9 @@
             <hr style="border-top:1px solid rgb(255 255 255) !important;" />
             <ul class="nav-ul">
 
-                @*  <li class="nav-item active">
-                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>*@
+                <li class="nav-item active">
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
                 <li class="nav-item">
                     <a href="@Url.Action("Index", "Timesheet")">Timesheet</a>
                 </li>
@@ -173,24 +181,24 @@
                                 </ul>
                             </div>
                         </li>
-                        //<li class="nav-item dropdown">
-                        //    <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                        //        <strong>Report</strong>
-                        //    </a>
-                        //    <div class="sidebar-submenu dropdown-menu">
-                        //        <ul class="nav-ul">
-                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpDay", "ItemOrder")">Food Report Of Employees</a></li>
-                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Print1", "ItemOrder")">Today's Order Report</a></li>
-                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpData", "ItemOrder")">Order Details</a></li>
-                        //            <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportMonthWiseData", "ItemOrder")">Month Details</a></li>
-                        //        </ul>
-                        //    </div>
-                        //</li>
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <strong>Report</strong>
+                            </a>
+                            <div class="sidebar-submenu dropdown-menu">
+                                <ul class="nav-ul">
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpDay", "ItemOrder")">Food Report Of Employees</a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("Print1", "ItemOrder")">Today's Order Report</a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmpData", "ItemOrder")">Order Details</a></li>
+                                    <li><a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportMonthWiseData", "ItemOrder")">Month Details</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
                     }
                 }
 
-             @*   <li class="nav-item">
+                <li class="nav-item">
                     <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                         <strong>Order</strong>
                     </a>
@@ -200,7 +208,7 @@
                             <li> <a style="padding:10px 10px 10px 10px !important;margin:0px 0px 0px 0px !important;color:#000000!important " href="@Url.Action("ReportEmp_Day", "ItemOrder")"><strong>Check Order</strong></a></li>
                         </ul>
                     </div>
-                </li>*@
+                </li>
                 <li class="nav-item">
                     <a href="@Url.Action("ResetPassword", "Login",new { id = ViewBag.userId })"><strong>Change Password</strong></a>
                 </li>
@@ -262,33 +270,13 @@
             @RenderSection("something", required: false)
             @RenderBody()
         </div>
-        <!-- ==========categories row"=====categories row"==end========== -->
     </main>
-    @* <script disable-devtool-auto
-    src='https://cdn.jsdelivr.net/npm/disable-devtool'
-    md5='xxx'
-    url='xxx'
-    tk-name='xxx'
-    interval='xxx'
-    disable-menu='xxx'
-    detectors='xxx'
-    clear-log='true'
-    disable-select='true'
-    disable-copy='true'
-    disable-cut='true'
-    disable-paste='true'></script>*@
-    @*<script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>*@
-    @*<script>
-    DisableDevtool({
-    // The parameters are the same as in 3.1
-    })
-    </script>*@
+
     <script type="text/javascript" src="~/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="~/js/moment.min.js"></script>
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/bootstrap-datepicker.min.js"></script>
-    @*<script type="text/javascript" src="~/js/bootstrap-select.min.js"></script>*@
     <script src="~/js/jquery-ui.js"></script>
     <script src="~/lib/datatable/jquery.datatables.min.js"></script>
     <script src="~/lib/datatable/buttons.print.min.js"></script>
@@ -300,8 +288,6 @@
     <script src="~/js/bootstrap-multiselect.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    @*    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>*@
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="~/js/bootstrap-select.min.js"></script>
     <script src="~/ckeditor/ckeditor.js"></script>
@@ -346,5 +332,192 @@
         });
     </script>
     @RenderSection("Scripts", required: false)
+</body>*@
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a href="#" style="background:black">
+                    <img src="~/images/alita-logo.svg" alt="" style="background:black;height:50px">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
+                        </li>
+                        @{
+                            string x = Context.Session.GetString("usertypeId");
+                            if (x != "3")
+                            {
+                                <li class="nav-item">
+                                    <div class="dropdown">
+                                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                            Projects
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Project" asp-action="Index">Projects</a>
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Index">Tasks</a>
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Timesheet" asp-action="Index">Timesheet</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="">Snacks</a>
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ItemOrder" asp-action="Index">Order</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ItemOrder" asp-action="ReportEmp_Day">Check Order</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
+                        </li>
+                        @*   <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Leave" asp-action="Index">Leave</a>
+                        </li>*@
+                        @{
+                            var controller = @ViewBag.controller;
+                            if (controller == "itemorder")
+                            {
+                                <li class="nav-item">
+                                    <div class="btn-order-custom">
+
+                                        <div class="dropdown" style="float:right !important">
+                                            @if (ViewBag.Order != null)
+                                            {
+                                                <button onclick="myFunction()" class="dropbtn btn btn-primary ">
+                                                    Order(@ViewBag.Order.Count)
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button onclick="myFunction()" class="dropbtn  btn btn-primary ">
+                                                    Order(0)
+                                                </button>
+
+                                            }
+                                            <div id="myDropdown" class="dropdown-content">
+                                                @if (ViewBag.Order != null)
+                                                {
+                                                    @foreach (var item in ViewBag.Order)
+                                                    {
+                                                        <table style="width: 100%">
+                                                            <tr>
+                                                                <td><a href="#home">@item.ItemName (@item.Quantity) </a></td>
+                                                                <td style="float: right;"><a asp-action="Delete" asp-route-id="@item.ItemId" asp-route-pageNumber="@(Model.PageIndex)" class="">X</a></td>
+                                                            </tr>
+                                                        </table>
+                                                    }
+
+                                                }
+                                                <a href="@Url.Action("PlaceOrder", "ItemOrder")" class="btn btn-primary" style="color:#fff !important;padding:0px !important;margin:10px !important">Place Order</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Alita Infotech</a>
+                <a href="/Login/Index">
+                    <img src="~/images/user.png" style=" border-radius: 50%;height:30px;width:30px" />
+                </a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Alita Infotech Pvt. Ltd. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @*
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />*@
+    <script src="~/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/lib/datatable/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatable/buttons.print.min.js"></script>
+    <script src="~/lib/datatable/buttons.flash.min.js"></script>
+    <script src="~/lib/datatable/vfs_fonts.js"></script>
+    <script src="~/lib/datatable/pdfmake.min.js"></script>
+    <script src="~/lib/datatable/jszip.min.js"></script>
+    <script src="~/js/bootstrap-multiselect.js"></script>
+    <script src="~/js/bootstrap-multiselect.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/js/bootstrap-select.min.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(document).bind("contextmenu", function (e) {
+                e.preventDefault();
+            });
+            $(document).keydown(function (e) {
+                if (e.ctrlKey && (e.which === 83)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            document.onkeydown = function (e) {
+                if (event.keyCode == 123) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
+                }
+            }
+            $(document).keypress("u", function (e) {
+                if (e.ctrlKey) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
