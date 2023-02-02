@@ -78,6 +78,17 @@ namespace Repositories
             result.Message = "";
             return result;
         }
+
+        public ResponseCollectionModel<HolidayModel> GetRemainingTimeSheet(int employeeId, string date)
+        {
+            var result = new ResponseCollectionModel<HolidayModel>();
+            var dt = instance.GetRemainingTimeSheet(employeeId, date);
+            var lst = DataAccessUtility.ConvertToList<HolidayModel>(dt);
+            result.Response = lst;
+            result.Status = Constants.WebApiStatusOk;
+            result.Message = "";
+            return result;
+        }
         public ResponseSingleModel<string> GetJoiningDate(int id)
         {
             var result = new ResponseSingleModel<string>();

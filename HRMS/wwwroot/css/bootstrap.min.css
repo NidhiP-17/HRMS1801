@@ -4164,9 +4164,9 @@ textarea.form-control-lg {
     }
 }
 
-.nav-link:hover, .nav-link:focus {
+/*.nav-link:hover, .nav-link:focus {
     color: #0a58ca;
-}
+}*/
 
 .nav-link.disabled {
     color: #6c757d;

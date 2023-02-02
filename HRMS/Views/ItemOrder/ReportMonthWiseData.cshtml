@@ -1,7 +1,7 @@
 ﻿@model HRMS.Models.ReportFilter
 
 @{
-    ViewData["Title"] = "Day wise order details";
+    ViewData["Title"] = "Month wise order details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!DOCTYPE html>
@@ -57,22 +57,22 @@
             <form asp-action="MonthWiseData">
                 <div asp-validation-summary="ModelOnly"></div>
 
-                <div class="mb-3">
+               @* <div class="mb-3">
                     <label asp-for="Day"></label>
                     @Html.DropDownListFor(x => x.Day, ViewBag.DayListItem as SelectList, new { @class = "form-control" })
-                </div>
+                </div>*@
 
-                <div class="mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="Month"></label>
                     @Html.DropDownListFor(x => x.Month, ViewBag.MonthListItem as SelectList, new { @class = "form-control" })
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="Year"></label>
                     @Html.DropDownListFor(x => x.Year, ViewBag.YearListItem as SelectList, new { @class = "form-control" })
                 </div>
-                <div class="save-btn-form">
-                    <input type="submit" value="Show" class="" />
+                <div>
+                    <input type="submit" value="Show" class="btn btn-success" />
                 </div>
             </form>
 @*

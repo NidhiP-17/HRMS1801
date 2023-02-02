@@ -53,59 +53,62 @@
         }
 
     </style>
- 
+    <link rel="stylesheet" href="~/css/style.css" />
 </head>
 <body>
 
-   @* <main class="main">*@
-        <div class="alert alert-danger" role="alert">
-            1. this is the messgae.<br />
-            2. this msg is not preperly wokred<br />
-            3. demo
+    @* <main class="main">*@
+    <div class="col-md-12 alert alert-danger" id="divMsg" style="display:none">
+    </div>
+    <div class="alert alert-danger" role="alert">
+        1. this is the messgae.<br />
+        2. this msg is not preperly wokred<br />
+        3. demo
 
-        </div>
-        <div class="row multi-wpr-box">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4 col-sm-12">
-                    <div class="ul-multi">
-                        <div class="multi-inner-box flex">
-                            <ul class="multi-content">
-                                <li class="flex">
-                                    <div class="product-img">
-                                        <span><img decoding="async" src="@("~/itemImage/"+item.ImageName)" asp-append-version="true" width="90px" height="70px" /></span>
-                                    </div>
-                                    <div class="product-content">
-                                        <h3>@item.ItemName</h3>
-                                        <p>@item.Amount</p>
-                                    </div>
-                                </li>
+    </div>
+    <div class="row multi-wpr-box" id="divItems">
 
-                            </ul>
-                            <a asp-action="OrderNow" asp-route-id="@item.ItemId" asp-route-pageNumber="@(Model.PageIndex)" class="btn btn-primary">ADD</a>
-                        </div>
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 col-sm-12">
+                <div class="ul-multi">
+                    <div class="multi-inner-box flex">
+                        <ul class="multi-content">
+                            <li class="flex">
+                                <div class="product-img">
+                                    <span><img decoding="async" src="@("~/itemImage/"+item.ImageName)" asp-append-version="true" width="90px" height="70px" /></span>
+                                </div>
+                                <div class="product-content">
+                                    <h3>@item.ItemName</h3>
+                                    <p>@item.Amount</p>
+                                </div>
+                            </li>
 
+                        </ul>
+                        <a asp-action="OrderNow" asp-route-id="@item.ItemId" asp-route-pageNumber="@(Model.PageIndex)" id="btnAdd" class="btn btn-primary">ADD</a>
                     </div>
 
                 </div>
 
+            </div>
 
-            }
-        </div>
-        @{
-            var prevDisable = !Model.HasPrevpage ? "disabled" : "";
-            var nextDisable = !Model.HasNextPage ? "disabled" : "";
+
         }
-        <div class="nest-btn">
-            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn  @prevDisable">
-                Previous
-            </a>
+    </div>
+    @{
+        var prevDisable = !Model.HasPrevpage ? "disabled" : "";
+        var nextDisable = !Model.HasNextPage ? "disabled" : "";
+    }
+    <div class="nest-btn">
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn  @prevDisable">
+            Previous
+        </a>
 
-            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn next_btn @nextDisable">
-                Next
-            </a>
-        </div>
-   @* </main>*@
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn next_btn @nextDisable">
+            Next
+        </a>
+    </div>
+    @* </main>*@
 
 </body>
 @if (ViewBag.Message != null)
@@ -113,8 +116,60 @@
     <script type="text/javascript">
         window.onload = function () {
             alert("@ViewBag.Message");
-        };
 
+        };
     </script>
+}
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            GetRemainingDays();
+        });
+        var totalfilledDays = [];
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1; // Months start at 0!
+        let dd = today.getDate();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        const formattedToday = mm + '/' + dd + '/' + yyyy;
+        var id = '@ViewBag.userId';
+        function GetRemainingDays() {
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: '@Url.Action("GetRemainingTimeSheet", "ItemOrder")',
+                data: { "employeeId": id, "date": formattedToday },
+                success: function (response) {
+                    if (response != '[]') {
+                        response = JSON.parse(response);
+                        $.each(response, function (i, day) {
+                            totalfilledDays.push(day.holidaydate);
+                        });
+
+                        //if (totalfilledDays.length > 0) {
+                        //    $("#divMsg").show();
+                        //    var elms = document.querySelectorAll("#btnAdd");
+                        //    for (var i = 0; i < elms.length; i++)
+                        //        elms[i].className ="btn btn-primary disabled";
+                        //    $("#divMsg").text("You did not fill timesheet for further days so you do not order food today");
+                        //}
+                        //else
+                        //{
+                        $("#divMsg").hide();
+                        var elms = document.querySelectorAll("#btnAdd");
+                        for (var i = 0; i < elms.length; i++)
+                            elms[i].className = "btn btn-primary";
+                        //}
+                    }
+                }
+            });
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 </html>

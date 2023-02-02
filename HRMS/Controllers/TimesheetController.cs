@@ -18,7 +18,7 @@ namespace HRMS.Controllers
 
         long loginedempId = 0;
         [HttpGet]
-        public IActionResult Index(string daterange, string projectId, string employeeId)
+        public IActionResult Index(string fd, string td, string pId, string eId)
         {
             string mesg = "";
             ViewBag.StateEnabled = false;
@@ -26,7 +26,8 @@ namespace HRMS.Controllers
             var response1 = project.ListProjects(ViewBag.userId, out mesg);
             ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName");
 
-            ViewBag.daterange = daterange;
+            ViewBag.fromdaterange = fd;
+            ViewBag.todaterange = td;
 
             EmployeeRepository employee = new EmployeeRepository();
             var response2 = employee.ListEmployees(ViewBag.userId, out mesg);
@@ -35,11 +36,11 @@ namespace HRMS.Controllers
 
                 ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName");
             }
-            else if (employeeId == null || ViewBag.userTypeId == 3)
+            else if (eId == null || ViewBag.userTypeId == 3)
             {
                 ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", ViewBag.userId);
                 loginedempId = ViewBag.userId;
-                employeeId = ViewBag.userId.ToString();
+                eId = ViewBag.userId.ToString();
             }
 
             TaskRepository task = new TaskRepository();
@@ -68,45 +69,44 @@ namespace HRMS.Controllers
             //var lastDay = new DateTime(now.Year, now.Month, daysInMonth);
             string startDate;
             string endDate;
-            if (daterange != null)
+            if (fd != null && td != null)
             {
-                startDate = daterange.Split(" - ")[0];
-                endDate = daterange.Split(" - ")[1];
+                startDate = fd;
+                endDate = td;
             }
             else
             {
                 startDate = firstDay.ToShortDateString();
                 endDate = lastDay.ToShortDateString();
             }
-            if (employeeId == null)
-                employeeId = "ALL";
+            if (eId == null)
+                eId = "ALL";
 
-            if (projectId == null)
-                projectId = "ALL";
-            var response = repository.GetTimesheet(projectId, employeeId, startDate, endDate, ViewBag.userId, out mesg);
+            if (pId == null)
+                pId = "ALL";
+            var response = repository.GetTimesheet(pId, eId, startDate, endDate, ViewBag.userId, out mesg);
 
             //ViewBag.TimesheetList = response.Response;
-            //if (projectId.Equals("0") == false || projectId.Equals("ALL") == false)
-            //    ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName", projectId);
-            //if (employeeId.Equals("0") == false && employeeId.Equals("ALL") == false)
-            //{
-            //    ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", employeeId);
-            //}
+            if (pId.Equals("0") == false || pId.Equals("ALL") == false)
+                ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName", pId);
+            if (eId.Equals("0") == false && eId.Equals("ALL") == false)
+            {
+                ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", eId);
+            }
 
             TimesheetModel t = new TimesheetModel();
-            //if (employeeId != "ALL")
-            //    t.employeeId = Convert.ToInt32(employeeId);
-            //else
-            //    t.employeeId = 0;
-            //if (projectId != "ALL")
-            //    t.projectId = Convert.ToInt32(projectId);
-            //else
-            //    t.projectId = 0;
-            //t.taskId = 0;
+            if (eId != "ALL")
+                t.employeeId = Convert.ToInt32(eId);
+            else
+                t.employeeId = 0;
+            if (pId != "ALL")
+                t.projectId = Convert.ToInt32(pId);
+            else
+                t.projectId = 0;
+            t.taskId = 0;
             t.TimeSheetList = response.Response;
-            t.daterange = ViewBag.daterange;
-            t.projectId = Convert.ToInt32(projectId);
-            t.employeeId = Convert.ToInt32(employeeId);
+            //t.daterange = ViewBag.daterange;
+          
             return View(t);
             //return View(response.Response);
         }

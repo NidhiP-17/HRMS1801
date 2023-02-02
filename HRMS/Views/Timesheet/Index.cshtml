@@ -26,7 +26,8 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <input type="hidden" id="hdnrange" asp-for="daterange" value="@ViewBag.daterange" />
+                <input type="hidden" id="hdnfromdate" asp-for="fromdate" value="@ViewBag.fromdaterange" />
+                <input type="hidden" id="hdntodate" asp-for="todate" value="@ViewBag.todaterange" />
 
                 @{
                     string x = Context.Session.GetString("usertypeId");
@@ -180,11 +181,14 @@
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-1">  <label class="control-label">Date</label></div>
-                <div class="col-md-3">
-                    <input type="text" name="daterange" id="daterange" class="form-control" />
+                <div class="col-md-2">
+                    <input type="text" name="fromdate" id="fromdate" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="todate" id="todate" class="form-control" />
                 </div>
                 <div class="col-md-1"> <label class="control-label">Projects</label></div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <select name="projectId" id="projectId" class="form-control" asp-items="@ViewBag.Projects"></select>
                 </div>
                 @if (ViewBag.userTypeId != 3)
@@ -198,7 +202,9 @@
                 {
                     <input type="hidden" name="employeeId" id="employeeId" class="form-control" value="@ViewBag.Employee" />
                 }
-                <div class="col-md-12" style="text-align:right"> <input type="submit" class="btn btn-success" value="Filter" onclick="PopulateTable()" /></div>
+                <div class="col-md-12" style="text-align:right;margin-top:10px">
+                    <input type="button" class="btn btn-success" value="Filter" onclick="PopulateTable()" />
+                </div>
             </div>
         </div>
 
@@ -368,7 +374,7 @@
                     url: '@Url.Action("GetRemainingDays", "Timesheet")',
                     data: { "employeeId": id },
                     success: function (response) {
-                        
+
                         if (response != '[]') {
                             response = JSON.parse(response);
                             $.each(response, function (i, day) {
@@ -639,7 +645,7 @@
         }
 
         function timeConvert(n) {
-            
+
             var n1 = n.split(".");
             var nv1 = n1[1];
             var val = Math.round(nv1.toString() * 100 / 60);
@@ -697,32 +703,79 @@
 
             $('#demoGrid').dataTable({
             });
-            var start = moment();
-            var end = moment();
+            //var start = moment();
+            //var end = moment();
 
-            function cb(start, end) {
-                $('#daterange span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
-            }
+            //function cb(start, end) {
+            //    $('#daterange span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
+            //    //$('#todate span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
+            //}
 
-            $('#daterange').daterangepicker({
-                startDate: start,
-                endDate: end,
-                locale: {
-                    format: 'DD-MM-YYYY'
-                },
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
+            //$('#daterange').daterangepicker({
+            //    startDate: start,
+            //    endDate: end,
+            //    locale: {
+            //        format: 'DD-MM-YYYY'
+            //    },
+            //    ranges: {
+            //        'Today': [moment(), moment()],
+            //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+            //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            //    },
 
-            }, cb);
-            $('#hdnrange').val($('#daterange').val());
-            if ('@ViewBag.daterange' != null)
-                $('#daterange').val('@ViewBag.daterange');
+            //}, cb);
+            //$('#hdnrange').val($('#daterange').val());
+
+            //if ('@ViewBag.daterange' != '')
+            //    $('#daterange').val('@ViewBag.daterange');
+
+
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday = mm + '/' + dd + '/' + yyyy;
+            $('#fromdate').val(formattedToday);
+            $('#todate').val(formattedToday);
+            $('#fromdate').datepicker({
+                numberOfMonths: 1,
+                format: 'MM/DD/YYYY',
+                autoclose: true,
+                //startDate: minDate,
+                //endDate: "today",
+                minDate: '-3M',
+                maxDate: '+28D',
+                setDate: today
+            }).on('changeDate', function (ev) {
+                $(this).datepicker('hide');
+            });
+
+            $('#todate').datepicker({
+                numberOfMonths: 1,
+                format: 'MM/DD/YYYY',
+                autoclose: true,
+                //startDate: minDate,
+                //endDate: "today",
+                minDate: '-3M',
+                maxDate: '+28D',
+                setDate: today
+            }).on('changeDate', function (ev) {
+                $(this).datepicker('hide');
+            });
+
+            $('#hdnfromdate').val($('#fromdate').val());
+            $('#hdntodate').val($('#todate').val());
+
+            if ('@ViewBag.fromdaterange' != '')
+                $('#fromdate').val('@ViewBag.fromdaterange');
+            if ('@ViewBag.todaterange' != '')
+                $('#todate').val('@ViewBag.todaterange');
             var ViewBagmsg = '@ViewBag.msg'
             if (ViewBagmsg != null) {
                 if (ViewBagmsg != "") {
@@ -767,7 +820,7 @@
         var sat = new Array();
 
         function noSundaysOrHolidays(date) {
-            
+
             var day = date.getDay();
             if (day != 0) {
                 var d = ('0' + date.getDate()).slice(-2);
@@ -844,8 +897,10 @@
         function PopulateTable() {
             var projectId = $("#projectId option:selected").val();
             var employeeId = $("#employeeId option:selected").val();
-            var dateRange = $("#daterange").val();
-            window.location.href = '@Url.Action("Index", "Timesheet")?projectId=' + projectId + '&employeeId=' + employeeId + '&daterange=' + dateRange;
+            var fromdateRange = $("#fromdate").val();
+            var todateRange = $("#todate").val();
+            //var dateRange = $("#daterange").val();
+            window.location.href = '@Url.Action("Index", "Timesheet")?pId=' + projectId + '&eId=' + employeeId + '&fd=' + fromdateRange + '&td=' + todateRange;
         }
     </script>
     @{

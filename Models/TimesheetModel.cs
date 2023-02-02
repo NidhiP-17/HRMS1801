@@ -32,6 +32,7 @@ namespace Models
         [Required(ErrorMessage = "Date is required")]
         [DisplayName("Date")]
         public string? date { get; set; }
+       
         [DisplayName("Select Any")]
         public int? trackerFlag { get; set; }
         public string? trackerFlagVal { get; set; }
@@ -59,7 +60,8 @@ namespace Models
         public string? holidaydate { get; set; }
         public string? isWorkingDay { get; set; }
         public string? daterange { get; set; }
-
+        public string? fromdate { get; set; }
+        public string? todate { get; set; }
         public IEnumerable<Models.TimesheetModel>? TimeSheetList { get; set; }
 
     }

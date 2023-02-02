@@ -119,6 +119,18 @@ namespace DataAccess
             return dt;
         }
 
+        public DataTable GetRemainingTimeSheet(int employeeId, string date)
+        {
+            DataTable dt = null;
+            using (DBConnector connector = new DBConnector("sp_GetRemainingTimeSheet", true))
+            {
+                connector.AddInParameterWithValue("@employeeId", employeeId);
+                connector.AddInParameterWithValue("@date", date);
+                dt = connector.GetDataTable();
+            }
+            return dt;
+        }
+
         public string CreateTimesheet(TimesheetModel timesheet, out string message, long userId)
         {
             int rowEffected = 0;

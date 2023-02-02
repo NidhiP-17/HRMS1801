@@ -19,6 +19,7 @@ using System.Collections;
 using System.Net;
 using System.Net.Sockets;
 using System;
+using Newtonsoft.Json;
 
 namespace HRMS.Controllers
 {
@@ -31,6 +32,13 @@ namespace HRMS.Controllers
         public ItemOrderController(IConfiguration config)
         {
             configuration = config;
+        }
+
+        public JsonResult GetRemainingTimeSheet(int employeeId, string date)
+        {
+            TimesheetRepository timesheet = new TimesheetRepository();
+            var response = timesheet.GetRemainingTimeSheet(employeeId, date);
+            return new JsonResult(JsonConvert.SerializeObject(response.Response));
         }
         public IActionResult Index(int? pageNumber, string Msg)
         {
@@ -66,7 +74,7 @@ namespace HRMS.Controllers
                     var utcDateTimeString = response.Substring(7, 17);
                     localDateTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
                 }
-                if (localDateTime.Hour >= 14 || localDateTime.Hour <= 16)
+                if (localDateTime.Hour <= 12 && localDateTime.Hour >= 15)
                 {
                     HttpContext.Session.Remove("cartItems");
                 }
@@ -108,8 +116,9 @@ namespace HRMS.Controllers
                 var date = DateTime.Now;
 
                 int intHour = date.Hour;
+                decimal TotalAmount = 0;
 
-                if (intHour >= 12 && intHour < 14)
+                if (intHour >= 13 && intHour <= 15)
                 {
                     var diffInSeconds = (localDateTime - date).TotalSeconds;
                     if (diffInSeconds <= 2)
@@ -135,6 +144,7 @@ namespace HRMS.Controllers
                                 foreach (var x in mlstItem)
                                 {
                                     var itemToChange = mlstItem.FirstOrDefault(d => d.ItemId == objItem.ItemId);
+                                    TotalAmount = TotalAmount + (x.Quantity * x.Amount);
                                     if (itemToChange != null)
                                     {
                                         if (itemToChange.ItemId == x.ItemId)
@@ -169,17 +179,17 @@ namespace HRMS.Controllers
 
                             HttpContext.Session.Set<List<Item>>("cartItems", mlstItem);
                         }
-                        decimal TotalAmount = 0;
 
                         foreach (var x in mlstItem)
                         {
                             TotalAmount = TotalAmount + (x.Quantity * x.Amount);
                         }
+
                         ViewBag.TotalAmount = TotalAmount;
 
                         ViewBag.Order = mlstItem;
 
-                        Msg = "Item ordered successfully.";
+                        Msg = "Item ordered successfully";
 
                     }
                     else

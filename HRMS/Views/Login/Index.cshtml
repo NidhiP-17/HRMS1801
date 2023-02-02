@@ -8,88 +8,35 @@
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> Login  </title>
+    <title> HRMS - Login  </title>    
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <style>
-        Body {
-            font-family: Calibri, Helvetica, sans-serif;
-            background-color: white;
-        }
-
-        button {
-            background-color: dodgerblue;
-            width: 100%;
-            color: black;
-            padding: 10px;
-            margin: 10px 0px;
-            border: none;
-            cursor: pointer;
-            border-radius: revert;
-        }
-
-        input[type=text], input[type=password] {
-            width: 100%;
-            margin: 8px 0;
-            padding: 12px 20px;
-            display: inline-block;
-            border: 2px solid black;
-            box-sizing: border-box;
-        }
-
-        button:hover {
-            opacity: 0.7;
-        }
-
-        .cancelbtn {
-            width: auto;
-            padding: 10px 18px;
-            margin: 10px 5px;
-        }
-
-        .container {
-            background: gray;
-            width: 380px;
-            height: auto;
-            padding: 15px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -ms-transform: translateX(-50%) translateY(-50%);
-            -webkit-transform: translate(-50%,-50%);
-            transform: translate(-50%,-50%);
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-        }
-    </style>
+        <link href="~/css/custom.css" rel="stylesheet" />
 </head>
-<body oncontextmenu="return false" >
-    @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { style = "width: -webkit-fill-available;" }))
+<body class="loginPage" oncontextmenu="return false" >
+    @using (Html.BeginForm("Index", "Login", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="container">
-                <h1>Login Here</h1>
+            <div class="LoginBox">
+                <h1>HRMS - Login</h1>
                 <form asp-action="Login">
-                    <div class="form-group">
-                        <input asp-for="Email" class="form-control" placeholder="User Name" id="test1" />
+                    <div class="form-group mb-3">
+                    <input asp-for="Email" class="form-control" autocomplete="off" placeholder="User Name" id="test1" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group">
-                        <input asp-for="Password" class="form-control" type="password" placeholder="Password" />
+                <div class="form-group mb-4">
+                    <input asp-for="Password" class="form-control" autocomplete="off" type="password" placeholder="Password" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group text-center">
                         @Html.ValidationSummary(false, "", new { @class = "alert-danger" })
-                        <button type="submit">Submit</button>
+                        <button class="btn btn-primary" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
-        </div>
+        
     }
 
     @if (ViewBag.msg != null)
@@ -101,25 +48,7 @@
         </script>
     }
 </body>
-@*<script disable-devtool-auto
-            src='https://cdn.jsdelivr.net/npm/disable-devtool'
-            md5='xxx'
-            url='xxx'
-            tk-name='xxx'
-            interval='xxx'
-            disable-menu='xxx'
-            detectors='xxx'
-            clear-log='true'
-            disable-select='true'
-            disable-copy='true'
-            disable-cut='true'
-            disable-paste='true'></script>*@
-@*    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
-    <script>
-        DisableDevtool({
-            // The parameters are the same as in 3.1
-        })
-    </script>*@
+
 <script>
     $(document).bind("contextmenu", function (e) {
         e.preventDefault();
