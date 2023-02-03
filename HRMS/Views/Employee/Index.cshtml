@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (ViewBag.userTypeId != 3)
+@if (ViewBag.userTypeId == 1 || ViewBag.userTypeId == 5)
 {
     <p>
         <a asp-action="Create" class="btn btn-info">Create New</a>

@@ -18,6 +18,16 @@ namespace Models
         [Required(ErrorMessage = "UserType is required")]
         [DisplayName("User Type")]
         public int userTypeId { get; set; }
+        [Required(ErrorMessage = "Department is required")]
+        [DisplayName("Department")]
+        public int departmentId { get; set; }
+        [DisplayName("Department")]
+        public string? department { get; set; }
+        [Required(ErrorMessage = "Designation is required")]
+        [DisplayName("Designation")]
+        public int designationId { get; set; }
+        [DisplayName("Designation")]
+        public string? designation { get; set; }
         [DisplayName("User Type")]
         public string? userType { get; set; }
         [DisplayName("Employee Code")]
@@ -33,7 +43,7 @@ namespace Models
 
         //[Required(ErrorMessage = "Birthdate is required")]
         [DisplayName("Birth Date")]
-        public DateTime? DOB { get; set; }
+        public string? DOB { get; set; }
         public string? DOBVal { get; set; }
         //[Required(ErrorMessage = "Gender is required")]
         [DisplayName("Gender")]
@@ -78,11 +88,11 @@ namespace Models
         [DisplayName("Country")]
         [MaxLength(50)]
         public string? country { get; set; }
-        [Required(ErrorMessage = "Position is required")]
-        [EmployeeTypeValidation(ErrorMessage = "Select position")]
-        [DisplayName("Position")]
+        //[Required(ErrorMessage = "Position is required")]
+        //[EmployeeTypeValidation(ErrorMessage = "Select position")]
+        [DisplayName("Technology")]
         public int employeeTypeId { get; set; }
-        [DisplayName("Position")]
+        [DisplayName("Technology")]
         public string? employeeType { get; set; }
 
         //[Required(ErrorMessage = "AadharNumber is required")]

@@ -173,6 +173,30 @@ namespace DataAccess
 
             return dt;
         }
+        public DataTable ListDepartments()
+        {
+            DataTable dt = null;
+            using (DBConnector connector = new DBConnector("sp_ListDepartments", true))
+            {
+                //connector.AddInParameterWithValue("@userid", userid);
+                dt = connector.GetDataTable();
+            }
+
+            return dt;
+        }
+
+        public DataTable ListDesignations(int departmentId)
+        {
+            DataTable dt = null;
+            using (DBConnector connector = new DBConnector("sp_ListDesignations", true))
+            {
+                connector.AddInParameterWithValue("@departmentId", departmentId);
+                dt = connector.GetDataTable();
+            }
+
+            return dt;
+        }
+
 
         public DataTable GetEmployeeTypes()
         {
@@ -203,6 +227,8 @@ namespace DataAccess
             using (DBConnector connector = new DBConnector("sp_CreateEmployee", true))
             {
                 connector.AddInParameterWithValue("@userTypeId", employee.userTypeId);
+                connector.AddInParameterWithValue("@departmentId", employee.departmentId);
+                connector.AddInParameterWithValue("@designationId", employee.designationId);
                 connector.AddInParameterWithValue("@firstName", employee.firstName);
                 connector.AddInParameterWithValue("@lastName", employee.lastName);
                 if(employee.DOB == null)
@@ -295,6 +321,8 @@ namespace DataAccess
             {
                 connector.AddInParameterWithValue("@employeeId", employee.employeeId);
                 connector.AddInParameterWithValue("@userTypeId", employee.userTypeId);
+                connector.AddInParameterWithValue("@departmentId", employee.departmentId);
+                connector.AddInParameterWithValue("@designationId", employee.designationId);
                 connector.AddInParameterWithValue("@firstName", employee.firstName);
                 connector.AddInParameterWithValue("@lastName", employee.lastName);
                 if (employee.DOB == null)

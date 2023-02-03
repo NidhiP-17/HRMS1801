@@ -74,7 +74,7 @@ namespace HRMS.Controllers
                     var utcDateTimeString = response.Substring(7, 17);
                     localDateTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
                 }
-                if (localDateTime.Hour <= 12 && localDateTime.Hour >= 15)
+                if (localDateTime.Hour <= 18 && localDateTime.Hour >= 20)
                 {
                     HttpContext.Session.Remove("cartItems");
                 }
@@ -118,7 +118,7 @@ namespace HRMS.Controllers
                 int intHour = date.Hour;
                 decimal TotalAmount = 0;
 
-                if (intHour >= 13 && intHour <= 15)
+                if (intHour >= 18 && intHour <= 20)
                 {
                     var diffInSeconds = (localDateTime - date).TotalSeconds;
                     if (diffInSeconds <= 2)

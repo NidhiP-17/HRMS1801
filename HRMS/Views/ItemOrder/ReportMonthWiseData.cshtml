@@ -57,10 +57,10 @@
             <form asp-action="MonthWiseData">
                 <div asp-validation-summary="ModelOnly"></div>
 
-               @* <div class="mb-3">
+                <div class="mb-3" hidden>
                     <label asp-for="Day"></label>
                     @Html.DropDownListFor(x => x.Day, ViewBag.DayListItem as SelectList, new { @class = "form-control" })
-                </div>*@
+                </div>
 
                 <div class="col-md-4 mb-3">
                     <label asp-for="Month"></label>

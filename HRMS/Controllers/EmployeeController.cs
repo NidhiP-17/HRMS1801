@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ResponseModel;
+using Newtonsoft.Json;
 using Repositories;
+using System.Threading.Tasks;
 using WebSite.Common;
 
 namespace HRMS.Controllers
@@ -26,17 +28,21 @@ namespace HRMS.Controllers
         }
         public ViewResult Create()
         {
-            EmployeeRepository usertype = new EmployeeRepository();
-            var response1 = usertype.ListUserTypes();
+            EmployeeRepository repository = new EmployeeRepository();
+            var response1 = repository.ListUserTypes();
             ViewBag.userTypes = new SelectList(response1.Response, "userTypeId", "userType");
 
-            EmployeeRepository employeeType = new EmployeeRepository();
-            var response2 = employeeType.ListEmployeeTypes();
+            var response2 = repository.ListEmployeeTypes();
             ViewBag.employeeType = new SelectList(response2.Response, "employeeTypeId", "employeeType");
 
-            EmployeeRepository status = new EmployeeRepository();
-            var response3 = status.ListStatus();
+            var response3 = repository.ListStatus();
             ViewBag.status = new SelectList(response3.Response, "status", "status");
+
+            var responsedept = repository.ListDepartments();
+            ViewBag.departments = new SelectList(responsedept.Response, "departmentId", "department");
+
+            //var responsedes = repository.ListDesignations(0);
+            //ViewBag.designations = new SelectList(responsedes.Response, "designationId", "designation");
 
             return View();
         }
@@ -44,9 +50,10 @@ namespace HRMS.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(EmployeeModel task)
         {
+            EmployeeRepository repository = new EmployeeRepository();
             if (ModelState.IsValid)
             {
-                EmployeeRepository repository = new EmployeeRepository();
+               
                 if (task.employeeImage != null)
                 {
                     string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/EmployeeDocs");
@@ -107,7 +114,7 @@ namespace HRMS.Controllers
                     }
                     task.panImageName = task.panImage.FileName;
                 }
-                
+
                 var response = repository.CreateEmployee(task, ViewBag.userId);
                 if (response.Status == Constants.WebApiStatusOk)
                 {
@@ -120,16 +127,19 @@ namespace HRMS.Controllers
                     return View("Create", task);
                 }
             }
-            EmployeeRepository usertype = new EmployeeRepository();
-            var response1 = usertype.ListUserTypes();
+            var response1 = repository.ListUserTypes();
             ViewBag.userTypes = new SelectList(response1.Response, "userTypeId", "userType");
 
-            EmployeeRepository employeeType = new EmployeeRepository();
-            var response2 = employeeType.ListEmployeeTypes();
+            var responsedept = repository.ListDepartments();
+            ViewBag.departments = new SelectList(responsedept.Response, "departmentId", "department");
+
+            //var responsedes = repository.ListDesignations(task.departmentId);
+            //ViewBag.designations = new SelectList(responsedes.Response, "designationId", "designation");
+
+            var response2 = repository.ListEmployeeTypes();
             ViewBag.employeeType = new SelectList(response2.Response, "employeeTypeId", "employeeType");
 
-            EmployeeRepository status = new EmployeeRepository();
-            var response3 = status.ListStatus();
+            var response3 = repository.ListStatus();
             ViewBag.status = new SelectList(response3.Response, "status", "status");
 
             return View(task);
@@ -139,16 +149,19 @@ namespace HRMS.Controllers
             EmployeeRepository repository = new EmployeeRepository();
             var result = repository.GetDetail(id);
 
-            EmployeeRepository usertype = new EmployeeRepository();
-            var response1 = usertype.GetUserTypes();
-            ViewBag.userTypes = new SelectList(response1.Response, "userTypeId", "userType",result.Response.userTypeId);
+            var response1 = repository.GetUserTypes();
+            ViewBag.userTypes = new SelectList(response1.Response, "userTypeId", "userType", result.Response.userTypeId);
 
-            EmployeeRepository employeeType = new EmployeeRepository();
-            var response2 = employeeType.GetEmployeeTypes();
+            var response2 = repository.GetEmployeeTypes();
             ViewBag.employeeType = new SelectList(response2.Response, "employeeTypeId", "employeeType", result.Response.employeeTypeId);
 
-            EmployeeRepository status = new EmployeeRepository();
-            var response3 = status.GetStatus();
+            var responsedept = repository.ListDepartments();
+            ViewBag.departments = new SelectList(responsedept.Response, "departmentId", "department", result.Response.departmentId);
+
+            var responsedes = repository.ListDesignations(result.Response.departmentId);
+            ViewBag.designations = new SelectList(responsedes.Response, "designationId", "designation", result.Response.designationId);
+
+            var response3 = repository.GetStatus();
             ViewBag.status = new SelectList(response3.Response, "status", "status", result.Response.status);
 
             return View(result.Response);
@@ -265,9 +278,16 @@ namespace HRMS.Controllers
         }
         public ViewResult Details(int id)
         {
-            EmployeeRepository  repository = new EmployeeRepository();
+            EmployeeRepository repository = new EmployeeRepository();
             var response = repository.GetDetail(id);
             return View(response.Response);
         }
+        public JsonResult GetDesignation(int departmentId)
+        {
+            EmployeeRepository repository = new EmployeeRepository();
+            var response = repository.ListDesignations(departmentId);
+            return new JsonResult(JsonConvert.SerializeObject(response));
+        }
+
     }
 }

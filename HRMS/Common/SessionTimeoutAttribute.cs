@@ -26,29 +26,13 @@ namespace WebSite.Common
                     controller.ViewBag.logoutTime = 0;
                     controller.ViewBag.userId = 0;
                 }
-                //if (filterContext.RouteData.Values.ContainsKey("controller") && filterContext.RouteData.Values.ContainsKey("action"))
-                //{
-                //    var controller1 = filterContext.RouteData.Values["controller"].ToString();
-                //    var action1 = filterContext.RouteData.Values["action"].ToString();
-
-                //    filterContext.HttpContext.Session.SetString("controllername", controller1); 
-                //    filterContext.HttpContext.Session.SetString("actionname", action1); 
-
-                //    //filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
-                //    //{
-                //    //    controller = controller1,
-                //    //    action = action1
-                //    //}));
-                //}
-                //else
-                //{
+             
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
                 {
                     controller = "Login",
                     action = "Index"
                 }));
-                //}
-                //filterContext.Result = new RedirectResult("~/Login/Index");
+               
                 return;
             }
             else
@@ -65,6 +49,8 @@ namespace WebSite.Common
                     controller.ViewBag.loginUserName = user.LoginUserName;
                     controller.ViewBag.userId = user.UserId;
                     controller.ViewBag.userTypeId = user.userTypeId;
+                    controller.ViewBag.designationId = user.designationId;
+                    controller.ViewBag.designation = user.designation;
                     controller.ViewBag.controller = controllerName;
                     controller.ViewBag.joiningDate = user.JoiningDate;
                     //check for accesslevel

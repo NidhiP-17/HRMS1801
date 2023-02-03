@@ -206,6 +206,28 @@ namespace Repositories
             result.Message = "";
             return result;
         }
+
+        public ResponseCollectionModel<EmployeeModel> ListDepartments()
+        {
+            var result = new ResponseCollectionModel<EmployeeModel>();
+            var dt = instance.ListDepartments();
+            var lst = DataAccessUtility.ConvertToList<EmployeeModel>(dt);
+            result.Response = lst;
+            result.Status = Constants.WebApiStatusOk;
+            result.Message = "";
+            return result;
+        }
+
+        public ResponseCollectionModel<EmployeeModel> ListDesignations(int departmentId)
+        {
+            var result = new ResponseCollectionModel<EmployeeModel>();
+            var dt = instance.ListDesignations(departmentId);
+            var lst = DataAccessUtility.ConvertToList<EmployeeModel>(dt);
+            result.Response = lst;
+            result.Status = Constants.WebApiStatusOk;
+            result.Message = "";
+            return result;
+        }
         public ResponseCollectionModel<EmployeeModel> GetEmployeeTypes()
         {
             var result = new ResponseCollectionModel<EmployeeModel>();

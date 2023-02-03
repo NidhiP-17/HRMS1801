@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Plugins;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using WebSite.Common;
 
 namespace HRMS.Controllers
 {
+    [SessionTimeoutAttribute]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

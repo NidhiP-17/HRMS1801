@@ -10,8 +10,20 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label asp-for="userTypeId" class="control-label"></label>
-                <select asp-for="userTypeId" class="form-control" id="userTypeId" asp-items="@ViewBag.userTypes" onchange="ShowFields()"></select>
+                <select asp-for="userTypeId" class="form-control" id="userTypeId" asp-items="@ViewBag.userTypes" onchange="ShowDiv()"></select>
                 <span asp-validation-for="userTypeId" class="text-danger"></span>
+            </div>
+            <div id="divEmployee" style="display:none">
+                <div class="form-group">
+                    <label asp-for="departmentId" class="control-label"></label>
+                    <select asp-for="departmentId" class="form-control" id="departmentId" asp-items="@ViewBag.departments" onchange="PopulateDesignation()"></select>
+                    <span asp-validation-for="departmentId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="designationId" class="control-label"></label>
+                    <select asp-for="designationId" class="form-control" id="designationId" asp-items="@ViewBag.designations" onchange="ShowFields()"></select>
+                    <span asp-validation-for="designationId" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="firstName" class="control-label"></label>
@@ -25,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DOB" class="control-label"></label>
-                <input asp-for="DOB" class="form-control" />
+                <input type="text" asp-for="DOB" id="DOB" class="form-control" />
                 <span asp-validation-for="DOB" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,6 +52,23 @@
                 <input type="text" asp-for="joiningDate" id="joiningDate" class="form-control" />
                 <span asp-validation-for="joiningDate" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="email" class="control-label"></label>
+                <input type="email" asp-for="email" class="form-control" />
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="password" class="control-label"></label>
+                <input type="password" asp-for="password" class="form-control" />
+                <span asp-validation-for="password" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+            <label asp-for="isdeleted" class="control-label"></label>
+            <input class="form-check-input" asp-for="isdeleted" /> @Html.DisplayNameFor(model => model.isdeleted)
+            <span asp-validation-for="isdeleted" class="text-danger"></span>
+            </div>*@
+        </div>
+        <div class="col-md-4">
             <div class="form-group" id="divprobationPeriod" style="display:none">
                 <label asp-for="probationPeriod" class="control-label"></label>
                 <input asp-for="probationPeriod" class="form-control" onkeypress="return isNumberKey(event)" />
@@ -65,13 +94,6 @@
                 <input asp-for="emergencyphoneNumber_1" class="form-control" onkeypress="return isNumberKey(event)" />
                 <span asp-validation-for="emergencyphoneNumber_1" class="text-danger"></span>
             </div>
-            @* <div class="form-group">
-            <label asp-for="isdeleted" class="control-label"></label>
-            <input class="form-check-input" asp-for="isdeleted" /> @Html.DisplayNameFor(model => model.isdeleted)
-            <span asp-validation-for="isdeleted" class="text-danger"></span>
-            </div>*@
-        </div>
-        <div class="col-md-4">
             <div class="form-group">
                 <label asp-for="addressLine_1" class="control-label"></label>
                 <input asp-for="addressLine_1" class="form-control" />
@@ -102,7 +124,8 @@
                 <input asp-for="country" class="form-control" />
                 <span asp-validation-for="country" class="text-danger"></span>
             </div>
-
+        </div>
+        <div class="col-md-4">
             <div class="form-group">
                 <label asp-for="aadharNumber" class="control-label"></label>
                 <input asp-for="aadharNumber" class="form-control" maxlength="12" onkeypress="return isNumberKey(event)" />
@@ -113,24 +136,11 @@
                 <input asp-for="panNumber" class="form-control" maxlength="10" />
                 <span asp-validation-for="panNumber" class="text-danger"></span>
             </div>
-
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="email" class="control-label"></label>
-                <input type="email" asp-for="email" class="form-control" />
-                <span asp-validation-for="email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="password" class="control-label"></label>
-                <input type="password" asp-for="password" class="form-control" />
-                <span asp-validation-for="password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="employeeTypeId" class="control-label"></label>
-                <select asp-for="employeeTypeId" class="form-control" asp-items="@ViewBag.employeeType"></select>
-                <span asp-validation-for="employeeTypeId" class="text-danger"></span>
-            </div>
+            @*  <div class="form-group">
+            <label asp-for="employeeTypeId" class="control-label"></label>
+            <select asp-for="employeeTypeId" class="form-control" asp-items="@ViewBag.employeeType"></select>
+            <span asp-validation-for="employeeTypeId" class="text-danger"></span>
+            </div>*@
             <div class="form-group">
                 <label asp-for="employeeImage" class="control-label"></label>
                 <input asp-for="employeeImage" class="form-control" type="file" id="EmployeePic" />
@@ -189,7 +199,7 @@
                     <span asp-validation-for="suspendreason" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="padding-top:10px">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </div>
@@ -205,25 +215,89 @@
         $(document).ready(function () {
             $(function () {
                 var currentDate = new Date();
+                debugger
                 $('#joiningDate').datepicker({
-                    format: 'dd/mm/yyyy',
+                    format: 'DD/MM/YYYY',
                     autoclose: true,
-                    endDate: "currentDate",
-                    minDate: currentDate,
-                    maxDate: '+1M'
+                    //endDate: "currentDate",
+                    minDate: '-72M',
+                    maxDate: '+1M',
+                    setDate: currentDate
                 }).on('changeDate', function (ev) {
                     $(this).datepicker('hide');
                 });
-                $('#joiningDate').keyup(function () {
-                    if (this.value.match(/[^0-9]/g)) {
-                        this.value = this.value.replace(/[^0-9^-]/g, '');
-                    }
+                //$('#joiningDate').keyup(function () {
+                //    if (this.value.match(/[^0-9]/g)) {
+                //        this.value = this.value.replace(/[^0-9^-]/g, '');
+                //    }
+                //});
+
+                $('#DOB').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    format: 'DD/MM/YYYY',
+                    autoclose: true,
+                    //endDate: "currentDate",
+                    //minDate: 0,
+                    yearRange: "-90:+00",
+                    maxDate: '+1M',
+                    setDate: currentDate
+                }).on('changeDate', function (ev) {
+                    $(this).datepicker('hide');
                 });
+                //$('#DOB').keyup(function () {
+                //    if (this.value.match(/[^0-9]/g)) {
+                //        this.value = this.value.replace(/[^0-9^-]/g, '');
+                //    }
+                //});
             });
 
             ShowRequired();
             ShowFields();
+            ShowDiv();
+            PopulateDesignation();
         })
+
+        function PopulateDesignation() {
+            var departmentId = $("#departmentId option:selected").val();
+            if ($("#departmentId option:selected").text() != "Admin" || $("#departmentId option:selected").text() != "HR") {
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: '@Url.Action("GetDesignation", "Employee")',
+                    data: { "departmentId": departmentId },
+                    success: function (response) {
+                        response = JSON.parse(response).Response;
+                        $("#designationId").empty();
+                        if (response.length > 0) {
+                            $.each(response, function (index, element) {
+                                $("#designationId").append('<option value="' + element.designationId + '">' + element.designation + '</option>');
+                            });
+                        }
+                        $("#designationId").prop("disabled", false);
+                    },
+                    error: function () {
+                        alert("Data Not Found");
+                    }
+                });
+            }
+            else {
+                $("#designationId").attr("disabled", "disabled");
+                $("#designationId").hide();
+                $("#designationId").val(0);
+            }
+        }
+
+        function ShowDiv() {
+            if ($("#userTypeId").val() == 2) {
+                $("#departmentId").val(0);
+                $("#designationId").val(0);
+                $("#divEmployee").show();
+            }
+            else
+                $("#divEmployee").hide();
+        }
+
         function ShowRequired() {
             if ($("#status").val() == "Resigned") {
                 $("#divresign").show();
@@ -238,7 +312,7 @@
         }
 
         function ShowFields() {
-            if ($("#userTypeId").val() == 4)
+            if ($("#designationId option:selected").text() == "Trainee")
                 $("#divprobationPeriod").show();
             else
                 $("#divprobationPeriod").hide();

@@ -60,12 +60,13 @@ namespace HRMS.Controllers
                             HttpContext.Session.Set("usertypeId", Constants.ObjectToByteArray(session.userTypeId));
                             HttpContext.Session.Set("loginUserName", Constants.ObjectToByteArray(session.LoginUserName));
                             HttpContext.Session.SetString("usertypeId", session.userTypeId.ToString());
+                            HttpContext.Session.SetString("designation", session.designation);
                             HttpContext.Session.SetString("joiningDate", session.userTypeId.ToString());
 
                             if (session.userTypeId == 3)
-                                return RedirectToAction(nameof(Index), "Timesheet");
+                                return RedirectToAction(nameof(Index), "Home");
                             else
-                                return RedirectToAction("Index", "Timesheet");// ("~/User/Index");
+                                return RedirectToAction("Index", "Home");// ("~/User/Index");
 
                         }
                         else

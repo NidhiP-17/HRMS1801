@@ -132,7 +132,7 @@ namespace HRMS.Controllers
             var response3 = timesheet.ListReasons(ViewBag.userId, out msg);
             ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode");
 
-            return View();
+            return View("Index");
         }
 
         [HttpPost]

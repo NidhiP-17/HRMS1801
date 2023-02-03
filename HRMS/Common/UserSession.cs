@@ -30,6 +30,9 @@ namespace WebSite.Common
         public string AccessLevel { get; set; }
 
         public int userTypeId { get; set; }
+        public int departmentId { get; set; }
+        public int designationId { get; set; }
+        public string designation { get; set; }
 
 
         public void SetValue(EmployeeModel user)
@@ -41,6 +44,8 @@ namespace WebSite.Common
             this.LastName = user.lastName ;
             this.MobileNo =user.phoneNumber;
             this.userTypeId = user.userTypeId;
+            this.designationId = user.designationId;
+            this.designation = user.designation;
             this.JoiningDate = user.joiningDate;
         }
     }

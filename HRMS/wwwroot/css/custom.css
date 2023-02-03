@@ -3,7 +3,9 @@
     background-color: white;
     font-size: 14px;
 }
-
+a {
+    text-decoration: none; 
+}
 .LoginBox {
     background: #fff;
     max-width: 400px;
@@ -74,4 +76,10 @@ table.dataTable thead th{
 }
 .dataTables_filter {
 margin-bottom:15px;
+}
+.navbar-light .navbar-nav .nav-link {
+    color: #fff !important;
+}
+.nav-link {
+color:#fff !important;
 }
