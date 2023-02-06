@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" autocomplete="off">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form asp-action="Create" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-4">
             <div class="form-group">
                 <label asp-for="projectId" class="control-label"></label>
                 <select asp-for="projectId" class="form-control select2" asp-items="@ViewBag.Projects"></select>
@@ -40,9 +40,9 @@
             <div class="form-group mt-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>

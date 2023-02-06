@@ -3,7 +3,7 @@
     display: inline-block;
     margin: 0;
     position: relative;
-    vertical-align: middle;
+    /*vertical-align: middle;*/
     width:100% !important
 }
 

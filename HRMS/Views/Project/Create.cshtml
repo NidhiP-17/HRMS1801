@@ -35,7 +35,7 @@
                     <div class="col-md-12" id="divtech">
                         <div class="form-group">
                             <label asp-for="technology" class="control-label"></label>
-                            <select asp-for="technology" multiple="multiple" id="technology" class="form-control" asp-items="@ViewBag.Technology" onchange="AddNew(this)">
+                            <select asp-for="technology"  id="technology" class="form-control" asp-items="@ViewBag.Technology" onchange="AddNew(this)">
                             </select>
                             <input type="hidden" id="techs" asp-for="technologies" />
                             <span asp-validation-for="technology" class="text-danger"></span>
@@ -73,7 +73,7 @@
     <script>
 
         $(document).ready(function () {
-            $('#technology').multiselect();
+            //$('#technology').multiselect();
 
             var ViewBagmsg = '@ViewBag.msg'
             if (ViewBagmsg != null) {
@@ -148,7 +148,7 @@
                         vItems.push('<option selected=selected value="' + vData[i].technologyId + '">' + vData[i].Name + '</option>');
                 }
                 $('#' + selector).append(vItems.join(''));
-                $('#technology').multiselect('refresh');
+                //$('#technology').multiselect('refresh');
             }
         }
 

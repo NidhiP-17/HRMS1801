@@ -386,7 +386,7 @@ namespace HRMS.Controllers
             var response31 = timesheet1.ListReasons(ViewBag.userId, out msg1);
             ViewBag.Reasons = new SelectList(response31.Response, "reasonId", "reasonCode", timesheet.reasonCode);
 
-            return View(timesheet);
+            return View("Index",timesheet);
         }
         public IActionResult Delete(int id)
         {
@@ -449,7 +449,12 @@ namespace HRMS.Controllers
             var response = timesheet.GetLastDayOftimeSheet(employeeId);
             return new JsonResult(JsonConvert.SerializeObject(response.Response));
         }
-
+        public JsonResult CheckTimesheet(string date,int id)
+        {
+            TimesheetRepository timesheet = new TimesheetRepository();
+            var response = timesheet.CheckTimesheet(id,date);
+            return new JsonResult(JsonConvert.SerializeObject(response.Response));
+        }
         public JsonResult GetLaunchDate()
         {
             LaunchDateRepository timesheet = new LaunchDateRepository();

@@ -108,6 +108,16 @@ namespace Repositories
             result.Message = message;
             return result;
         }
+        public ResponseSingleModel<string> CheckTimesheet(int id,string date)
+        {
+            var result = new ResponseSingleModel<string>();
+            var message = string.Empty;
+            result.Response = instance.CheckTimesheet(id, date, out message);
+            //result.Status = result.Response ? Constants.WebApiStatusOk : Constants.WebApiStatusFail;
+            result.Message = message;
+            return result;
+        }
+
         public ResponseSingleModel<string> GetTotalHoursOfDay(int employeeId, decimal hours, string? date)
         {
             var result = new ResponseSingleModel<string>();

@@ -30,9 +30,9 @@
             <th hidden>
                 @Html.DisplayNameFor(model => model.employeeId)
             </th>
-            <th>
+           @* <th>
                 Sr. No.
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.taskName)
             </th>
@@ -52,9 +52,7 @@
         </tr>
     </thead>
     <tbody>
-        @{
-            int i = 1;
-        }
+       
         @foreach (var item in Model)
         {
             <tr>
@@ -67,9 +65,9 @@
                 <td hidden>
                     @Html.DisplayFor(modelItem => item.employeeId)
                 </td>
-                <td>
+               @* <td>
                     @i
-                </td>
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.taskName)
                 </td>

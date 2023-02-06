@@ -149,20 +149,19 @@
                             totalfilledDays.push(day.holidaydate);
                         });
 
-                        //if (totalfilledDays.length > 0) {
-                        //    $("#divMsg").show();
-                        //    var elms = document.querySelectorAll("#btnAdd");
-                        //    for (var i = 0; i < elms.length; i++)
-                        //        elms[i].className ="btn btn-primary disabled";
-                        //    $("#divMsg").text("You did not fill timesheet for further days so you do not order food today");
-                        //}
-                        //else
-                        //{
-                        $("#divMsg").hide();
-                        var elms = document.querySelectorAll("#btnAdd");
-                        for (var i = 0; i < elms.length; i++)
-                            elms[i].className = "btn btn-primary";
-                        //}
+                        if (totalfilledDays.length > 0) {
+                            $("#divMsg").show();
+                            var elms = document.querySelectorAll("#btnAdd");
+                            for (var i = 0; i < elms.length; i++)
+                                elms[i].className = "btn btn-primary disabled";
+                            $("#divMsg").text("You did not fill timesheet for further days so you do not order food today");
+                        }
+                        else {
+                            $("#divMsg").hide();
+                            var elms = document.querySelectorAll("#btnAdd");
+                            for (var i = 0; i < elms.length; i++)
+                                elms[i].className = "btn btn-primary";
+                        }
                     }
                 }
             });

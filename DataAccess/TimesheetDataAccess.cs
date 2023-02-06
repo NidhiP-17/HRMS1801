@@ -168,7 +168,7 @@ namespace DataAccess
                     connector.AddInParameterWithValue("@leavehours", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@leavehours", timesheet.leavehours);
-                if (timesheet.reasonCode == null || timesheet.reasonCode =="")
+                if (timesheet.reasonCode == null || timesheet.reasonCode =="" || timesheet.reasonCode == "0")
                 connector.AddInParameterWithValue("@reasonCode", DBNull.Value);
                 else
                 connector.AddInParameterWithValue("@reasonCode", timesheet.reasonCode);
@@ -232,6 +232,21 @@ namespace DataAccess
             using (DBConnector connector = new DBConnector("sp_GetLastDayOftimeSheet", true))
             {
                 connector.AddInParameterWithValue("@employeeId", id);
+                connector.AddOutParameterWithType("@Message", SqlDbType.VarChar);
+                rowEffected = connector.ExceuteNonQuery();
+                message = connector.GetParamaeterValue("@Message").ToString();
+            }
+
+            return message;
+        }
+
+        public string CheckTimesheet(int id, string date, out string message)
+        {
+            int rowEffected = 0;
+            using (DBConnector connector = new DBConnector("sp_ChecktimeSheet", true))
+            {
+                connector.AddInParameterWithValue("@employeeId", id);
+                connector.AddInParameterWithValue("@date", date);
                 connector.AddOutParameterWithType("@Message", SqlDbType.VarChar);
                 rowEffected = connector.ExceuteNonQuery();
                 message = connector.GetParamaeterValue("@Message").ToString();
