@@ -446,7 +446,7 @@
                             //    $("#date").removeAttr("disabled");
                             //}
                         }
-
+                        debugger
                         minsetDate = new Date(d);
                         var r = noSundaysOrHolidays(new Date(d));
 
@@ -462,22 +462,35 @@
                             if (dd < 10) dd = '0' + dd;
                             if (mm < 10) mm = '0' + mm;
                             startingdate = dd + '/' + mm + '/' + yyyy;
-                            debugger
-                            if (CheckTimesheet(id, startingdate) == '"True"') {
-                                minsetDate = minsetDate.setDate(minsetDate.getDate() + 1);
-                                minsetDate = new Date(minsetDate);
-                                const yyyy = minsetDate.getFullYear();
-                                let mm = minsetDate.getMonth() + 1; // Months start at 0!
-                                let dd = minsetDate.getDate();
+                            
+                            $.ajax({
+                                cache: false,
+                                type: "GET",
+                                url: '@Url.Action("CheckTimesheet", "Timesheet")',
+                                data: { "date": startingdate, "id": id },
+                                success: function (response) {
+                                    debugger
+                                    if (response == '"True"') {
+                                        minsetDate = minsetDate.setDate(minsetDate.getDate() + 1);
+                                        minsetDate = new Date(minsetDate);
+                                        const yyyy = minsetDate.getFullYear();
+                                        let mm = minsetDate.getMonth() + 1; // Months start at 0!
+                                        let dd = minsetDate.getDate();
 
-                                if (dd < 10) dd = '0' + dd;
-                                if (mm < 10) mm = '0' + mm;
-                                startingdate = dd + '/' + mm + '/' + yyyy;
-                            }
+                                        if (dd < 10) dd = '0' + dd;
+                                        if (mm < 10) mm = '0' + mm;
+                                        startingdate = dd + '/' + mm + '/' + yyyy;
+                                        $('#date').val(startingdate);
+                                        $('#hdnDate').val(startingdate);
+                                        minsetDate = new Date(startingdate);
+                                    }
+                                    else {
+                                        $('#date').val(startingdate);
+                                        $('#hdnDate').val(startingdate);
+                                    }
+                                }
+                            });
 
-
-                            $('#date').val(startingdate);
-                            $('#hdnDate').val(startingdate);
                             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Traineee' || '@ViewBag.designation' == 'Experienced') {
                                 var d = startingdate;
                                 if (d < launchdate)
@@ -511,8 +524,8 @@
         }
 
         function CheckTimesheet(id, startingdate) {
+            debugger
             $.ajax({
-                async: false,
                 cache: false,
                 type: "GET",
                 url: '@Url.Action("CheckTimesheet", "Timesheet")',
@@ -774,11 +787,11 @@
                     }
                 }
                 else {
-                    if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
-                        return [false, "Highlighted", "Holiday"];
-                    }
-                    else
-                    return [true]
+                    //if ($.inArray(m + '/' + d + '/' + y, totalfilledDays) != -1) {
+                    //    return [false, "Highlighted", "Holiday"];
+                    //}
+                    //else
+                        return [true]
                 }
             } else {
                 return [day != 0, ''];

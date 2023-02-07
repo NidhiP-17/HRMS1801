@@ -118,7 +118,7 @@ namespace HRMS.Controllers
                 int intHour = date.Hour;
                 decimal TotalAmount = 0;
 
-                if (intHour >= 14 && intHour <= 16)
+                if (intHour >= 16 && intHour < 17)
                 {
                     var diffInSeconds = (localDateTime - date).TotalSeconds;
                     if (diffInSeconds <= 2)
@@ -586,6 +586,176 @@ namespace HRMS.Controllers
             }
 
         }
+        [HttpGet]
+        public JsonResult CreateFoodReport(string date)
+        {
+            SqlConnection? connection;
+            SqlCommand? command;
+            SqlDataAdapter? adapter = new SqlDataAdapter();
+            DataSet? ds = new DataSet();
+            int i = 0;
+            string sql = "";
+            int yPoint = 0;
+            string todayDate = "";
+            string Name = "";
+            string ItemName = "";
+            Int32 Quantiy;
+            decimal Amount;
+            string StrName = "";
+            Double GrandTotalAmount = 0;
+            Double TotalQuantity = 0;
+            DateTime dtTodaydate = DateTime.Now;
+            int totalLine = 0;
+            int pageNo = 1;
+            DataTable dt = new DataTable();
+            try
+            {
+                //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
+                //{
+                //    return RedirectToAction(nameof(EmployeeModel), "Home");
+                //}
+
+                HttpContext.Session.Remove("SearchString");
+
+                //XFont xFontRegular = new XFont("Verdana", 10, XFontStyle.Regular);
+                //XFont xFontName = new XFont("Verdana", 10, XFontStyle.Bold);
+                //XFont xFontBold = new XFont("Verdana", 10, XFontStyle.Bold);
+                //XFont xCompBold = new XFont("Verdana", 12, XFontStyle.Bold);
+
+                sql = "SELECT IT.TodayDate,E.FirstName+' '+E.LastName AS employeeName, " +
+                            "IM.ItemName,IT.Quantiy,IT.Amount " +
+                        "FROM tbl_ItemTran IT,tbl_ItemMaster IM,tbl_Employee E " +
+                        "WHERE IT.ItemID = IM.ItemId " +
+                        "AND IT.EmpID = E.employeeId " +
+                        "AND  CONVERT(CHAR(8),IT.TodayDate,112) = '" + Convert.ToDateTime(date).ToString("yyyyMMdd") + "'" +
+                        "ORDER BY employeeName ";
+
+                connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+                connection.Open();
+                command = new SqlCommand(sql, connection);
+                adapter.SelectCommand = command;
+                adapter.Fill(ds);
+
+
+                connection.Close();
+
+                command = null;
+                connection = null;
+                adapter = null;
+
+                //PdfDocument pdfDocument = new PdfDocument();
+                ////Create an empty page
+                //PdfPage pdfPage = pdfDocument.AddPage();
+                //// Get an XGraphics object for drawing
+                //XGraphics xGraphics = XGraphics.FromPdfPage(pdfPage);
+                ////  Create a font
+                //XPen lineRed = new XPen(XColors.Black, 55);
+
+                //yPoint = yPoint + 100;
+
+                //// Draw Line
+                //double x = 80;
+                //XPen pen = XPens.Black;
+                //xGraphics.DrawLine(pen, x - 65, 60, 580, 60);
+                //xGraphics.DrawLine(pen, x - 65, yPoint - 10, 580, yPoint - 10);
+                //xGraphics.DrawLine(pen, x - 65, yPoint + 12, 580, yPoint + 12);
+
+                CheckDuplicateRecords(ds.Tables[0]);
+                todayDate = Convert.ToDateTime(date).ToString("dd/M/yyyy");
+
+                //Header
+                //xGraphics.DrawString("Alita Infotech Pvt.Ltd", xCompBold, XBrushes.Black, new XRect(0, 30, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                //xGraphics.DrawString("Report Date: " + todayDate, xFontBold, XBrushes.Black, new XRect(25, 70, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+                //xGraphics.DrawString("Particular", xFontBold, XBrushes.Black, new XRect(-180, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                //xGraphics.DrawString("Qty", xFontBold, XBrushes.Black, new XRect(70, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                //xGraphics.DrawString("Rate", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                //xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+
+                for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+                {
+                    totalLine = totalLine + 1;
+
+                    //if (totalLine == 30 && pageNo == 1 || (totalLine == 32 && pageNo > 1))
+                    //{
+                    //    pdfPage = pdfDocument.AddPage();
+                    //    xGraphics = XGraphics.FromPdfPage(pdfPage);
+                    //    totalLine = 0;
+                    //    yPoint = 10;
+                    //    pageNo++;
+                    //}
+
+                    todayDate = Convert.ToDateTime(ds.Tables[0].Rows[i].ItemArray[0]).ToString("dd/M/yyyy");
+                    Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
+                    ItemName = ds.Tables[0].Rows[i].ItemArray[2].ToString();
+                    Quantiy = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[3]);
+                    Amount = Convert.ToDecimal(ds.Tables[0].Rows[i].ItemArray[4]);
+                    Double TotalAmount = Convert.ToDouble(Quantiy * Amount);
+                    ds.Tables[0].AcceptChanges();
+
+                    TotalQuantity += Quantiy;
+                    GrandTotalAmount += TotalAmount;
+
+                    //if (StrName != Name)
+                    //{
+                    //    yPoint = yPoint + 30;
+                    //    StrName = Name;
+                    //    xGraphics.DrawString(Name, xFontName, XBrushes.Black, new XRect(30, yPoint, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+                    //}
+
+                    //xGraphics.DrawString(ItemName, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+
+                    //xGraphics.DrawString(Quantiy.ToString(), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+
+                    //xGraphics.DrawString(Amount.ToString(), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+
+                    //xGraphics.DrawString(TotalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+
+                    //yPoint = yPoint + 20;
+
+                }
+                dt = ds.Tables[0];
+                ViewBag.FoodReport = dt;
+                //xGraphics.DrawString("Total", xFontBold, XBrushes.Black, new XRect(30, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+
+                //xGraphics.DrawString(TotalQuantity.ToString(), xFontBold, XBrushes.Black, new XRect(-220, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+
+                //xGraphics.DrawString(GrandTotalAmount.ToString("0.00"), xFontBold, XBrushes.Black, new XRect(-50, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+
+                //string fileName = "";
+                //var extenstion = ".pdf";
+
+                //fileName = "Food_Report_Of_Employees_" + DateTime.Now.ToString("yyyyMMddHHmmss") + extenstion;
+
+                //var pathBuild = Path.Combine(Directory.GetCurrentDirectory(), "upload\\files");
+
+                //if (!Directory.Exists(pathBuild))
+                //{
+                //    Directory.CreateDirectory(pathBuild);
+                //}
+
+                //pdfDocument.Save(pathBuild + "\\" + fileName);
+
+                //var path = Path.Combine(Directory.GetCurrentDirectory(), "upload\\files", pathBuild + "\\" + fileName);
+                //var provider = new FileExtensionContentTypeProvider();
+
+                //if (!provider.TryGetContentType(path, out var ContentType))
+                //{
+                //    ContentType = "application/octet-stream";
+
+                //}
+                //var bytes = await System.IO.File.ReadAllBytesAsync(path);
+
+                //System.IO.File.Delete(path);
+
+                //return File(bytes, ContentType, Path.GetFileName(path));
+                return new JsonResult(JsonConvert.SerializeObject(dt));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
         public async Task<IActionResult> Print(string date)
         {
             SqlConnection? connection;
@@ -606,7 +776,7 @@ namespace HRMS.Controllers
             DateTime dtTodaydate = DateTime.Now;
             int totalLine = 0;
             int pageNo = 1;
-
+            DataTable dt = new DataTable();
             try
             {
                 //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
@@ -634,6 +804,8 @@ namespace HRMS.Controllers
                 command = new SqlCommand(sql, connection);
                 adapter.SelectCommand = command;
                 adapter.Fill(ds);
+                
+               
                 connection.Close();
 
                 command = null;
@@ -667,7 +839,7 @@ namespace HRMS.Controllers
                 xGraphics.DrawString("Qty", xFontBold, XBrushes.Black, new XRect(70, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Rate", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-
+               
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
                     totalLine = totalLine + 1;
@@ -710,7 +882,8 @@ namespace HRMS.Controllers
                     yPoint = yPoint + 20;
 
                 }
-
+                dt = ds.Tables[0];
+                ViewBag.FoodReport = dt;
                 xGraphics.DrawString("Total", xFontBold, XBrushes.Black, new XRect(30, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
                 xGraphics.DrawString(TotalQuantity.ToString(), xFontBold, XBrushes.Black, new XRect(-220, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);

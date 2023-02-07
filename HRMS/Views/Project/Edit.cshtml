@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@*
 <style>
     .multiselect dropdown-toggle btn btn-default {
         display: block;
@@ -21,7 +21,9 @@
         border-radius: 0.25rem;
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
-</style>
+</style>*@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 <h4>@Model.projectName @Model.projectCode</h4>
 
 <div class="row">
@@ -46,7 +48,7 @@
                     <div class="col-md-12" id="divtech">
                         <div class="form-group">
                             <label asp-for="technology" class="control-label"></label>
-                            <select asp-for="technology" multiple="multiple" id="technology" class="form-control" asp-items="@ViewBag.Technology" onchange="AddNew(this)">
+                            <select asp-for="technology" multiple id="technology" class="form-control" asp-items="@ViewBag.Technology" onchange="AddNew(this)">
                             </select>
                             <input type="hidden" id="techs" asp-for="technology" />
                             <input type="hidden" id="altertechs" asp-for="technologies" />
@@ -92,7 +94,7 @@
 
     <script>
         $(document).ready(function () {
-            $('#technology').multiselect();
+           
             var currentDate = new Date();
             $('#startDate').datepicker({
                 autoclose: true,
@@ -109,12 +111,17 @@
                 var optionVal = selectedOptions[i];
                 $("#technology").find("option[value=" + optionVal + "]").attr("selected", "selected");
             }
-            $('#technology').multiselect({
-                multiple: true,
+            //$('#technology').multiselect({
+            //    multiple: true,
+            //});
+
+            //$("#technology").multiselect('reload');
+              var multipleCancelButton = new Choices('#technology', {
+                removeItemButton: true,
+                maxItemCount: 5,
+                searchResultLimit: 5,
+                renderChoiceLimit: 5
             });
-
-            $("#technology").multiselect('reload');
-
         });
         function AddNew() {
             if ($("#technology option:selected").text() == "Other") { }
@@ -169,7 +176,8 @@
                         vItems.push('<option selected=selected value="' + vData[i].technologyId + '">' + vData[i].Name + '</option>');
                 }
                 $('#' + selector).append(vItems.join(''));
-                $('#technology').multiselect('refresh');
+
+                //$('#technology').multiselect('refresh');
             }
         }
 

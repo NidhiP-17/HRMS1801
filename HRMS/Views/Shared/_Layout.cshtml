@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Alita Infotech</title>
+    <link rel="icon" type="image/x-icon" href="~/images/alitaLogo.svg">
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -90,13 +91,13 @@
                 display: block;
             }
 
-       /* .dropdown a:hover {
-            background-color: #ddd;
-        }*/
+        /* .dropdown a:hover {
+                                                    background-color: #ddd;
+                                                }*/
 
         /*.dropdown a:hover {
-            background-color: none !important;
-        }*/
+                                                    background-color: none !important;
+                                                }*/
 
         .show {
             display: block;
@@ -389,15 +390,18 @@
                                 <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="Index">Order</a>
                                 <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportEmp_Day">Check Order</a>
                                 @{
-                                    string x1 = Context.Session.GetString("usertypeId");
-                                    if (x1 != "3")
+                                    string x2 = Context.Session.GetString("designation");
+                                    if (x2 == "Admin" || x2 == "HR")
                                     {
                                         <a class="dropdown-item" asp-area="" asp-controller="ItemCategory" asp-action="Index">Items Category</a>
                                         <a class="dropdown-item" asp-area="" asp-controller="Item" asp-action="Index">Items</a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportEmpDay">Food Report Of Employees</a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="Print1">Today's Order Report</a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportEmpData">Order Details</a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportMonthWiseData">Month Details</a>
+                                        //<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reports</a>
+                                        //<div class="dropdown-menu">
+                                            <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportEmpDay">Food Report Of Employees</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="Print1">Today's Order Report</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportEmpData">Monthly Day Wise Order Details</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="ItemOrder" asp-action="ReportMonthWiseData">Month Details</a>
+                                        //</div>
                                     }
                                 }
                             </div>
@@ -498,7 +502,7 @@
     <script src="~/js/bootstrap-multiselect.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    @*<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>*@
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="~/js/bootstrap-select.min.js"></script>
     <script src="~/ckeditor/ckeditor.js"></script>
 

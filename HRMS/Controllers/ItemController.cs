@@ -110,10 +110,14 @@ namespace HRMS.Controllers
                 {
                     item.ImageFile.CopyTo(stream);
                 }
-                var filePath = Path.Combine(path, item.ImageName.ToString());
-                if (System.IO.File.Exists(Path.Combine(path, item.ImageName.ToString())))
-                    System.IO.File.Delete(filePath);
-                item.ImageName = item.ImageFile.FileName;
+                if (item.ImageName != null)
+                {
+                    var filePath = Path.Combine(path, item.ImageName.ToString());
+                    if (System.IO.File.Exists(Path.Combine(path, item.ImageName.ToString())))
+                        System.IO.File.Delete(filePath);
+                }
+                else
+                    item.ImageName = item.ImageFile.FileName;
             }
             else
             {

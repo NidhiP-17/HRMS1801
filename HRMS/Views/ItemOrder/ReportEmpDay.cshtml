@@ -76,28 +76,40 @@
 </head>
 <body>
 
-    <form asp-action="Print">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div class="col-md-12">
-            <h4 class="mb-3">@ViewData["Title"]</h4>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label asp-for="ReportDate" class="control-label"></label>
-                    <input type="date" name="date" id="theDate" asp-for="ReportDate" class="form-control" />
-                    <span asp-validation-for="ReportDate" class="text-danger"></span>
-                </div>
+    @*<form asp-action="Print">*@
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="col-md-12">
+        <h4 class="mb-3">@ViewData["Title"]</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="ReportDate" class="control-label"></label>
+                <input type="date" name="date" id="theDate" asp-for="ReportDate" class="form-control" />
+                <span asp-validation-for="ReportDate" class="text-danger"></span>
             </div>
+        </div>
 
-            <div class="col-md-3" style="margin-top:22px">
-                <div class="form-group" style="margin-bottom:0px">
-                    <label class="control-label"></label>
-                    <input type="submit" class="btn btn-success" value="Filter" />
-                </div>
+        <div class="col-md-3" style="margin-top:22px">
+            <div class="form-group" style="margin-bottom:0px">
+                <label class="control-label"></label>
+                <input type="submit" class="btn btn-success" value="Filter" onclick="CreateFoodReport()" />
             </div>
         </div>
-    </form>
+    </div>
+
+    <table id="tblFoodOrder" class="table">
+        <thead>
+            <tr>
+                <th>Particular</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
     @*</div>*@
 
@@ -112,5 +124,52 @@
 
     </script>
 }
+<script>
+    function CreateFoodReport() {
 
+        var totalQuantity = 0;
+        var GrandTotalAmount = 0;
+        var totalAmount = 0;
+
+        var edate = $("#theDate").val();
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: '/ItemOrder/CreateFoodReport',
+            data: { "date": edate },
+            success: function (result) {
+
+                var response = JSON.parse(result);
+                if (response.length > 0) {
+                    var table = $("#tblFoodOrder tbody");
+                    var name = "";
+                    $.each(response, function (index, element) {
+                        debugger
+                        var row = $(this).closest('tr');
+                        var prev = row.prev();
+                        var prevempname = prev.prevObject.prevObject[0].employeeName;
+                        name = element.employeeName;
+                        if (prevempname != name) {
+                            var item = element.ItemName;
+                            var qty = element.Quantiy;
+                            var amount = element.Amount;
+                            table.append("<tr><td>" + item + "</td><td>" + qty + " </td><td> " + amount + " </td></tr>");
+
+                            totalAmount = element.Quantiy * element.Amount;
+                            totalQuantity += element.Quantiy;
+                        }
+                    });
+
+                    GrandTotalAmount += totalAmount;
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+</script>
 </html>
