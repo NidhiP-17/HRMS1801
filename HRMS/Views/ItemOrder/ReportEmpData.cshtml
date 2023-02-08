@@ -4,77 +4,65 @@
     ViewData["Title"] = "Day wise order details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        .div {
-            background: #f1f1f1;
-            width: 550px;
-            height: auto;
-            padding: 50px;
-            border-radius: 15px;
-            margin: 0 auto;
-        }
+<style>
+    #tblFoodOrder thead th {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ddd;
+        background: #eee;
+    }
 
-        .inner-form {
-            padding: 0px 48px 48px 326px;
-        }
+    #tblFoodOrder {
+        border: 1px solid #ddd;
+    }
+</style>
+@*  <div class="inner-form">*@
 
-        .save-btn-form > input {
-            width: 200px;
-            padding: 15px 0px;
-            border-radius: 5px;
-            outline: none;
-            border: none;
-            background: #164665;
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-        }
+@*<div class="div">*@
 
-            .save-btn-form > input:hover {
-                background-color: #0069d9;
-                border-color: #0062cc;
-            }
+<h4 class="mb-3">@ViewData["Title"]</h4>
 
-        .check-boxes {
-            justify-content: initial;
-            align-items: center;
-            gap: 20px;
-        }
 
-    </style>
-
-</head>
-<body>
-    @*  <div class="inner-form">*@
-
-    @*<div class="div">*@
-
-    <h4 class="mb-3">@ViewData["Title"]</h4>
-
-    <form asp-action="PrintEmployeeData">
-        <div asp-validation-summary="ModelOnly"></div>
-
-        <div class="col-md-4 mb-3">
+<div asp-validation-summary="ModelOnly"></div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
             <label asp-for="Month"></label>
             @Html.DropDownListFor(x => x.Month, ViewBag.MonthListItem as SelectList, new { @class = "form-control" })
         </div>
+    </div>
 
-        <div class="col-md-4 mb-3">
+    <div class="col-md-3">
+        <div class="form-group">
             <label asp-for="Year"></label>
             @Html.DropDownListFor(x => x.Year, ViewBag.YearListItem as SelectList, new { @class = "form-control" })
         </div>
-        <div>
-            <input type="submit" value="Show" class="btn btn-success" />
+    </div>
+    <div class="align-items-end col-md-3 d-flex">
+        <div class="form-group">
+            <input type="submit" value="Show" class="btn btn-success" onclick="CreateDayWiseFoodReport()" />
         </div>
-    </form>
+    </div>
+    <div class="col-md-3 d-flex justify-content-end align-items-end">
+        <div class="form-group">
+            <label class="control-label"></label>
+            <input type="submit" class="btn btn-success" value="Print" onclick="PrintdayWiseFoodReport()" />
+        </div>
+    </div>
+</div>
 
-    @*</div>*@
-
-    @*</div>*@
-</body>
+<table id="tblFoodOrder" class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Employee</th>
+            <th>Order</th>
+            <th>Accepted</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 @if (ViewBag.Message != null)
 {
     <script type="text/javascript">
@@ -83,14 +71,78 @@
         };
     </script>
 }
+@section scripts{
+    <script>
 
-</html>
+        function PrintdayWiseFoodReport() {
+            
+            var model = {
+                Month: $("#Month").val(),
+                Year: $("#Year").val()
+            }
+            window.open('/ItemOrder/PrintEmployeeData?report=' + model, "_blank");
+        }
 
+        function CreateDayWiseFoodReport() {
+            var totalQuantity = 0;
+            var GrandTotalAmount = 0;
+            var totalAmount = 0;
+            var ExpectedAmount = 20;
+            var TotalExpectedAmount = 0;
+            var TotalOrderRate = 0;
 
+            var model = {
+                Month: $("#Month").val(),
+                Year: $("#Year").val()
+            }
 
-@*@section Scripts {
+            $.ajax({
+                type: "POST",
+                url: '/ItemOrder/CreateMonthDateWiseReport',
+                data: model,
+                datatype: "json",
+                success: function (result) {
+                    debugger
+                    var response = JSON.parse(result);
+                    if (response.length > 0) {
+                        $("#tblFoodOrder tbody").empty();
+                        var table = $("#tblFoodOrder tbody");
+                        var name = "";
+                        var amount=0;
+                        $.each(response, function (index, element) {
+                            debugger
+                            var date = element.TodayDate;
+                            date = date.replace("T00:00:00", "");
+                            var ename = element.firstName;
+                            amount = element.Amount;
+                            ExpectedAmount = 20;
+                            if(amount < 20)
+                                ExpectedAmount = amount;
+                            
+                            totalAmount = amount - ExpectedAmount;
+                            if (totalAmount < 0) {
+                                totalAmount = 0;
+                            }
+                            table.append("<tr><td>" + date + "</td><td>" + ename + "</td><td>" + amount.toFixed(2) + "</td><td>" + ExpectedAmount.toFixed(2) + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
+
+                            TotalExpectedAmount += ExpectedAmount;
+                            GrandTotalAmount += totalAmount;
+                            TotalOrderRate +=parseFloat(amount);
+                        });
+                        table.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td></td><td>" + TotalOrderRate.toFixed(2) + "</td><td>" + TotalExpectedAmount.toFixed(2) + "</td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
+
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        //await RenderSectionAsync("Scripts", required: false);
     }
-    }*@
+}

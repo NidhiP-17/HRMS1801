@@ -20,6 +20,8 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 using Newtonsoft.Json;
+using System.Composition;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace HRMS.Controllers
 {
@@ -118,7 +120,7 @@ namespace HRMS.Controllers
                 int intHour = date.Hour;
                 decimal TotalAmount = 0;
 
-                if (intHour >= 16 && intHour < 17)
+                if (intHour >= 14 && intHour < 16)
                 {
                     var diffInSeconds = (localDateTime - date).TotalSeconds;
                     if (diffInSeconds <= 2)
@@ -425,6 +427,29 @@ namespace HRMS.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        public IActionResult TodayOrders()
+        {
+            try
+            {
+                //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
+                //{
+                //    return RedirectToAction(nameof(EmployeeModel), "Home");
+                //}
+
+                HttpContext.Session.Remove("SearchString");
+
+                //ViewBag.Date = DateTime.Now.ToString("dd-MM-yyyy");
+
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         //[HttpPost]
         //public IActionResult ReportEmpDay(string date)
         //{
@@ -756,7 +781,261 @@ namespace HRMS.Controllers
             }
 
         }
-        public async Task<IActionResult> Print(string date)
+
+        [HttpPost]
+        public JsonResult CreateMonthDateWiseReport(ReportFilter report)
+        {
+            SqlConnection? connection;
+            SqlCommand? command;
+            SqlDataAdapter? adapter = new SqlDataAdapter();
+            DataSet? ds = new DataSet();
+            int i = 0;
+            string sql = "";
+            string Date = "";
+            string EmployeeName = "";
+            string todayDate = "";
+            double rate;
+            Double ExpectedAmount;
+            Double GrandTotalAmount = 0;
+            Double TotalExpectedAmount = 0;
+            Double TotalOrderRate = 0;
+            DateTime dtTodaydate = DateTime.Now;
+            DataTable dt = new DataTable();
+            try
+            {
+
+                HttpContext.Session.Remove("SearchString");
+
+                sql = "SELECT EmpID, firstName , TodayDate, SUM(Amount * Quantiy) AS Amount " +
+                "FROM tbl_ItemTran " +
+                "join tbl_Employee E ON E.employeeId = EmpID " +
+                "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(report.Month) + 1) + "' AND YEAR(TodayDate) = '" + report.Year + "' " +
+                "AND EmpID = (CASE WHEN '" + ViewBag.designation + "' = 'Admin' THEN EmpID ELSE  " + ViewBag.userId + " END) " +
+                "GROUP BY EmpID,firstname,TodayDate ";
+
+                connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+                connection.Open();
+                command = new SqlCommand(sql, connection);
+                adapter.SelectCommand = command;
+                adapter.Fill(ds);
+                connection.Close();
+
+                command = null;
+                adapter = null;
+                connection = null;
+
+                todayDate = Convert.ToDateTime(DateTime.Now).ToString("dd/M/yyyy");
+
+               
+                for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+                {
+                  
+                    EmployeeName = ds.Tables[0].Rows[i].ItemArray[1].ToString();
+                    Date = Convert.ToDateTime(ds.Tables[0].Rows[i].ItemArray[2]).ToString("dd/MM/yyyy");
+                    rate = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[3]);
+                    ExpectedAmount = 20;
+                    Double TotalAmount = Convert.ToDouble(rate - ExpectedAmount);
+
+                    if (TotalAmount < 0)
+                    {
+                        TotalAmount = 0;
+                    }
+
+                    ds.Tables[0].AcceptChanges();
+
+                    TotalExpectedAmount += ExpectedAmount;
+                    GrandTotalAmount += TotalAmount;
+                    TotalOrderRate += rate;
+
+                }
+                    dt = ds.Tables[0];
+                return new JsonResult(JsonConvert.SerializeObject(dt));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        [HttpGet]
+        public JsonResult CreateTodayFoodReport()
+        {
+            SqlConnection? connection;
+            SqlCommand? command;
+            SqlDataAdapter? adapter = new SqlDataAdapter();
+            DataSet? ds = new DataSet();
+            string sql = "";
+            int i = 0;
+            string todayDate = "";
+            string Name = "";
+            string ItemCategory = "";
+            Int32 Quantiy;
+            decimal Amount;
+            Double TotalQuantity = 0;
+            Double GrandTotalAmount = 0;
+            DateTime dtTodaydate = DateTime.Now;
+            
+            DataTable dt = new DataTable();
+            try
+            {
+                HttpContext.Session.Remove("SearchString");
+
+                sql = "SELECT IC.ItemCatName,IM.ItemName,SUM(IT.Quantiy),IT.Amount " +
+                         "FROM tbl_ItemTran IT,tbl_ItemMaster IM, tbl_ItemCategory IC " +
+                         "WHERE IT.ItemID = IM.ItemId " +
+                         "AND IM.ItemCatID = IC.ItemCatID " +
+                         "AND  CONVERT(CHAR(8),IT.TodayDate,112) = '" + dtTodaydate.ToString("yyyyMMdd") + "'" +
+                         "GROUP BY  ItemName,IT.Amount,IC.ItemCatName " +
+                         "ORDER BY ItemName ";
+
+                connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+                connection.Open();
+                command = new SqlCommand(sql, connection);
+                adapter.SelectCommand = command;
+                adapter.Fill(ds);
+                connection.Close();
+
+                command = null;
+                adapter = null;
+                connection = null;
+
+                todayDate = Convert.ToDateTime(DateTime.Now).ToString("dd/M/yyyy");
+
+                for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+                {
+                    
+                    ItemCategory = ds.Tables[0].Rows[i].ItemArray[0].ToString();
+                    Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
+                    Quantiy = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[2]);
+                    Amount = Convert.ToDecimal(ds.Tables[0].Rows[i].ItemArray[3]);
+                    Double TotalAmount = Convert.ToDouble(Quantiy * Amount);
+                    ds.Tables[0].AcceptChanges();
+
+                    TotalQuantity += Quantiy;
+                    GrandTotalAmount += TotalAmount;
+                }
+                dt = ds.Tables[0];
+                return new JsonResult(JsonConvert.SerializeObject(dt));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult CreateMonthWiseReport(ReportFilter report)
+        {
+            SqlConnection? connection;
+            SqlCommand? command;
+            SqlDataAdapter? adapter = new SqlDataAdapter();
+            DataSet? ds = new DataSet();
+            int i = 0;
+            string sql = "";
+            string Name = "";
+            string todayDate = "";
+            Double AcceptedAmount = 0;
+            Double TotalAmount = 0;
+            Double FinalAmount = 0;
+            Double Amount = 0;
+            DateTime dtTodaydate = DateTime.Now;
+          
+            DataTable dt = new DataTable();
+            try
+            {
+                HttpContext.Session.Remove("SearchString");
+
+                string MonthName = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[Convert.ToInt16(report.Month)] + "-" + report.Year;
+
+                sql = "SELECT tbl_Employee.employeeId,tbl_Employee.FirstName +' ' + tbl_Employee.LastName AS EName, TodayDate, SUM(Amount) AS Amount " +
+                        "FROM tbl_ItemTran, tbl_Employee " +
+                        "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(report.Month) + 1) + "' AND YEAR(TodayDate) = '" + report.Year + "' " +
+                        "AND tbl_Employee.employeeId = tbl_ItemTran.EmpID " +
+                        "GROUP BY tbl_Employee.employeeId,tbl_Employee.FirstName, tbl_Employee.LastName,TodayDate " +
+                        "ORDER BY tbl_Employee.FirstName, tbl_Employee.LastName ";
+
+
+                connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+                connection.Open();
+                command = new SqlCommand(sql, connection);
+                adapter.SelectCommand = command;
+                adapter.Fill(ds);
+                connection.Close();
+
+                command = null;
+                adapter = null;
+                connection = null;
+
+                todayDate = Convert.ToDateTime(DateTime.Now).ToString("dd/M/yyyy");
+             
+                DataTable dtTable = new DataTable();
+                dtTable.Columns.Add("Name", typeof(String));
+                dtTable.Columns.Add("Amount", typeof(Double));
+                dtTable.Columns.Add("Accepted", typeof(Double));
+                dtTable.Columns.Add("TotalAmount", typeof(Double));
+
+                DataView dtView = ds.Tables[0].DefaultView;
+                int Days = DateTime.DaysInMonth(Convert.ToInt32(report.Year),Convert.ToInt32(report.Month)+1); 
+                AcceptedAmount = 20 * Convert.ToDouble(Days-7);
+
+                for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+                {
+                    if (Name != ds.Tables[0].Rows[i].ItemArray[1].ToString())
+                    {
+                        Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
+
+                        dtView.RowFilter = "EName LIKE '%" + Name + "%'";
+
+                        foreach (DataRowView drForm in dtView)
+                        {
+                            Amount = Amount + Convert.ToDouble(drForm["Amount"]);
+                            TotalAmount = Convert.ToDouble(Amount - AcceptedAmount);
+
+                            if (TotalAmount < 0)
+                            {
+                                TotalAmount = 0;
+                            }
+
+                            FinalAmount += TotalAmount;
+                        }
+
+                        DataRow row = dtTable.NewRow();
+                        row["Name"] = Name;
+                        row["Amount"] = Amount;
+                        row["Accepted"] = AcceptedAmount;
+                        row["TotalAmount"] = FinalAmount;
+                        dtTable.Rows.Add(row);
+
+                        Amount = 0;
+                        TotalAmount = 0;
+                        FinalAmount = 0;
+
+                    }
+                }
+
+                for (i = 0; i <= dtTable.Rows.Count - 1; i++)
+                {
+                    AcceptedAmount = 0;
+                    FinalAmount = 0;
+
+                    Name = dtTable.Rows[i].ItemArray[0].ToString();
+                    Amount = Convert.ToDouble(dtTable.Rows[i].ItemArray[1]);
+                    AcceptedAmount = Convert.ToDouble(dtTable.Rows[i].ItemArray[2]);
+                    FinalAmount = Convert.ToDouble(dtTable.Rows[i].ItemArray[3]);
+
+                }
+                return new JsonResult(JsonConvert.SerializeObject(dtTable));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+        public FileResult Print(string date)
         {
             SqlConnection? connection;
             SqlCommand? command;
@@ -912,7 +1191,7 @@ namespace HRMS.Controllers
                     ContentType = "application/octet-stream";
 
                 }
-                var bytes = await System.IO.File.ReadAllBytesAsync(path);
+                var bytes = System.IO.File.ReadAllBytes(path);
 
                 System.IO.File.Delete(path);
 
@@ -1413,7 +1692,7 @@ namespace HRMS.Controllers
             }
 
         }
-        public async Task<IActionResult> MonthWiseData(ReportFilter report)
+        public FileResult MonthWiseData(string month, string year)
         {
             SqlConnection? connection;
             SqlCommand? command;
@@ -1446,7 +1725,7 @@ namespace HRMS.Controllers
 
                 HttpContext.Session.Remove("SearchString");
 
-                string MonthName = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[Convert.ToInt16(report.Month)] + "-" + report.Year;
+                string MonthName = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[Convert.ToInt16(month)] + "-" + year;
 
                 XFont xFontRegular = new XFont("Verdana", 10, XFontStyle.Regular);
                 XFont xFontName = new XFont("Verdana", 10, XFontStyle.Bold);
@@ -1457,7 +1736,7 @@ namespace HRMS.Controllers
 
                 sql = "SELECT tbl_Employee.employeeId,tbl_Employee.FirstName +' ' + tbl_Employee.LastName AS EName, TodayDate, SUM(Amount) AS Amount " +
                         "FROM tbl_ItemTran, tbl_Employee " +
-                        "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(report.Month) + 1) + "' AND YEAR(TodayDate) = '" + report.Year + "' " +
+                        "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(month) + 1) + "' AND YEAR(TodayDate) = '" + year + "' " +
                         "AND tbl_Employee.employeeId = tbl_ItemTran.EmpID " +
                         "GROUP BY tbl_Employee.employeeId,tbl_Employee.FirstName, tbl_Employee.LastName,TodayDate " +
                         "ORDER BY tbl_Employee.FirstName, tbl_Employee.LastName ";
@@ -1509,8 +1788,9 @@ namespace HRMS.Controllers
                 dtTable.Columns.Add("TotalAmount", typeof(Double));
 
                 DataView dtView = ds.Tables[0].DefaultView;
-
-                AcceptedAmount = 20 * Convert.ToDouble(report.Day);
+                int Days = DateTime.DaysInMonth(Convert.ToInt32(year), Convert.ToInt32(month) + 1);
+                //AcceptedAmount = 20 * Convert.ToDouble(report.Day);
+                AcceptedAmount = 20 * Convert.ToDouble(Days-7);
 
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
@@ -1610,7 +1890,7 @@ namespace HRMS.Controllers
                     ContentType = "application/octet-stream";
 
                 }
-                var bytes = await System.IO.File.ReadAllBytesAsync(path);
+                var bytes = System.IO.File.ReadAllBytes(path);
 
                 System.IO.File.Delete(path);
 
