@@ -402,12 +402,21 @@ namespace HRMS.Controllers
             return View(response.Response);
         }
         [HttpGet]
-        public JsonResult GetTask(int projectId)
+        public JsonResult GetTask(int projectId, int empId)
         {
+            string msg = "";
             TaskRepository material = new TaskRepository();
-            var response = material.GetTaskByProjectId(projectId);
+            var response = material.ListTasks(projectId,empId, out msg);
             return new JsonResult(JsonConvert.SerializeObject(response));
         }
+        public JsonResult GetProject(int userId)
+        {
+            string msg = "";
+            ProjectRepository project = new ProjectRepository();
+            var response = project.ListProjects(userId,out msg);
+            return new JsonResult(JsonConvert.SerializeObject(response));
+        }
+
 
         public JsonResult HolidayList()
         {

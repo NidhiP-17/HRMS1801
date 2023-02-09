@@ -6,7 +6,7 @@
 }
 <style>
     #tblFoodOrder thead th {
-        padding: 10px 18px;
+        padding: .5rem .5rem;
         border-bottom: 1px solid #ddd;
         background: #eee;
     }
@@ -16,7 +16,7 @@
     }
 
     #tblDayWiseReport thead th {
-        padding: 10px 18px;
+        padding: .5rem .5rem;
         border-bottom: 1px solid #ddd;
         background: #eee;
     }
@@ -26,7 +26,7 @@
     }
 
     #tblTodayFoodReport thead th {
-        padding: 10px 18px;
+        padding: .5rem .5rem;
         border-bottom: 1px solid #ddd;
         background: #eee;
     }
@@ -36,7 +36,7 @@
     }
 
     #tblMonthWiseReport thead th {
-        padding: 10px 18px;
+        padding: .5rem .5rem;
         border-bottom: 1px solid #ddd;
         background: #eee;
     }
@@ -137,9 +137,9 @@
             <tr>
                 <th>Date</th>
                 <th>Employee</th>
-                <th>Order</th>
-                <th>Accepted</th>
-                <th>Amount</th>
+                <th>Total Order</th>
+                <th>Accepted Order</th>
+                <th>Difference Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -161,9 +161,9 @@
             <tr>
                 <th>Category</th>
                 <th>Name</th>
-                <th>Qty</th>
+                <th>Quantity</th>
                 <th>Rate</th>
-                <th>Amount</th>
+                <th>Total Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -212,9 +212,9 @@
         <thead>
             <tr>
                 <th>Employee</th>
-                <th>Order</th>
-                <th>Accepted</th>
-                <th>Amount</th>
+                <th>Total Order</th>
+                <th>Accepted Order</th>
+                <th>Difference Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -295,9 +295,6 @@
                             var name = "";
 
                             $.each(response, function (index, element) {
-
-                                var row = "";
-                                var prevempname = "";
 
                                 if (index == 0) {
                                     table.append("<tr><td colspan='4' style='font-weight:600'>" + element.employeeName + "</td></tr>");
@@ -469,12 +466,17 @@
                         var tableDayWiseReport = $("#tblDayWiseReport tbody");
                         if (response.length > 0) {
 
-                            var name = "";
-                            var amount = 0;
+                            var date = "";
                             $.each(response, function (index, element) {
 
-                                var date = element.TodayDate;
-                                date = date.replace("T00:00:00", "");
+                                if (index == 0) {
+                                    tableDayWiseReport.append("<tr><td colspan='5' style='font-weight:500'>" + element.TodayDate + "</td></tr>");
+                                }
+                                else if (date != element.TodayDate) {
+                                    tableDayWiseReport.append("<tr><td colspan='5' style='font-weight:500'>" + element.TodayDate + "</td></tr>");
+                                }
+                                date = element.TodayDate;
+                                var cdate = date.replace("T00:00:00", "");
                                 var ename = element.firstName;
                                 amount = element.Amount;
                                 ExpectedAmount = 20;
@@ -485,7 +487,8 @@
                                 if (totalAmount < 0) {
                                     totalAmount = 0;
                                 }
-                                tableDayWiseReport.append("<tr><td>" + date + "</td><td>" + ename + "</td><td>" + amount.toFixed(2) + "</td><td>" + ExpectedAmount.toFixed(2) + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
+                                
+                                tableDayWiseReport.append("<tr><td></td><td>" + ename + "</td><td>" + amount.toFixed(2) + "</td><td>" + ExpectedAmount.toFixed(2) + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
 
                                 TotalExpectedAmount += ExpectedAmount;
                                 GrandTotalAmount += totalAmount;

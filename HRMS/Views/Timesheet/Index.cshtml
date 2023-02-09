@@ -23,7 +23,7 @@
     <div class="row" style="margin-bottom:25px !important">
         <div class="col-md-12" style="text-align:right">
             <div class="form-group">
-                <a target="_blank" href="http://alitahelpdesk.tk/hoursCalculator.php" class="btn btn-primary">hours Calculator</a>
+                <a target="_blank" href="http://alitahelpdesk.tk/hoursCalculator.php" class="btn" style="border:1px solid black">Hours Calculator</a>
             </div>
         </div>
         <div class="col-md-7">
@@ -186,23 +186,23 @@
     <div class="row form-group">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-1">  <label class="control-label">Date</label></div>
-                <div class="col-md-2">
+                <div class="align-items-center col-md-1 d-flex justify-content-center">  <label class="control-label">Date</label></div>
+                <div class="align-items-center col-md-2 d-flex justify-content-center">
                     <input type="text" name="fromdate" id="fromdate" class="form-control" />
                 </div>
-                <div class="col-md-2">
+                <div class="align-items-center col-md-2 d-flex justify-content-center">
                     <input type="text" name="todate" id="todate" class="form-control" />
                 </div>
-                <div class="col-md-1"> <label class="control-label">Projects</label></div>
-                <div class="col-md-2">
+                <div class="align-items-center col-md-1 d-flex justify-content-center"> <label class="control-label">Projects</label></div>
+                <div class="align-items-center col-md-2 d-flex justify-content-center">
                     <select name="projectId" id="projectId" class="form-control" asp-items="@ViewBag.Projects"></select>
                 </div>
                 @{
                     string x1 = Context.Session.GetString("designation");
                     if (x1 != "Developer" && x1 != "Trainee" && x1 != "Experienced")
                     {
-                        <div class="col-md-1">  <label class="control-label">Employees</label></div>
-                        <div class="col-md-2">
+                        <div class="align-items-center col-md-1 d-flex justify-content-center">  <label class="control-label">Employees</label></div>
+                        <div class="align-items-center col-md-2 d-flex justify-content-center">
                             <select name="employeeId" id="employeeId" class="form-control" asp-items="@ViewBag.Employees"></select>
                         </div>
                     }
@@ -211,7 +211,7 @@
                         <input type="hidden" name="employeeId" id="employeeId" class="form-control" value="@ViewBag.Employee" />
                     }
                 }
-                <div class="col-md-1" style="text-align:right">
+                <div class="align-items-center col-md-1 d-flex justify-content-center" style="text-align:right">
                     <input type="button" class="btn btn-success" value="Filter" onclick="PopulateTable()" />
                 </div>
             </div>
@@ -348,15 +348,15 @@
 
         var startingdate;
         var totalfilledDays = [];
-        var minsetDate;
         var launchdate;
         const today = new Date();
-
+        var mintime = 8.45;
+        var maxTime = 16.00;
         function GetFilledDates() {
-            
+            PopulateProject();
             totalfilledDays = [];
-            minsetDate = "";
-            $('#date').datepicker("refresh");
+            var minsetDate = "";
+            
             const yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!
             let dd = today.getDate();
@@ -367,24 +367,24 @@
             const formattedToday = dd + '/' + mm + '/' + yyyy;
 
             var id;
-            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Traineee' || '@ViewBag.designation' == 'Experienced') {
+            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                 joiningDate = '@ViewBag.joiningDate';
                 id = '@ViewBag.userId';
             }
             else {
-
                 id = $("#employeeId option:selected").val();
-
             }
             launchdate = GetLaunchdate();
+            
             if (id != undefined && id != "0") {
+                
                 $.ajax({
                     cache: false,
                     type: "GET",
                     url: '@Url.Action("GetRemainingDays", "Timesheet")',
                     data: { "employeeId": id },
                     success: function (response) {
-
+                        
                         if (response != '[]') {
                             response = JSON.parse(response);
                             $.each(response, function (i, day) {
@@ -398,55 +398,14 @@
                             if (d < launchdate)
                                 $("#lblMessage").html("You have not filled timesheet for " + d);
 
-                            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Traineee' || '@ViewBag.designation' == 'Experienced') {
+                            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                                 $("#date").attr("disabled", "disabled");
                             }
                             else {
                                 $("#date").removeAttr("disabled");
                             }
-                            //var url = "/Timesheet/GetJoiningDate";
-                            //var data = { employeeId: id };
-                            //$.get(url, data, function (data) {
-                            //
-                            //var dates = JSON.parse(data);
-                            //joiningDate = dates;
-                            //var d1 = new Date(joiningDate);
-                            //var d2 = new Date(launchdate);
-                            //if (d1.getTime() < d2.getTime())
-                            //    startingdate = launchdate;
-                            //else
-                            //    startingdate = joiningDate;
-
-                            //if (totalfilledDays.length == 0) {
-
-                            //    $('#date').val(startingdate);
-                            //    $('#hdnDate').val(startingdate);
-
-                            //    if ('@ViewBag.usertypeId' == '3') {
-                            //        var d = startingdate;
-                            //        if (d < launchdate)
-                            //            $("#lblMessage").html("You have not filled timesheet for " + d);
-                            //        $("#date").attr("disabled", "disabled");
-                            //    }
-                            //    else {
-                            //        $("#date").removeAttr("disabled");
-                            //    }
-                            //}
-                            //else {
-
-                            //$('#date').val(d);
-                            //$('#hdnDate').val(d);
-                            //if ('@ViewBag.usertypeId' == '3') {
-                            //    var d = startingdate;
-                            //    if (d < launchdate)
-                            //        $("#lblMessage").html("You have not filled timesheet for " + d);
-                            //    $("#date").attr("disabled", "disabled");
-                            //}
-                            //else {
-                            //    $("#date").removeAttr("disabled");
-                            //}
                         }
-                        
+
                         minsetDate = new Date(d);
                         var r = noSundaysOrHolidays(new Date(d));
 
@@ -462,14 +421,14 @@
                             if (dd < 10) dd = '0' + dd;
                             if (mm < 10) mm = '0' + mm;
                             startingdate = dd + '/' + mm + '/' + yyyy;
-                            
+
                             $.ajax({
                                 cache: false,
                                 type: "GET",
                                 url: '@Url.Action("CheckTimesheet", "Timesheet")',
                                 data: { "date": startingdate, "id": id },
                                 success: function (response) {
-                                    
+
                                     if (response == '"True"') {
                                         minsetDate = minsetDate.setDate(minsetDate.getDate() + 1);
                                         minsetDate = new Date(minsetDate);
@@ -491,7 +450,7 @@
                                 }
                             });
 
-                            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Traineee' || '@ViewBag.designation' == 'Experienced') {
+                            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                                 var d = startingdate;
                                 if (d < launchdate)
                                     $("#lblMessage").html("You have not filled timesheet for " + d);
@@ -503,6 +462,7 @@
                         }
                         else
                             minsetDate = new Date(d);
+                     
                         $('#date').datepicker({
                             beforeShowDay: noSundaysOrHolidays,
                             numberOfMonths: 1,
@@ -511,27 +471,30 @@
                             //startDate: minDate,
                             //endDate: "today",
                             minDate: minsetDate,
-                            maxDate: '+28D',
+                            maxDate: today,
                             setDate: minsetDate
                         }).on('changeDate', function (ev) {
                             $(this).datepicker('hide');
                         });
+                        $("#date").datepicker("option", "minDate", minsetDate);
+                        $("#date").datepicker("refresh");
                     },
                     error: function () {
                     }
                 });
             }
+            totalfilledDays = [];
         }
 
         function CheckTimesheet(id, startingdate) {
-            
+
             $.ajax({
                 cache: false,
                 type: "GET",
                 url: '@Url.Action("CheckTimesheet", "Timesheet")',
                 data: { "date": startingdate, "id": id },
                 success: function (response) {
-                    
+
                     return response;
                 }
             });
@@ -727,12 +690,11 @@
                 }
             }
 
-            PopulateTask();
             GetFilledDates();
 
             var joiningDate = "";
             $('.select2').select2();
-            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Traineee' || '@ViewBag.designation' == 'Experienced') {
+            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                 $("#employeeId").val(parseInt('@ViewBag.userId'));
                 $("#date").attr("disabled", "disabled");
             }
@@ -764,7 +726,7 @@
         var sat = new Array();
 
         function noSundaysOrHolidays(date) {
-            
+
             var day = date.getDay();
             if (day != 0) {
                 var d = ('0' + date.getDate()).slice(-2);
@@ -791,7 +753,7 @@
                     //    return [false, "Highlighted", "Holiday"];
                     //}
                     //else
-                        return [true]
+                    return [true]
                 }
             } else {
                 return [day != 0, ''];
@@ -811,7 +773,39 @@
             return lastsatday;
         }
 
+        function PopulateProject() {
+            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
+                $("#employeeId").val(parseInt('@ViewBag.userId'));
+            }
+            var id = $("#employeeId option:selected").val();
+            if (id != 0) {
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: '@Url.Action("GetProject", "Timesheet")',
+                    data: { "userId": id },
+                    success: function (response) {
+                        response = JSON.parse(response).Response;
+                        $("#projectId").empty();
+                        if (response.length > 0) {
+                            $.each(response, function (index, element) {
+                                $("#projectId").append('<option value="' + element.projectId + '">' + element.projectName + '</option>');
+                            });
+                        }
+                        PopulateTask();
+                    },
+                    error: function () {
+                        alert("Data Not Found");
+                    }
+                });
+            }
+        }
+
         function PopulateTask() {
+            if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
+                $("#employeeId").val(parseInt('@ViewBag.userId'));
+            }
+            var empid = $("#employeeId option:selected").val();
             $("#divTask").hide();
             var id = $("#projectId option:selected").val();
             if (id != 0) {
@@ -819,7 +813,7 @@
                     cache: false,
                     type: "GET",
                     url: '@Url.Action("GetTask", "Timesheet")',
-                    data: { "projectId": id },
+                    data: { "projectId": id, "empId": empid },
                     success: function (response) {
                         response = JSON.parse(response).Response;
                         $("#taskId").empty();

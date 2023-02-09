@@ -7,6 +7,16 @@
 <html>
 <head>
     <style>
+        #tblFoodOrder thead th {
+            padding: .5rem .5rem;
+            border-bottom: 1px solid #ddd;
+            background: #eee;
+        }
+
+        #tblFoodOrder {
+            border: 1px solid #ddd;
+        }
+
         .inner-form {
             padding: 0px 48px 48px 326px;
         }
@@ -44,8 +54,8 @@
             </div>
         </form>
 
-        <table class="table">
-            <thead align="center">
+    <table class="table" id="tblFoodOrder">
+            <thead>
                 <tr>
                     <th>
                         Name

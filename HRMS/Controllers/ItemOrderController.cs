@@ -554,9 +554,8 @@ namespace HRMS.Controllers
             {
                 throw new Exception(ex.Message);
             }
-
-
         }
+
         [HttpPost]
         public IActionResult EditOrder(string str, int? pageNumber)
         {
@@ -606,6 +605,7 @@ namespace HRMS.Controllers
             }
 
         }
+
         [HttpGet]
         public JsonResult CreateFoodReport(string date)
         {
@@ -704,7 +704,7 @@ namespace HRMS.Controllers
 
                 HttpContext.Session.Remove("SearchString");
 
-                sql = "SELECT EmpID, firstName , TodayDate, SUM(Amount * Quantiy) AS Amount " +
+                sql = "SELECT EmpID, firstName , convert(varchar(50),TodayDate,105) AS TodayDate, SUM(Amount * Quantiy) AS Amount " +
                 "FROM tbl_ItemTran " +
                 "join tbl_Employee E ON E.employeeId = EmpID " +
                 "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(report.Month) + 1) + "' AND YEAR(TodayDate) = '" + report.Year + "' " +
@@ -1436,6 +1436,7 @@ namespace HRMS.Controllers
             string sql = "";
             int yPoint = 0;
             string Date = "";
+            string strDate = "";
             string EmployeeName = "";
             string todayDate = "";
             double rate;
@@ -1542,16 +1543,22 @@ namespace HRMS.Controllers
                     GrandTotalAmount += TotalAmount;
                     TotalOrderRate += rate;
 
-                    xGraphics.DrawString(Date, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+                    if (strDate != Date)
+                    {
+                        yPoint = yPoint + 30;
+                        strDate = Date;
+                        xGraphics.DrawString(Date, xFontName, XBrushes.Black, new XRect(30, yPoint, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+                    }
+                    //xGraphics.DrawString(Date, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
-                    xGraphics.DrawString(EmployeeName, xFontRegular, XBrushes.Black, new XRect(180, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+                        xGraphics.DrawString(EmployeeName, xFontRegular, XBrushes.Black, new XRect(180, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
-                    xGraphics.DrawString(rate.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                        xGraphics.DrawString(rate.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
-                    xGraphics.DrawString(ExpectedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                        xGraphics.DrawString(ExpectedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
-                    xGraphics.DrawString(TotalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-
+                        xGraphics.DrawString(TotalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                  
                     yPoint = yPoint + 20;
 
                 }
