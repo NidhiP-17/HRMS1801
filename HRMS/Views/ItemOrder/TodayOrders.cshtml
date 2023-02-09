@@ -80,14 +80,14 @@
                 dataType: 'json',
                 url: '/ItemOrder/CreateTodayFoodReport',
                 success: function (result) {
-                    debugger
+                    
                     var response = JSON.parse(result);
                     if (response.length > 0) {
                         $("#tblFoodOrder tbody").empty();
                         var table = $("#tblFoodOrder tbody");
                         
                         $.each(response, function (index, element) {
-                            debugger
+                            
                             var name = element.ItemCatName;
                             var item = element.ItemName;
                             var qty = element.Column1;

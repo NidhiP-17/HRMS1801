@@ -102,7 +102,7 @@
                 data: model,
                 datatype: "json",
                 success: function (result) {
-                    debugger
+                    
                     var response = JSON.parse(result);
                     if (response.length > 0) {
                         $("#tblFoodOrder tbody").empty();
@@ -110,7 +110,7 @@
                         var name = "";
                         var amount=0;
                         $.each(response, function (index, element) {
-                            debugger
+                            
                             var date = element.TodayDate;
                             date = date.replace("T00:00:00", "");
                             var ename = element.firstName;

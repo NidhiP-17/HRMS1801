@@ -14,24 +14,60 @@
     #tblFoodOrder {
         border: 1px solid #ddd;
     }
+
+    #tblDayWiseReport thead th {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ddd;
+        background: #eee;
+    }
+
+    #tblDayWiseReport {
+        border: 1px solid #ddd;
+    }
+
+    #tblTodayFoodReport thead th {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ddd;
+        background: #eee;
+    }
+
+    #tblTodayFoodReport {
+        border: 1px solid #ddd;
+    }
+
+    #tblMonthWiseReport thead th {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ddd;
+        background: #eee;
+    }
+
+    #tblMonthWiseReport {
+        border: 1px solid #ddd;
+    }
+
 </style>
 
-<div class="col-md-12">
-    <div class="col-md-4">
+<div class="row">
+    <div class="col-md-5 d-flex justify-content-end align-items-center">
         <div class="form-group">
-            <select class="form-control" id="reportType" onchange="ShowReport()">
-                <option id="1">Food Report Of Employees</option>
-                <option id="2">Today's Order Report</option>
-                <option id="3">Monthly Day Wise Order Details</option>
-                <option id="4">Employee Wise Monthly Order Detail</option>
-            </select>
+            <label class="label-control">Select Report </label>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <select class="form-control" id="reportType" onchange="ShowReport()">
+            <option value="1" selected>Food Report Of Employees</option>
+            <option value="2">Today's Order Report</option>
+            <option value="3">Monthly Day Wise Order Details</option>
+            <option value="4">Employee Wise Monthly Order Detail</option>
+        </select>
+        <div class="form-group">
         </div>
     </div>
 </div>
-<div class="col-md-12">
+@*<div class="col-md-12">
     <h4 class="mb-3">@ViewData["Title"]</h4>
-</div>
-<div id="employeeWiseReport">
+</div>*@
+<div id="employeeWiseReport" style="display:none">
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
@@ -50,12 +86,12 @@
         <div class="col-md-6" style="margin-top:22px;text-align:right">
             <div class="form-group" style="margin-bottom:0px">
                 <label class="control-label"></label>
-                <input type="submit" class="btn btn-success" value="Print" onclick="PrintFoodReport()" />
+                <input type="submit" class="btn btn-dark" value="Print" onclick="PrintFoodReport()" />
             </div>
         </div>
     </div>
 
-    <table id="tblFoodOrder" class="table">
+    <table id="tblFoodOrder" class="table" style="display:none">
         <thead>
             <tr>
                 <th>Particular</th>
@@ -68,7 +104,7 @@
         </tbody>
     </table>
 </div>
-<div id="DayWiseReport">
+<div id="DayWiseReport" style="display:none">
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
@@ -91,12 +127,12 @@
         <div class="col-md-3 d-flex justify-content-end align-items-end">
             <div class="form-group">
                 <label class="control-label"></label>
-                <input type="submit" class="btn btn-success" value="Print" onclick="PrintdayWiseFoodReport()" />
+                <input type="submit" class="btn btn-dark" value="Print" onclick="PrintdayWiseFoodReport()" />
             </div>
         </div>
     </div>
 
-    <table id="tblFoodOrder" class="table">
+    <table id="tblDayWiseReport" class="table" style="display:none">
         <thead>
             <tr>
                 <th>Date</th>
@@ -110,24 +146,17 @@
         </tbody>
     </table>
 </div>
-<div id="TodayReport">
+<div id="TodayReport" style="display:none">
     <div class="row">
-
-        @*<div class="col-md-3" style="margin-top:22px" hidden>
-        <div class="form-group" style="margin-bottom:0px">
-        <label class="control-label"></label>
-        <input type="submit" class="btn btn-success" value="Filter" onclick="CreateFoodReport()" />
-        </div>
-        </div>*@
         <div class="col-md-12" style="margin-top:22px;text-align:right">
             <div class="form-group" style="margin-bottom:0px">
                 <label class="control-label"></label>
-                <input type="submit" class="btn btn-success" value="Print" onclick="PrintTodayFoodReport()" />
+                <input type="submit" class="btn btn-dark" value="Print" onclick="PrintTodayFoodReport()" />
             </div>
         </div>
     </div>
 
-    <table id="tblFoodOrder" class="table">
+    <table id="tblTodayFoodReport" class="table">
         <thead>
             <tr>
                 <th>Category</th>
@@ -141,7 +170,7 @@
         </tbody>
     </table>
 </div>
-<div id="MonthWiseReport">
+<div id="MonthWiseReport" style="display:none">
     <div class="row">
         @*<form asp-action="MonthWiseData">*@
         <div asp-validation-summary="ModelOnly"></div>
@@ -149,21 +178,21 @@
         <div class="col-md-3" hidden>
             <div class="form-group">
                 <label asp-for="Day"></label>
-                @Html.DropDownListFor(x => x.Day, ViewBag.DayListItem as SelectList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.Day, ViewBag.DayListItem as SelectList, new { @class = "form-control"})
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="form-group">
                 <label asp-for="Month"></label>
-                @Html.DropDownListFor(x => x.Month, ViewBag.MonthListItem as SelectList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.Month, ViewBag.MonthListItem as SelectList, new { @class = "form-control" , id = "MonthId"})
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="form-group">
                 <label asp-for="Year"></label>
-                @Html.DropDownListFor(x => x.Year, ViewBag.YearListItem as SelectList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.Year, ViewBag.YearListItem as SelectList, new { @class = "form-control", id = "YearId" })
             </div>
         </div>
         <div class="align-items-end col-md-3 d-flex">
@@ -179,7 +208,7 @@
         </div>
         @*</form>*@
     </div>
-    <table id="tblFoodOrder" class="table">
+    <table id="tblMonthWiseReport" class="table" style="display:none">
         <thead>
             <tr>
                 <th>Employee</th>
@@ -228,7 +257,14 @@
 
         function PrintFoodReport() {
             var edate = $("#theDate").val();
-            window.open('/ItemOrder/Print?date=' + edate, "_blank");
+            if (edate == null || edate == "" || edate == undefined) {
+                alert('Select Date');
+                $("#theDate").focus();
+                return false;
+            }
+            else {
+                window.open('/ItemOrder/Print?date=' + edate, "_blank");
+            }
         }
 
         function CreateFoodReport() {
@@ -237,169 +273,239 @@
             var totalAmount = 0;
 
             var edate = $("#theDate").val();
-            $.ajax({
-                type: "GET",
-                dataType: 'json',
-                url: '/ItemOrder/CreateFoodReport',
-                data: { "date": edate },
-                success: function (result) {
+            if (edate == null || edate == "" || edate == undefined) {
+                alert('Select Date');
+                $("#theDate").focus();
+                return false;
+            }
+            else {
+                $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    url: '/ItemOrder/CreateFoodReport',
+                    data: { "date": edate },
+                    success: function (result) {
 
-                    var response = JSON.parse(result);
-                    if (response.length > 0) {
+                        var response = JSON.parse(result);
                         $("#tblFoodOrder tbody").empty();
+                        $("#tblFoodOrder").show();
                         var table = $("#tblFoodOrder tbody");
-                        var name = "";
+                        if (response.length > 0) {
 
-                        $.each(response, function (index, element) {
-                            debugger
-                            var row = "";
-                            var prevempname = "";
+                            var name = "";
 
-                            if (index == 0) {
-                                table.append("<tr><td colspan='4' style='font-weight:600'>" + element.employeeName + "</td></tr>");
-                            }
-                            else if (name != element.employeeName) {
-                                table.append("<tr><td colspan='4' style='font-weight:600'>" + element.employeeName + "</td></tr>");
-                            }
-                            name = element.employeeName;
-                            var item = element.ItemName;
-                            var qty = element.Quantiy.toFixed(2);
-                            var amount = element.Amount.toFixed(2);
-                            table.append("<tr><td id='empName' hidden>" + name + "</td><td>" + item + "</td><td>" + qty + " </td><td> " + amount + " </td><td> " + amount + " </td></tr>");
+                            $.each(response, function (index, element) {
 
-                            totalAmount = element.Quantiy * element.Amount;
-                            totalQuantity += element.Quantiy;
-                        });
-                        GrandTotalAmount += totalAmount;
-                        table.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td>" + totalQuantity.toFixed(2) + "</td><td></td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
-                        //$("#tblFoodOrder tr:first-child").remove();
-                        //$('#tblFoodOrder').DataTable().ajax.reload();
+                                var row = "";
+                                var prevempname = "";
+
+                                if (index == 0) {
+                                    table.append("<tr><td colspan='4' style='font-weight:600'>" + element.employeeName + "</td></tr>");
+                                }
+                                else if (name != element.employeeName) {
+                                    table.append("<tr><td colspan='4' style='font-weight:600'>" + element.employeeName + "</td></tr>");
+                                }
+                                name = element.employeeName;
+                                var item = element.ItemName;
+                                var qty = element.Quantiy;
+                                var amount = element.Amount.toFixed(2);
+                                table.append("<tr><td id='empName' hidden>" + name + "</td><td>" + item + "</td><td>" + qty + " </td><td> " + amount + " </td><td> " + amount + " </td></tr>");
+
+                                totalAmount = element.Quantiy * element.Amount;
+                                totalQuantity += element.Quantiy;
+                                GrandTotalAmount += totalAmount;
+                            });
+                            table.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td>" + totalQuantity + "</td><td></td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
+
+                        }
+                        else {
+                            table.append("<tr style='text-align:center'><td colspan='5'> No Data Available</td></tr>");
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
                     }
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                }
-            });
+                });
+            }
         }
 
         function PrintMonthlyFoodReport() {
-
-            var Month = $("#Month").val();
-            var Year = $("#Year").val()
-
-            window.open('/ItemOrder/MonthWiseData?month=' + Month + "&year=" + Year, "_blank");
+            var Month = $("#MonthId").val();
+            var Year = $("#YearId").val();
+            if (Month == null || Month == "" || Month == undefined) {
+                alert('Select Month');
+                $("#MonthId").focus();
+                return false;
+            }
+            else if (Year == null || Year == "" || Year == undefined) {
+                alert('Select Year');
+                $("#YearId").focus();
+                return false;
+            }
+            else {
+                window.open('/ItemOrder/MonthWiseData?month=' + Month + "&year=" + Year, "_blank");
+            }
         }
 
         function CreateMonthlyFoodReport() {
-            debugger
-            var totalQuantity = 0;
-            var GrandTotalAmount = 0;
-            var totalAmount = 0;
-            var ExpectedAmount = 20;
-            var TotalExpectedAmount = 0;
-            var TotalOrderRate = 0;
 
-            var model = {
-                Month: $("#Month").val(),
-                Year: $("#Year").val(),
-                Day: 30
+            var Month = $("#MonthId").val();
+            var Year = $("#YearId").val();
+            if (Month == null || Month == "" || Month == undefined) {
+                alert('Select Month');
+                $("#Month").focus();
+                return false;
             }
+            else if (Year == null || Year == "" || Year == undefined) {
+                alert('Select Year');
+                $("#Year").focus();
+                return false;
+            }
+            else {
+                var totalQuantity = 0;
+                var GrandTotalAmount = 0;
+                var totalAmount = 0;
+                var ExpectedAmount = 20;
+                var TotalExpectedAmount = 0;
+                var TotalOrderRate = 0;
 
-            $.ajax({
-                type: "POST",
-                url: '/ItemOrder/CreateMonthWiseReport',
-                data: model,
-                datatype: "json",
-                success: function (result) {
-                    debugger
-                    var response = JSON.parse(result);
-                    if (response.length > 0) {
-                        $("#tblFoodOrder tbody").empty();
-                        var table = $("#tblFoodOrder tbody");
-                        var name = "";
-                        var amount = 0;
-                        $.each(response, function (index, element) {
-                            table.append("<tr><td>" + element.Name + "</td><td>" + element.Amount.toFixed(2) + "</td><td>" + element.Accepted.toFixed(2) + " </td><td> " + element.TotalAmount.toFixed(2) + " </td></tr>");
-                        });
-                    }
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                },
-                error: function (response) {
-                    alert(response.responseText);
+                var model = {
+                    Month: $("#MonthId").val(),
+                    Year: $("#YearId").val(),
+                    Day: 30
                 }
-            });
-        }
-        function PrintdayWiseFoodReport() {
 
-            var model = {
-                Month: $("#Month").val(),
-                Year: $("#Year").val()
+                $.ajax({
+                    type: "POST",
+                    url: '/ItemOrder/CreateMonthWiseReport',
+                    data: model,
+                    datatype: "json",
+                    success: function (result) {
+
+                        var response = JSON.parse(result);
+                        $("#tblMonthWiseReport tbody").empty();
+                        $("#tblMonthWiseReport").show();
+                        var tableMonthWiseReport = $("#tblMonthWiseReport tbody");
+                        if (response.length > 0) {
+                            $.each(response, function (index, element) {
+                                tableMonthWiseReport.append("<tr><td>" + element.Name + "</td><td>" + element.Amount.toFixed(2) + "</td><td>" + element.Accepted.toFixed(2) + " </td><td> " + element.TotalAmount.toFixed(2) + " </td></tr>");
+                            });
+                        }
+                        else {
+                            tableMonthWiseReport.append("<tr style='text-align:center'><td colspan='4'> No Data Available</td></tr>");
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
             }
-            window.open('/ItemOrder/PrintEmployeeData?report=' + model, "_blank");
+        }
+
+        function PrintdayWiseFoodReport() {
+            var Month = $("#Month").val();
+            var Year = $("#Year").val()
+            var Month = $("#Month").val();
+            var Year = $("#Year").val();
+            if (Month == null || Month == "" || Month == undefined) {
+                alert('Select Month');
+                $("#Month").focus();
+                return false;
+            }
+            else if (Year == null || Year == "" || Year == undefined) {
+                alert('Select Year');
+                $("#Year").focus();
+                return false;
+            }
+            else {
+                window.open('/ItemOrder/PrintEmployeeData?month=' + Month + "&year=" + Year, "_blank");
+            }
         }
 
         function CreateDayWiseFoodReport() {
-            var totalQuantity = 0;
-            var GrandTotalAmount = 0;
-            var totalAmount = 0;
-            var ExpectedAmount = 20;
-            var TotalExpectedAmount = 0;
-            var TotalOrderRate = 0;
-
-            var model = {
-                Month: $("#Month").val(),
-                Year: $("#Year").val()
+            var Month = $("#Month").val();
+            var Year = $("#Year").val()
+            var Month = $("#Month").val();
+            var Year = $("#Year").val();
+            if (Month == null || Month == "" || Month == undefined) {
+                alert('Select Month');
+                $("#Month").focus();
+                return false;
             }
+            else if (Year == null || Year == "" || Year == undefined) {
+                alert('Select Year');
+                $("#Year").focus();
+                return false;
+            }
+            else {
+                var totalQuantity = 0;
+                var GrandTotalAmount = 0;
+                var totalAmount = 0;
+                var ExpectedAmount = 20;
+                var TotalExpectedAmount = 0;
+                var TotalOrderRate = 0;
 
-            $.ajax({
-                type: "POST",
-                url: '/ItemOrder/CreateMonthDateWiseReport',
-                data: model,
-                datatype: "json",
-                success: function (result) {
-                    debugger
-                    var response = JSON.parse(result);
-                    if (response.length > 0) {
-                        $("#tblFoodOrder tbody").empty();
-                        var table = $("#tblFoodOrder tbody");
-                        var name = "";
-                        var amount = 0;
-                        $.each(response, function (index, element) {
-                            debugger
-                            var date = element.TodayDate;
-                            date = date.replace("T00:00:00", "");
-                            var ename = element.firstName;
-                            amount = element.Amount;
-                            ExpectedAmount = 20;
-                            if (amount < 20)
-                                ExpectedAmount = amount;
-
-                            totalAmount = amount - ExpectedAmount;
-                            if (totalAmount < 0) {
-                                totalAmount = 0;
-                            }
-                            table.append("<tr><td>" + date + "</td><td>" + ename + "</td><td>" + amount.toFixed(2) + "</td><td>" + ExpectedAmount.toFixed(2) + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
-
-                            TotalExpectedAmount += ExpectedAmount;
-                            GrandTotalAmount += totalAmount;
-                            TotalOrderRate += parseFloat(amount);
-                        });
-                        table.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td></td><td>" + TotalOrderRate.toFixed(2) + "</td><td>" + TotalExpectedAmount.toFixed(2) + "</td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
-
-                    }
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                },
-                error: function (response) {
-                    alert(response.responseText);
+                var model = {
+                    Month: $("#Month").val(),
+                    Year: $("#Year").val()
                 }
-            });
+
+                $.ajax({
+                    type: "POST",
+                    url: '/ItemOrder/CreateMonthDateWiseReport',
+                    data: model,
+                    datatype: "json",
+                    success: function (result) {
+                        debugger
+                        var response = JSON.parse(result);
+                        $("#tblDayWiseReport tbody").empty();
+                        $("#tblDayWiseReport").show();
+                        var tableDayWiseReport = $("#tblDayWiseReport tbody");
+                        if (response.length > 0) {
+
+                            var name = "";
+                            var amount = 0;
+                            $.each(response, function (index, element) {
+
+                                var date = element.TodayDate;
+                                date = date.replace("T00:00:00", "");
+                                var ename = element.firstName;
+                                amount = element.Amount;
+                                ExpectedAmount = 20;
+                                if (amount < 20)
+                                    ExpectedAmount = amount;
+
+                                totalAmount = amount - ExpectedAmount;
+                                if (totalAmount < 0) {
+                                    totalAmount = 0;
+                                }
+                                tableDayWiseReport.append("<tr><td>" + date + "</td><td>" + ename + "</td><td>" + amount.toFixed(2) + "</td><td>" + ExpectedAmount.toFixed(2) + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
+
+                                TotalExpectedAmount += ExpectedAmount;
+                                GrandTotalAmount += totalAmount;
+                                TotalOrderRate += parseFloat(amount);
+                            });
+                            tableDayWiseReport.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td></td><td>" + TotalOrderRate.toFixed(2) + "</td><td>" + TotalExpectedAmount.toFixed(2) + "</td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
+
+                        }
+                        else {
+                            tableDayWiseReport.append("<tr style='text-align:center'><td colspan='5'> No Data Available</td></tr>");
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
         }
 
         function PrintTodayFoodReport() {
@@ -416,27 +522,30 @@
                 dataType: 'json',
                 url: '/ItemOrder/CreateTodayFoodReport',
                 success: function (result) {
-                    debugger
                     var response = JSON.parse(result);
+                    $("#tblTodayFoodReport tbody").empty();
+                    $("#tblTodayFoodReport").show();
+                    var tableFoodOrder = $("#tblTodayFoodReport tbody");
+
                     if (response.length > 0) {
-                        $("#tblFoodOrder tbody").empty();
-                        var table = $("#tblFoodOrder tbody");
 
                         $.each(response, function (index, element) {
-                            debugger
                             var name = element.ItemCatName;
                             var item = element.ItemName;
                             var qty = element.Column1;
                             var amount = element.Amount.toFixed(2);
                             totalAmount = qty * amount;
-                            table.append("<tr><td>" + name + "</td><td>" + item + "</td><td>" + qty + " </td><td> " + amount + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
+                            tableFoodOrder.append("<tr><td>" + name + "</td><td>" + item + "</td><td>" + qty + " </td><td> " + amount + " </td><td> " + totalAmount.toFixed(2) + " </td></tr>");
 
                             totalQuantity += element.Column1;
                             GrandTotalAmount += totalAmount;
                         });
 
-                        table.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td></td><td>" + totalQuantity + "</td><td></td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
+                        tableFoodOrder.append("<tr style='font-weight:800;font-size:20px'><td>Total</td><td></td><td>" + totalQuantity + "</td><td></td><td> " + GrandTotalAmount.toFixed(2) + " </td></tr>");
 
+                    }
+                    else {
+                        tableFoodOrder.append("<tr style='text-align:center'><td colspan='5'> No Data Available</td></tr>");
                     }
                 },
                 failure: function (response) {

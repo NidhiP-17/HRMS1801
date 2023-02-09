@@ -353,7 +353,7 @@
         const today = new Date();
 
         function GetFilledDates() {
-            debugger
+            
             totalfilledDays = [];
             minsetDate = "";
             $('#date').datepicker("refresh");
@@ -407,7 +407,7 @@
                             //var url = "/Timesheet/GetJoiningDate";
                             //var data = { employeeId: id };
                             //$.get(url, data, function (data) {
-                            //debugger
+                            //
                             //var dates = JSON.parse(data);
                             //joiningDate = dates;
                             //var d1 = new Date(joiningDate);
@@ -446,7 +446,7 @@
                             //    $("#date").removeAttr("disabled");
                             //}
                         }
-                        debugger
+                        
                         minsetDate = new Date(d);
                         var r = noSundaysOrHolidays(new Date(d));
 
@@ -469,7 +469,7 @@
                                 url: '@Url.Action("CheckTimesheet", "Timesheet")',
                                 data: { "date": startingdate, "id": id },
                                 success: function (response) {
-                                    debugger
+                                    
                                     if (response == '"True"') {
                                         minsetDate = minsetDate.setDate(minsetDate.getDate() + 1);
                                         minsetDate = new Date(minsetDate);
@@ -524,14 +524,14 @@
         }
 
         function CheckTimesheet(id, startingdate) {
-            debugger
+            
             $.ajax({
                 cache: false,
                 type: "GET",
                 url: '@Url.Action("CheckTimesheet", "Timesheet")',
                 data: { "date": startingdate, "id": id },
                 success: function (response) {
-                    debugger
+                    
                     return response;
                 }
             });
@@ -764,7 +764,7 @@
         var sat = new Array();
 
         function noSundaysOrHolidays(date) {
-            debugger
+            
             var day = date.getDay();
             if (day != 0) {
                 var d = ('0' + date.getDate()).slice(-2);

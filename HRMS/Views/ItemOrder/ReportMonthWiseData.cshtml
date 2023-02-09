@@ -87,7 +87,7 @@
         }
 
         function CreateMonthlyFoodReport() {
-            debugger
+            
             var totalQuantity = 0;
             var GrandTotalAmount = 0;
             var totalAmount = 0;
@@ -107,7 +107,7 @@
                 data: model,
                 datatype: "json",
                 success: function (result) {
-                    debugger
+                    
                     var response = JSON.parse(result);
                     if (response.length > 0) {
                         $("#tblFoodOrder tbody").empty();

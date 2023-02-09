@@ -410,14 +410,51 @@ namespace HRMS.Controllers
         {
             try
             {
-                //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
-                //{
-                //    return RedirectToAction(nameof(EmployeeModel), "Home");
-                //}
-
                 HttpContext.Session.Remove("SearchString");
 
                 ViewBag.Date = DateTime.Now.ToString("dd-MM-yyyy");
+
+                ReportFilter? objReport = null;
+                List<ReportFilter>? lstReport = new List<ReportFilter>();
+                ReportFilter? objReportMonth = null;
+                List<ReportFilter>? lstReportMonth = new List<ReportFilter>();
+                ReportFilter? objReportYear = null;
+                List<ReportFilter>? lstReportYear = new List<ReportFilter>();
+                DataTable? dtYear = new DataTable();
+                Item? item = new Item();
+
+                for (int i = 1; i <= 31; i++)
+                {
+                    objReport = new ReportFilter();
+                    objReport.Month = i.ToString();
+                    lstReport.Add(objReport);
+                }
+                ViewBag.DayListItem = item.ToSelectList(lstReport);
+
+                for (int i = 0; i <= 11; i++)
+                {
+                    objReportMonth = new ReportFilter();
+                    objReportMonth.Month = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[i];
+                    objReportMonth.MonthId = i;
+                    lstReportMonth.Add(objReportMonth);
+                }
+                ViewBag.MonthListItem = item.ToSelectMonthList(lstReportMonth);
+
+                lstReport = new List<ReportFilter>();
+
+                dtYear = item.getYear(configuration.GetConnectionString("DefaultConnection"));
+
+                if (dtYear != null)
+                {
+                    foreach (DataRow dr in dtYear.Rows)
+                    {
+                        objReportYear = new ReportFilter();
+                        objReportYear.Month = dr["Year"].ToString();
+                        lstReportYear.Add(objReportYear);
+                    }
+                }
+
+                ViewBag.YearListItem = item.ToSelectList(lstReportYear);
 
                 return View();
 
@@ -450,36 +487,6 @@ namespace HRMS.Controllers
             }
         }
 
-        //[HttpPost]
-        //public IActionResult ReportEmpDay(string date)
-        //{
-        //    try
-        //    {
-        //        if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
-        //        {
-        //            return RedirectToAction(nameof(Login), "Home");
-        //        }
-
-        //HttpContext.Session.Remove("SearchString");
-
-        //if (string.IsNullOrEmpty(date))
-        //{
-        //    ViewBag.Message = "Please select date!";
-        //    return View();
-        //}
-
-        //Print(date);
-
-        //ViewBag.Date = DateTime.Now.ToString("dd-MM-yyyy");
-
-        //        return View();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
         public IActionResult ReportEmp_Day(int? pageNumber)
         {
             int pageSize = 8;
@@ -522,13 +529,6 @@ namespace HRMS.Controllers
             string? id;
             try
             {
-                //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
-                //{
-                //    return RedirectToAction(nameof(EmployeeModel), "Home");
-                //}
-
-
-
                 HttpContext.Session.Remove("SearchString");
 
                 if (string.IsNullOrEmpty(date))
@@ -590,11 +590,6 @@ namespace HRMS.Controllers
             Item? objItem;
             try
             {
-                //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
-                //{
-                //    return RedirectToAction(nameof(EmployeeModel), "Home");
-                //}
-
                 HttpContext.Session.Remove("SearchString");
 
                 objItem = new Item();
@@ -620,32 +615,18 @@ namespace HRMS.Controllers
             DataSet? ds = new DataSet();
             int i = 0;
             string sql = "";
-            int yPoint = 0;
             string todayDate = "";
             string Name = "";
             string ItemName = "";
             Int32 Quantiy;
             decimal Amount;
-            string StrName = "";
             Double GrandTotalAmount = 0;
             Double TotalQuantity = 0;
             DateTime dtTodaydate = DateTime.Now;
-            int totalLine = 0;
-            int pageNo = 1;
             DataTable dt = new DataTable();
             try
             {
-                //if (Global.GetSession(HttpContext.Session.GetString(Global.SessionKeyName)) == false)
-                //{
-                //    return RedirectToAction(nameof(EmployeeModel), "Home");
-                //}
-
                 HttpContext.Session.Remove("SearchString");
-
-                //XFont xFontRegular = new XFont("Verdana", 10, XFontStyle.Regular);
-                //XFont xFontName = new XFont("Verdana", 10, XFontStyle.Bold);
-                //XFont xFontBold = new XFont("Verdana", 10, XFontStyle.Bold);
-                //XFont xCompBold = new XFont("Verdana", 12, XFontStyle.Bold);
 
                 sql = "SELECT IT.TodayDate,E.FirstName+' '+E.LastName AS employeeName, " +
                             "IM.ItemName,IT.Quantiy,IT.Amount " +
@@ -668,47 +649,12 @@ namespace HRMS.Controllers
                 connection = null;
                 adapter = null;
 
-                //PdfDocument pdfDocument = new PdfDocument();
-                ////Create an empty page
-                //PdfPage pdfPage = pdfDocument.AddPage();
-                //// Get an XGraphics object for drawing
-                //XGraphics xGraphics = XGraphics.FromPdfPage(pdfPage);
-                ////  Create a font
-                //XPen lineRed = new XPen(XColors.Black, 55);
-
-                //yPoint = yPoint + 100;
-
-                //// Draw Line
-                //double x = 80;
-                //XPen pen = XPens.Black;
-                //xGraphics.DrawLine(pen, x - 65, 60, 580, 60);
-                //xGraphics.DrawLine(pen, x - 65, yPoint - 10, 580, yPoint - 10);
-                //xGraphics.DrawLine(pen, x - 65, yPoint + 12, 580, yPoint + 12);
 
                 CheckDuplicateRecords(ds.Tables[0]);
                 todayDate = Convert.ToDateTime(date).ToString("dd/M/yyyy");
 
-                //Header
-                //xGraphics.DrawString("Alita Infotech Pvt.Ltd", xCompBold, XBrushes.Black, new XRect(0, 30, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-                //xGraphics.DrawString("Report Date: " + todayDate, xFontBold, XBrushes.Black, new XRect(25, 70, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
-                //xGraphics.DrawString("Particular", xFontBold, XBrushes.Black, new XRect(-180, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-                //xGraphics.DrawString("Qty", xFontBold, XBrushes.Black, new XRect(70, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-                //xGraphics.DrawString("Rate", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-                //xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
-                    totalLine = totalLine + 1;
-
-                    //if (totalLine == 30 && pageNo == 1 || (totalLine == 32 && pageNo > 1))
-                    //{
-                    //    pdfPage = pdfDocument.AddPage();
-                    //    xGraphics = XGraphics.FromPdfPage(pdfPage);
-                    //    totalLine = 0;
-                    //    yPoint = 10;
-                    //    pageNo++;
-                    //}
-
                     todayDate = Convert.ToDateTime(ds.Tables[0].Rows[i].ItemArray[0]).ToString("dd/M/yyyy");
                     Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
                     ItemName = ds.Tables[0].Rows[i].ItemArray[2].ToString();
@@ -720,59 +666,10 @@ namespace HRMS.Controllers
                     TotalQuantity += Quantiy;
                     GrandTotalAmount += TotalAmount;
 
-                    //if (StrName != Name)
-                    //{
-                    //    yPoint = yPoint + 30;
-                    //    StrName = Name;
-                    //    xGraphics.DrawString(Name, xFontName, XBrushes.Black, new XRect(30, yPoint, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
-                    //}
-
-                    //xGraphics.DrawString(ItemName, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
-
-                    //xGraphics.DrawString(Quantiy.ToString(), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-
-                    //xGraphics.DrawString(Amount.ToString(), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-
-                    //xGraphics.DrawString(TotalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-
-                    //yPoint = yPoint + 20;
-
                 }
                 dt = ds.Tables[0];
                 ViewBag.FoodReport = dt;
-                //xGraphics.DrawString("Total", xFontBold, XBrushes.Black, new XRect(30, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
-
-                //xGraphics.DrawString(TotalQuantity.ToString(), xFontBold, XBrushes.Black, new XRect(-220, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-
-                //xGraphics.DrawString(GrandTotalAmount.ToString("0.00"), xFontBold, XBrushes.Black, new XRect(-50, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-
-                //string fileName = "";
-                //var extenstion = ".pdf";
-
-                //fileName = "Food_Report_Of_Employees_" + DateTime.Now.ToString("yyyyMMddHHmmss") + extenstion;
-
-                //var pathBuild = Path.Combine(Directory.GetCurrentDirectory(), "upload\\files");
-
-                //if (!Directory.Exists(pathBuild))
-                //{
-                //    Directory.CreateDirectory(pathBuild);
-                //}
-
-                //pdfDocument.Save(pathBuild + "\\" + fileName);
-
-                //var path = Path.Combine(Directory.GetCurrentDirectory(), "upload\\files", pathBuild + "\\" + fileName);
-                //var provider = new FileExtensionContentTypeProvider();
-
-                //if (!provider.TryGetContentType(path, out var ContentType))
-                //{
-                //    ContentType = "application/octet-stream";
-
-                //}
-                //var bytes = await System.IO.File.ReadAllBytesAsync(path);
-
-                //System.IO.File.Delete(path);
-
-                //return File(bytes, ContentType, Path.GetFileName(path));
+              
                 return new JsonResult(JsonConvert.SerializeObject(dt));
             }
             catch (Exception ex)
@@ -791,6 +688,7 @@ namespace HRMS.Controllers
             DataSet? ds = new DataSet();
             int i = 0;
             string sql = "";
+            string sql1 = "";
             string Date = "";
             string EmployeeName = "";
             string todayDate = "";
@@ -826,10 +724,10 @@ namespace HRMS.Controllers
 
                 todayDate = Convert.ToDateTime(DateTime.Now).ToString("dd/M/yyyy");
 
-               
+
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
-                  
+
                     EmployeeName = ds.Tables[0].Rows[i].ItemArray[1].ToString();
                     Date = Convert.ToDateTime(ds.Tables[0].Rows[i].ItemArray[2]).ToString("dd/MM/yyyy");
                     rate = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[3]);
@@ -848,7 +746,7 @@ namespace HRMS.Controllers
                     TotalOrderRate += rate;
 
                 }
-                    dt = ds.Tables[0];
+                dt = ds.Tables[0];
                 return new JsonResult(JsonConvert.SerializeObject(dt));
             }
             catch (Exception ex)
@@ -875,7 +773,7 @@ namespace HRMS.Controllers
             Double TotalQuantity = 0;
             Double GrandTotalAmount = 0;
             DateTime dtTodaydate = DateTime.Now;
-            
+
             DataTable dt = new DataTable();
             try
             {
@@ -904,7 +802,7 @@ namespace HRMS.Controllers
 
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
-                    
+
                     ItemCategory = ds.Tables[0].Rows[i].ItemArray[0].ToString();
                     Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
                     Quantiy = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[2]);
@@ -935,6 +833,7 @@ namespace HRMS.Controllers
             DataSet? ds = new DataSet();
             int i = 0;
             string sql = "";
+            string sql1 = "";
             string Name = "";
             string todayDate = "";
             Double AcceptedAmount = 0;
@@ -942,7 +841,7 @@ namespace HRMS.Controllers
             Double FinalAmount = 0;
             Double Amount = 0;
             DateTime dtTodaydate = DateTime.Now;
-          
+
             DataTable dt = new DataTable();
             try
             {
@@ -970,7 +869,7 @@ namespace HRMS.Controllers
                 connection = null;
 
                 todayDate = Convert.ToDateTime(DateTime.Now).ToString("dd/M/yyyy");
-             
+
                 DataTable dtTable = new DataTable();
                 dtTable.Columns.Add("Name", typeof(String));
                 dtTable.Columns.Add("Amount", typeof(Double));
@@ -978,8 +877,8 @@ namespace HRMS.Controllers
                 dtTable.Columns.Add("TotalAmount", typeof(Double));
 
                 DataView dtView = ds.Tables[0].DefaultView;
-                int Days = DateTime.DaysInMonth(Convert.ToInt32(report.Year),Convert.ToInt32(report.Month)+1); 
-                AcceptedAmount = 20 * Convert.ToDouble(Days-7);
+                int Days = DateTime.DaysInMonth(Convert.ToInt32(report.Year), Convert.ToInt32(report.Month) + 1);
+                AcceptedAmount = 20 * Convert.ToDouble(Days - 7);
 
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
@@ -1083,8 +982,8 @@ namespace HRMS.Controllers
                 command = new SqlCommand(sql, connection);
                 adapter.SelectCommand = command;
                 adapter.Fill(ds);
-                
-               
+
+
                 connection.Close();
 
                 command = null;
@@ -1118,7 +1017,7 @@ namespace HRMS.Controllers
                 xGraphics.DrawString("Qty", xFontBold, XBrushes.Black, new XRect(70, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Rate", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-               
+
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
                     totalLine = totalLine + 1;
@@ -1363,6 +1262,7 @@ namespace HRMS.Controllers
             }
 
         }
+
         //public async Task<IActionResult> Print2(ReportFilter report)
         //{
         //    SqlConnection connection;
@@ -1526,7 +1426,7 @@ namespace HRMS.Controllers
         //    }
 
         //}
-        public async Task<IActionResult> PrintEmployeeData(ReportFilter report)
+        public async Task<IActionResult> PrintEmployeeData(string month, string year)
         {
             SqlConnection? connection;
             SqlCommand? command;
@@ -1536,6 +1436,7 @@ namespace HRMS.Controllers
             string sql = "";
             int yPoint = 0;
             string Date = "";
+            string EmployeeName = "";
             string todayDate = "";
             double rate;
             Double ExpectedAmount;
@@ -1564,11 +1465,12 @@ namespace HRMS.Controllers
 
 
 
-                sql = "SELECT EmpID, TodayDate, SUM(Amount * Quantiy) AS Amount " +
+                sql = "SELECT EmpID, TodayDate,firstName , SUM(Amount * Quantiy) AS Amount " +
                             "FROM tbl_ItemTran " +
-                       "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(report.Month) + 1) + "' AND YEAR(TodayDate) = '" + report.Year + "' " +
-                       "AND EmpID = " + ViewBag.userId + " " +
-                       "GROUP BY EmpID,TodayDate ";
+                            "join tbl_Employee E ON E.employeeId = EmpID " +
+                       "WHERE MONTH(TodayDate) = '" + (Convert.ToInt16(month) + 1) + "' AND YEAR(TodayDate) = '" + year + "' " +
+                       "AND EmpID = (CASE WHEN '" + ViewBag.designation + "' = 'Admin' THEN EmpID ELSE  " + ViewBag.userId + " END) " +
+                       "GROUP BY EmpID,TodayDate,firstName  ";
 
                 connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
                 connection.Open();
@@ -1605,6 +1507,7 @@ namespace HRMS.Controllers
                 xGraphics.DrawString(HttpContext.Session.GetString("loginUserName"), xFontBold, XBrushes.Black, new XRect(25, 70, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
                 xGraphics.DrawString("Report Date: " + todayDate, xFontBold, XBrushes.Black, new XRect(-25, 70, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
                 xGraphics.DrawString("Date", xFontBold, XBrushes.Black, new XRect(-230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                xGraphics.DrawString("Employee", xFontBold, XBrushes.Black, new XRect(-90, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Order", xFontBold, XBrushes.Black, new XRect(70, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Accepted ", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
@@ -1623,7 +1526,8 @@ namespace HRMS.Controllers
                     }
 
                     Date = Convert.ToDateTime(ds.Tables[0].Rows[i].ItemArray[1]).ToString("dd/MM/yyyy");
-                    rate = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[2]);
+                    EmployeeName = ds.Tables[0].Rows[i].ItemArray[2].ToString();
+                    rate = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[3]);
                     ExpectedAmount = 20;
                     Double TotalAmount = Convert.ToDouble(rate - ExpectedAmount);
 
@@ -1640,7 +1544,9 @@ namespace HRMS.Controllers
 
                     xGraphics.DrawString(Date, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
-                    xGraphics.DrawString(rate.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-210, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                    xGraphics.DrawString(EmployeeName, xFontRegular, XBrushes.Black, new XRect(180, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+
+                    xGraphics.DrawString(rate.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
                     xGraphics.DrawString(ExpectedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
@@ -1652,7 +1558,7 @@ namespace HRMS.Controllers
 
                 xGraphics.DrawString("Total", xFontBold, XBrushes.Black, new XRect(30, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
-                xGraphics.DrawString(TotalOrderRate.ToString("0.00"), xFontBold, XBrushes.Black, new XRect(-210, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                xGraphics.DrawString(TotalOrderRate.ToString("0.00"), xFontBold, XBrushes.Black, new XRect(-220, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
                 xGraphics.DrawString(TotalExpectedAmount.ToString("0.00"), xFontBold, XBrushes.Black, new XRect(-130, yPoint + 40, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
@@ -1790,7 +1696,7 @@ namespace HRMS.Controllers
                 DataView dtView = ds.Tables[0].DefaultView;
                 int Days = DateTime.DaysInMonth(Convert.ToInt32(year), Convert.ToInt32(month) + 1);
                 //AcceptedAmount = 20 * Convert.ToDouble(report.Day);
-                AcceptedAmount = 20 * Convert.ToDouble(Days-7);
+                AcceptedAmount = 20 * Convert.ToDouble(Days - 7);
 
                 for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                 {
