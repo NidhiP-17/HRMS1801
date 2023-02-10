@@ -30,6 +30,7 @@ namespace Models
         //public int statusId { get; set; }
         [DisplayName("Assigned Date")]
         public DateTime createdDate { get; set; }
+        public bool isDeleted { get; set; }
     }
 
 

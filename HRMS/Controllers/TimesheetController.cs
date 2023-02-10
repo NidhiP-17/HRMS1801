@@ -111,6 +111,16 @@ namespace HRMS.Controllers
             //return View(response.Response);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(TimesheetModel timesheet)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+            return View(timesheet);
+        }
 
         public IActionResult Create()
         {
@@ -362,7 +372,7 @@ namespace HRMS.Controllers
                                 ModelState.AddModelError("hours", rest.Message);
                             else if (t == "Leave")
                                 ModelState.AddModelError("leavehours", rest.Message);
-                            return View("Index", timesheet);
+                            return View("Index",timesheet);
                         }
                     }
 

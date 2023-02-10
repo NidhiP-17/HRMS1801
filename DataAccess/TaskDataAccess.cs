@@ -93,6 +93,7 @@ namespace DataAccess
                 connector.AddInParameterWithValue("@employeeId", task.employeeId);
                 connector.AddInParameterWithValue("@taskName", task.taskName);
                 connector.AddInParameterWithValue("@status",task.status);
+                connector.AddInParameterWithValue("@isDeleted", task.isDeleted);
                 connector.AddInParameterWithValue("@createdBy", userId);
                 connector.AddInParameterWithValue("@createdDate", DateTime.Now);
                 connector.AddOutParameterWithType("@Message", SqlDbType.VarChar);
@@ -113,6 +114,7 @@ namespace DataAccess
                 connector.AddInParameterWithValue("@employeeId", task.employeeId);
                 connector.AddInParameterWithValue("@taskName", task.taskName);
                 connector.AddInParameterWithValue("@status", task.status);
+                connector.AddInParameterWithValue("@isDeleted", task.isDeleted);
                 connector.AddInParameterWithValue("@updatedBy", userId);
                 connector.AddInParameterWithValue("@updatedDate", DateTime.Now);
                 connector.AddOutParameterWithType("@Message", SqlDbType.VarChar);

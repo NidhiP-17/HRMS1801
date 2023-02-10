@@ -231,15 +231,15 @@ namespace DataAccess
                 connector.AddInParameterWithValue("@designationId", employee.designationId);
                 connector.AddInParameterWithValue("@firstName", employee.firstName);
                 connector.AddInParameterWithValue("@lastName", employee.lastName);
-                if(employee.DOB == null)
-                connector.AddInParameterWithValue("@dob", DBNull.Value);
+                if (employee.DOB == null)
+                    connector.AddInParameterWithValue("@dob", DBNull.Value);
                 else
-                connector.AddInParameterWithValue("@dob", employee.DOB);
+                    connector.AddInParameterWithValue("@dob", employee.DOB);
                 if (employee.Gender == null)
                     connector.AddInParameterWithValue("@gender", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@gender", employee.Gender);
-                    connector.AddInParameterWithValue("@joiningDate", employee.joiningDate);
+                connector.AddInParameterWithValue("@joiningDate", employee.joiningDate);
                 connector.AddInParameterWithValue("@phoneNo", Convert.ToInt64(employee.phoneNumber));
                 if (employee.phoneNumber_1 == null)
                     connector.AddInParameterWithValue("@phoneNo_1", DBNull.Value);
@@ -297,11 +297,31 @@ namespace DataAccess
                     connector.AddInParameterWithValue("@panImage", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@panImage", employee.panImageName);
-                connector.AddInParameterWithValue("@status","Active");
+                connector.AddInParameterWithValue("@status", "Active");
                 if (employee.userTypeId == 4 || employee.employeementDate == null)
                     connector.AddInParameterWithValue("@employeementDate", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@employeementDate", employee.employeementDate);
+                if (employee.resignDate == null)
+                    connector.AddInParameterWithValue("@resignDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@resignDate", employee.resignDate);
+                if (employee.resignreason == null)
+                    connector.AddInParameterWithValue("@reason", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@reason", employee.resignreason);
+                if (employee.resignApprovalDate == null)
+                    connector.AddInParameterWithValue("@resignPrrovalDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@resignPrrovalDate", employee.resignApprovalDate);
+                if (employee.actualRelievingDate == null)
+                    connector.AddInParameterWithValue("@actualRelievingDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@actualRelievingDate", employee.actualRelievingDate);
+                if (employee.@suspendedDate == null)
+                    connector.AddInParameterWithValue("@actualRelievingDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@actualRelievingDate", employee.@suspendedDate);
                 connector.AddInParameterWithValue("@isDeleted", employee.isdeleted);
                 connector.AddInParameterWithValue("@createdDate", System.DateTime.Now);
                 connector.AddInParameterWithValue("@createdBy", userId);
@@ -396,6 +416,26 @@ namespace DataAccess
                     connector.AddInParameterWithValue("@employeementDate", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@employeementDate", employee.employeementDate);
+                if (employee.resignDate == null)
+                    connector.AddInParameterWithValue("@resignDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@resignDate", employee.resignDate);
+                if (employee.resignreason == null)
+                    connector.AddInParameterWithValue("@reason", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@reason", employee.resignreason);
+                if (employee.resignApprovalDate == null)
+                    connector.AddInParameterWithValue("@resignPrrovalDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@resignPrrovalDate", employee.resignApprovalDate);
+                if (employee.actualRelievingDate == null)
+                    connector.AddInParameterWithValue("@actualRelievingDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@actualRelievingDate", employee.actualRelievingDate);
+                if (employee.@suspendedDate == null)
+                    connector.AddInParameterWithValue("@actualRelievingDate", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@actualRelievingDate", employee.@suspendedDate);
                 connector.AddInParameterWithValue("@isDeleted", employee.isdeleted);
                 connector.AddInParameterWithValue("@updatedDate", System.DateTime.Now);
                 connector.AddInParameterWithValue("@updatedBy", userId);

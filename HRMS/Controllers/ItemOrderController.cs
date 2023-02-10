@@ -669,7 +669,7 @@ namespace HRMS.Controllers
                 }
                 dt = ds.Tables[0];
                 ViewBag.FoodReport = dt;
-              
+
                 return new JsonResult(JsonConvert.SerializeObject(dt));
             }
             catch (Exception ex)
@@ -887,20 +887,24 @@ namespace HRMS.Controllers
                         Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
 
                         dtView.RowFilter = "EName LIKE '%" + Name + "%'";
-
+                        int cnt = 0;
                         foreach (DataRowView drForm in dtView)
                         {
                             Amount = Amount + Convert.ToDouble(drForm["Amount"]);
-                            TotalAmount = Convert.ToDouble(Amount - AcceptedAmount);
+                            //TotalAmount = Convert.ToDouble(Amount - AcceptedAmount);
+                            TotalAmount = Convert.ToDouble(Amount);
+                            cnt = dtView.Count;
+                            //TotalAmount = Convert.ToDouble(Amount-(20*cnt));
 
-                            if (TotalAmount < 0)
+                            if (TotalAmount <= 20)
                             {
                                 TotalAmount = 0;
                             }
-
                             FinalAmount += TotalAmount;
                         }
-
+                        if(FinalAmount >= 20)
+                            FinalAmount = Convert.ToDouble(Amount - (20 * cnt));
+                       
                         DataRow row = dtTable.NewRow();
                         row["Name"] = Name;
                         row["Amount"] = Amount;
@@ -970,7 +974,7 @@ namespace HRMS.Controllers
                 XFont xCompBold = new XFont("Verdana", 12, XFontStyle.Bold);
 
                 sql = "SELECT IT.TodayDate,E.FirstName+' '+E.LastName AS employeeName, " +
-                            "IM.ItemName,IT.Quantiy,IT.Amount " +
+                        "IM.ItemName,IT.Quantiy,IT.Amount " +
                         "FROM tbl_ItemTran IT,tbl_ItemMaster IM,tbl_Employee E " +
                         "WHERE IT.ItemID = IM.ItemId " +
                         "AND IT.EmpID = E.employeeId " +
@@ -982,7 +986,6 @@ namespace HRMS.Controllers
                 command = new SqlCommand(sql, connection);
                 adapter.SelectCommand = command;
                 adapter.Fill(ds);
-
 
                 connection.Close();
 
@@ -1549,16 +1552,15 @@ namespace HRMS.Controllers
                         strDate = Date;
                         xGraphics.DrawString(Date, xFontName, XBrushes.Black, new XRect(30, yPoint, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
                     }
-                    //xGraphics.DrawString(Date, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
-                        xGraphics.DrawString(EmployeeName, xFontRegular, XBrushes.Black, new XRect(180, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
+                    xGraphics.DrawString(EmployeeName, xFontRegular, XBrushes.Black, new XRect(180, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
 
-                        xGraphics.DrawString(rate.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                    xGraphics.DrawString(rate.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-220, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
-                        xGraphics.DrawString(ExpectedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                    xGraphics.DrawString(ExpectedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
-                        xGraphics.DrawString(TotalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-                  
+                    xGraphics.DrawString(TotalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+
                     yPoint = yPoint + 20;
 
                 }
@@ -1691,8 +1693,8 @@ namespace HRMS.Controllers
                 xGraphics.DrawString(MonthName, xFontBold, XBrushes.Black, new XRect(-25, 70, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
                 xGraphics.DrawString("Particular", xFontBold, XBrushes.Black, new XRect(-230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
                 xGraphics.DrawString("Order", xFontBold, XBrushes.Black, new XRect(70, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-                xGraphics.DrawString("Accepted ", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
-                xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(230, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                //xGraphics.DrawString("Accepted ", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
+                xGraphics.DrawString("Amount", xFontBold, XBrushes.Black, new XRect(150, yPoint - 5, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopCenter);
 
                 DataTable dtTable = new DataTable();
                 dtTable.Columns.Add("Name", typeof(String));
@@ -1712,19 +1714,23 @@ namespace HRMS.Controllers
                         Name = ds.Tables[0].Rows[i].ItemArray[1].ToString();
 
                         dtView.RowFilter = "EName LIKE '%" + Name + "%'";
-
+                        int cnt = 0;
                         foreach (DataRowView drForm in dtView)
                         {
                             Amount = Amount + Convert.ToDouble(drForm["Amount"]);
-                            TotalAmount = Convert.ToDouble(Amount - AcceptedAmount);
+                            //TotalAmount = Convert.ToDouble(Amount - AcceptedAmount);
+                            TotalAmount = Convert.ToDouble(Amount);
+                            cnt = dtView.Count;
+                            //TotalAmount = Convert.ToDouble(Amount-(20*cnt));
 
-                            if (TotalAmount < 0)
+                            if (TotalAmount <= 20)
                             {
                                 TotalAmount = 0;
                             }
-
                             FinalAmount += TotalAmount;
                         }
+                        if (FinalAmount >= 20)
+                            FinalAmount = Convert.ToDouble(Amount - (20 * cnt));
 
                         DataRow row = dtTable.NewRow();
                         row["Name"] = Name;
@@ -1732,10 +1738,6 @@ namespace HRMS.Controllers
                         row["Accepted"] = AcceptedAmount;
                         row["TotalAmount"] = FinalAmount;
                         dtTable.Rows.Add(row);
-
-                        //GrandTotalAmount += Amount;
-                        //TotalAccptedAmount += AcceptedAmount;
-                        //TotalOrderRate += FinalAmount;
 
                         Amount = 0;
                         TotalAmount = 0;
@@ -1766,8 +1768,8 @@ namespace HRMS.Controllers
 
                     xGraphics.DrawString(Name, xFontRegular, XBrushes.Black, new XRect(30, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopLeft);
                     xGraphics.DrawString(Amount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-210, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-                    xGraphics.DrawString(AcceptedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
-                    xGraphics.DrawString(FinalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-50, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                    //xGraphics.DrawString(AcceptedAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
+                    xGraphics.DrawString(FinalAmount.ToString("0.00"), xFontRegular, XBrushes.Black, new XRect(-130, yPoint + 20, pdfPage.Width.Point, pdfPage.Height.Point), XStringFormats.TopRight);
 
                     yPoint = yPoint + 20;
 

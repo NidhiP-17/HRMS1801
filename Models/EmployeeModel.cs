@@ -137,7 +137,7 @@ namespace Models
         public Decimal? probationPeriod { get; set; }
         [RequiredIf("status == 'Resign'", ErrorMessage = "Resign date is required")]
         [DisplayName("Resign Date")]
-        public DateOnly? resignDate { get; set; }
+        public string? resignDate { get; set; }
         [RequiredIf("status == 'Resign'", ErrorMessage = "Reason is required")]
         [DisplayName("Reason")]
         public string? resignreason { get; set; }
@@ -146,13 +146,13 @@ namespace Models
         [DisplayName("Reason")]
         public string? suspendreason { get; set; }
         [DisplayName("Resign Approval Date")]
-        public DateOnly? resignApprovalDate { get; set; }
+        public string? resignApprovalDate { get; set; }
         [DisplayName("Leaving Date")]
-        public DateOnly? leavingDate { get; set; }
+        public string? leavingDate { get; set; }
         [DisplayName("Actual Relieving Date")]
-        public DateOnly? actualRelievingDate { get; set; }
+        public string? actualRelievingDate { get; set; }
         [RequiredIf("status == 'Suspend'", ErrorMessage = "Suspended date is required")]
         [DisplayName("Suspended Date")]
-        public DateOnly? suspendedDate { get; set; }
+        public string? suspendedDate { get; set; }
     }
 }

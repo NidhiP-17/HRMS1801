@@ -34,7 +34,7 @@ namespace DataAccess
                 connector.AddInParameterWithValue("@startDate", startDate);
                 connector.AddInParameterWithValue("@endDate", endDate);
                 connector.AddInParameterWithValue("@projectId", projectId);
-                connector.AddInParameterWithValue("@employeeId",employeeId);
+                connector.AddInParameterWithValue("@employeeId", employeeId);
                 dt = connector.GetDataTable();
                 message = "ok";
             }
@@ -75,14 +75,14 @@ namespace DataAccess
             int rowEffected = 0;
             using (DBConnector connector = new DBConnector("sp_GetWorkingHours", true))
             {
-                connector.AddInParameterWithValue("@date",date);
+                connector.AddInParameterWithValue("@date", date);
                 connector.AddOutParameterWithType("@Message", SqlDbType.VarChar);
                 rowEffected = connector.ExceuteNonQuery();
                 message = connector.GetParamaeterValue("@Message").ToString();
             }
             return message;
         }
-        public string GetTotalHours(long employeeId, DateTime? date,out string message)
+        public string GetTotalHours(long employeeId, DateTime? date, out string message)
         {
             DataTable dt = null;
             int rowEffected = 0;
@@ -141,9 +141,9 @@ namespace DataAccess
                 else
                     connector.AddInParameterWithValue("@employeeId", timesheet.employeeId);
                 if (timesheet.projectId == 0 || timesheet.projectId == null)
-                connector.AddInParameterWithValue("@projectId",DBNull.Value);
+                    connector.AddInParameterWithValue("@projectId", DBNull.Value);
                 else
-                connector.AddInParameterWithValue("@projectId", timesheet.projectId);
+                    connector.AddInParameterWithValue("@projectId", timesheet.projectId);
                 if (timesheet.taskId == 0 || timesheet.taskId == null)
                     connector.AddInParameterWithValue("@taskID", DBNull.Value);
                 else
@@ -154,25 +154,25 @@ namespace DataAccess
                 {
                     connector.AddInParameterWithValue("@date", timesheet.date);
                 }
-                  
-                if(timesheet.trackerFlag == 0 || timesheet.trackerFlag == null)
-                connector.AddInParameterWithValue("@trackerFlag",DBNull.Value);
+
+                if (timesheet.trackerFlag == 0 || timesheet.trackerFlag == null)
+                    connector.AddInParameterWithValue("@trackerFlag", DBNull.Value);
                 else
-                connector.AddInParameterWithValue("@trackerFlag", timesheet.trackerFlag);
+                    connector.AddInParameterWithValue("@trackerFlag", timesheet.trackerFlag);
                 connector.AddInParameterWithValue("@type", timesheet.type);
-                if (timesheet.hours == 0 || timesheet.hours == null )
-                    connector.AddInParameterWithValue("@hours",DBNull.Value);
+                if (timesheet.hours == 0 || timesheet.hours == null)
+                    connector.AddInParameterWithValue("@hours", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@hours", timesheet.hours);
                 if (timesheet.leavehours == null)
                     connector.AddInParameterWithValue("@leavehours", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@leavehours", timesheet.leavehours);
-                if (timesheet.reasonCode == null || timesheet.reasonCode =="" || timesheet.reasonCode == "0")
-                connector.AddInParameterWithValue("@reasonCode", DBNull.Value);
+                if (timesheet.reasonCode == null || timesheet.reasonCode == "" || timesheet.reasonCode == "0")
+                    connector.AddInParameterWithValue("@reasonCode", DBNull.Value);
                 else
-                connector.AddInParameterWithValue("@reasonCode", timesheet.reasonCode);
-                if (timesheet.notes == null || timesheet.notes=="")
+                    connector.AddInParameterWithValue("@reasonCode", timesheet.reasonCode);
+                if (timesheet.notes == null || timesheet.notes == "")
                     connector.AddInParameterWithValue("@notes", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@notes", timesheet.notes);
@@ -180,10 +180,6 @@ namespace DataAccess
                     connector.AddInParameterWithValue("@leaveNotes", DBNull.Value);
                 else
                     connector.AddInParameterWithValue("@leaveNotes", timesheet.leavenotes);
-                //if (timesheet.LeaveType == null)
-                //    connector.AddInParameterWithValue("@leaveType", DBNull.Value);
-                //else
-                //    connector.AddInParameterWithValue("@leaveType", timesheet.LeaveType);
                 connector.AddInParameterWithValue("@isDeleted", false);
                 connector.AddInParameterWithValue("@createdBy", userId);
                 connector.AddInParameterWithValue("@createdDate", DateTime.Now);
@@ -195,7 +191,7 @@ namespace DataAccess
             return message;
         }
 
-       
+
 
         public string DeleteTimesheet(long id, out string message, long userId)
         {

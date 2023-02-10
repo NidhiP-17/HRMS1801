@@ -213,7 +213,7 @@
             <tr>
                 <th>Employee</th>
                 <th>Total Order</th>
-                <th>Accepted Order</th>
+                @*<th>Accepted Order</th>*@
                 <th>Difference Amount</th>
             </tr>
         </thead>
@@ -388,11 +388,11 @@
                         var tableMonthWiseReport = $("#tblMonthWiseReport tbody");
                         if (response.length > 0) {
                             $.each(response, function (index, element) {
-                                tableMonthWiseReport.append("<tr><td>" + element.Name + "</td><td>" + element.Amount.toFixed(2) + "</td><td>" + element.Accepted.toFixed(2) + " </td><td> " + element.TotalAmount.toFixed(2) + " </td></tr>");
+                                tableMonthWiseReport.append("<tr><td>" + element.Name + "</td><td>" + element.Amount.toFixed(2) + "</td><td> " + element.TotalAmount.toFixed(2) + " </td></tr>");
                             });
                         }
                         else {
-                            tableMonthWiseReport.append("<tr style='text-align:center'><td colspan='4'> No Data Available</td></tr>");
+                            tableMonthWiseReport.append("<tr style='text-align:center'><td colspan='3'> No Data Available</td></tr>");
                         }
                     },
                     failure: function (response) {

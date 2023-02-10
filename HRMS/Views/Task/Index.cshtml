@@ -5,12 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <p>
     <a asp-action="Create" class="btn btn-info">Create New</a>
 </p>
-<hr/>
+<hr />
+@*<form method="get" asp-action="Index"></form>*@
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
@@ -30,8 +29,8 @@
             <th hidden>
                 @Html.DisplayNameFor(model => model.employeeId)
             </th>
-           @* <th>
-                Sr. No.
+            @* <th>
+            Sr. No.
             </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.taskName)
@@ -52,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-       
+
         @foreach (var item in Model)
         {
             <tr>
@@ -65,9 +64,9 @@
                 <td hidden>
                     @Html.DisplayFor(modelItem => item.employeeId)
                 </td>
-               @* <td>
-                    @i
-                </td>*@
+                @* <td>
+            @i
+            </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.taskName)
                 </td>
@@ -93,9 +92,9 @@
                     <a href="@Url.Action("Delete", "Task",new {  id=item.taskId  })">
                         <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash"></i>
                     </a>
-                  @*  @Html.ActionLink("Edit", "Edit", new {  id=item.taskId }) |
-                    @Html.ActionLink("Details", "Details", new {  id=item.taskId  }) |
-                    @Html.ActionLink("Delete", "Delete", new {  id=item.taskId })*@
+                    @*  @Html.ActionLink("Edit", "Edit", new {  id=item.taskId }) |
+                @Html.ActionLink("Details", "Details", new {  id=item.taskId  }) |
+                @Html.ActionLink("Delete", "Delete", new {  id=item.taskId })*@
                 </td>
             </tr>
         }

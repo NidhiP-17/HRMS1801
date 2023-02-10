@@ -356,7 +356,7 @@
             PopulateProject();
             totalfilledDays = [];
             var minsetDate = "";
-            
+
             const yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!
             let dd = today.getDate();
@@ -375,19 +375,20 @@
                 id = $("#employeeId option:selected").val();
             }
             launchdate = GetLaunchdate();
-            
+
             if (id != undefined && id != "0") {
-                
+
                 $.ajax({
                     cache: false,
                     type: "GET",
                     url: '@Url.Action("GetRemainingDays", "Timesheet")',
                     data: { "employeeId": id },
                     success: function (response) {
-                        
+
                         if (response != '[]') {
                             response = JSON.parse(response);
                             $.each(response, function (i, day) {
+                                //if (day.totalhours >= 8.75)
                                 totalfilledDays.push(day.holidaydate);
                             });
 
@@ -462,7 +463,7 @@
                         }
                         else
                             minsetDate = new Date(d);
-                     
+
                         $('#date').datepicker({
                             beforeShowDay: noSundaysOrHolidays,
                             numberOfMonths: 1,
@@ -815,6 +816,7 @@
                     url: '@Url.Action("GetTask", "Timesheet")',
                     data: { "projectId": id, "empId": empid },
                     success: function (response) {
+                        debugger
                         response = JSON.parse(response).Response;
                         $("#taskId").empty();
                         if (response.length > 0) {

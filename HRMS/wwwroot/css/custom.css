@@ -15,7 +15,7 @@ a {
     box-shadow: 0 0 20px 0 rgb(0 0 0 / 10%);
     margin: 0 auto;
     border-radius: 0;
-    border-top: 6px solid #000;
+    border-top: 6px solid #939393;
 }
 
 .loginPage form {
@@ -37,6 +37,7 @@ a {
     margin: 0;
     padding: 0;
     height: 100vh;
+    background:#000;
 }
 .form-control {
     padding: 10px 15px;

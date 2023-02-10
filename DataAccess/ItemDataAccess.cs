@@ -42,6 +42,9 @@ namespace DataAccess
             using (DBConnector connector = new DBConnector("sp_CreateItem", true))
             {
                 connector.AddInParameterWithValue("@itemName", item.ItemName);
+                if(item.ItemDesc == null || item.ItemName =="")
+                connector.AddInParameterWithValue("@itemDesc",DBNull.Value);
+                else
                 connector.AddInParameterWithValue("@itemDesc", item.ItemDesc);
                 connector.AddInParameterWithValue("@amount", item.Amount);
                 connector.AddInParameterWithValue("@itemCatID", item.ItemCatID);
@@ -64,7 +67,10 @@ namespace DataAccess
             {
                 connector.AddInParameterWithValue("@itemId", item.ItemId);
                 connector.AddInParameterWithValue("@itemName", item.ItemName);
-                connector.AddInParameterWithValue("@itemDesc", item.ItemDesc);
+                if (item.ItemDesc == null || item.ItemName == "")
+                    connector.AddInParameterWithValue("@itemDesc", DBNull.Value);
+                else
+                    connector.AddInParameterWithValue("@itemDesc", item.ItemDesc);
                 connector.AddInParameterWithValue("@amount", item.Amount);
                 connector.AddInParameterWithValue("@itemCatID", item.ItemCatID);
                 connector.AddInParameterWithValue("@isActive", item.IsActive);

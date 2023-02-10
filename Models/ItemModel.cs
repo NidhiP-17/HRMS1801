@@ -24,7 +24,7 @@ namespace Models
 
         [DisplayName("Description")]
         public string? ItemDesc { get; set; }
-
+        [DisplayName("Category")]
         public int ItemCatID { get; set; }
 
         [DisplayName("Category")]
