@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using NuGet.Protocol.Core.Types;
 using NuGet.Protocol.Plugins;
 using Repositories;
+using System.Globalization;
 using System.Threading.Tasks;
 using WebSite.Common;
 
@@ -76,8 +77,9 @@ namespace HRMS.Controllers
             }
             else
             {
-                startDate = firstDay.ToShortDateString();
-                endDate = lastDay.ToShortDateString();
+                startDate = firstDay.ToString("MM/dd/yyyy");
+                //DateTime dt = DateTime.ParseExact(startDate, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                endDate = lastDay.ToString("MM/dd/yyyy");
             }
             if (eId == null)
                 eId = "ALL";

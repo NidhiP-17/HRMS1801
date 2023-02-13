@@ -21,14 +21,6 @@
 <form asp-action="Create" id="frm" autocomplete="off" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row" style="margin-bottom:25px !important">
-        <div class="col-md-12" style="text-align:right">
-            <div class="form-group">
-                <a target="_blank" href="http://alitahelpdesk.tk/hoursCalculator.php" class="btn" style="border:1px solid black">Hours Calculator</a>
-            </div>
-        </div>
-        <div class="col-md-7">
-            <h5 style="color:red;font-weight:500" id="lblMessage" class="label-control"></h5>
-        </div>
         <div class="col-md-3">
             <div class="form-group">
                 <input type="hidden" id="hdnfromdate" asp-for="fromdate" value="@ViewBag.fromdaterange" />
@@ -56,6 +48,14 @@
                 <input type="text" class="form-control" id="date" />
                 <input asp-for="date" type="hidden" class="form-control" id="hdnDate" />
                 <span asp-validation-for="date" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h5 style="color:red;font-weight:500" id="lblMessage" class="label-control"></h5>
+        </div>
+        <div class="align-items-end col-md-4 d-flex justify-content-end" style="text-align:right">
+            <div class="form-group">
+                <a target="_blank" href="http://alitahelpdesk.tk/hoursCalculator.php" class="btn" style="border:1px solid black">Hours Calculator</a>
             </div>
         </div>
     </div>
@@ -212,7 +212,7 @@
                     }
                 }
                 <div class="align-items-center col-md-1 d-flex justify-content-center" style="text-align:right">
-                    <input type="button" class="btn btn-success" value="Filter" onclick="PopulateTable()" />
+                    <input type="button" class="btn btn-success" id="btnFilter" value="Filter" onclick="PopulateTable()" />
                 </div>
             </div>
         </div>
@@ -319,11 +319,9 @@
 </form>
 @section scripts{
     <script>
-
         CKEDITOR.inline('editor2');
         CKEDITOR.config.removePlugins = "imagebase,easyimage,link,about";
         $("#cke_50").attr("disabled", "true");
-
     </script>
 
     <script>
@@ -375,9 +373,9 @@
                 id = $("#employeeId option:selected").val();
             }
             launchdate = GetLaunchdate();
-
+            var sd = "";
             if (id != undefined && id != "0") {
-
+                debugger
                 $.ajax({
                     cache: false,
                     type: "GET",
@@ -388,6 +386,7 @@
                         if (response != '[]') {
                             response = JSON.parse(response);
                             $.each(response, function (i, day) {
+                                debugger
                                 //if (day.totalhours >= 8.75)
                                 totalfilledDays.push(day.holidaydate);
                             });
@@ -395,24 +394,24 @@
                             $('#date').val(totalfilledDays[0]);
                             $('#hdnDate').val(totalfilledDays[0]);
 
-                            var d = totalfilledDays[0];
-                            if (d < launchdate)
-                                $("#lblMessage").html("You have not filled timesheet for " + d);
+                            sd = totalfilledDays[0];
+                            if (sd < launchdate)
+                                $("#lblMessage").html("You have not filled timesheet for " + sd);
 
                             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
-                                $("#date").attr("disabled", "disabled");
+                                //$("#date").attr("disabled", "disabled");
                             }
                             else {
                                 $("#date").removeAttr("disabled");
                             }
                         }
 
-                        minsetDate = new Date(d);
-                        var r = noSundaysOrHolidays(new Date(d));
+                        minsetDate = new Date(sd);
+                        var r = noSundaysOrHolidays(new Date(sd));
 
                         if (r[0] == false && r[1] == 'SatDay') {
 
-                            minsetDate = new Date(d);
+                            minsetDate = new Date(sd);
                             minsetDate = minsetDate.setDate(minsetDate.getDate() + 2);
                             minsetDate = new Date(minsetDate);
                             const yyyy = minsetDate.getFullYear();
@@ -452,17 +451,17 @@
                             });
 
                             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
-                                var d = startingdate;
-                                if (d < launchdate)
-                                    $("#lblMessage").html("You have not filled timesheet for " + d);
-                                $("#date").attr("disabled", "disabled");
+                                sd = startingdate;
+                                if (sd < launchdate)
+                                    $("#lblMessage").html("You have not filled timesheet for " + sd);
+                                //$("#date").attr("disabled", "disabled");
                             }
                             else {
                                 $("#date").removeAttr("disabled");
                             }
                         }
                         else
-                            minsetDate = new Date(d);
+                            minsetDate = new Date(sd);
 
                         $('#date').datepicker({
                             beforeShowDay: noSundaysOrHolidays,
@@ -479,12 +478,54 @@
                         });
                         $("#date").datepicker("option", "minDate", minsetDate);
                         $("#date").datepicker("refresh");
+
+                        //const yyyy = today.getFullYear();
+                        //let mm = today.getMonth() + 1; // Months start at 0!
+                        //let dd = today.getDate();
+
+                        //if (dd < 10) dd = '0' + dd;
+                        //if (mm < 10) mm = '0' + mm;
+                        debugger
+                        //const formattedToday = dd + '/' + mm + '/' + yyyy;
+                        startingdate = sd;
+                        $('#fromdate').val(startingdate);
+                        $('#todate').val(startingdate);
+                        $('#fromdate').datepicker({
+                            numberOfMonths: 1,
+                            format: 'DD/MM/YYYY',
+                            autoclose: true,
+                            //startDate: minDate,
+                            //endDate: "today",
+                            minDate: '-3M',
+                            maxDate: '+28D',
+                            setDate: minsetDate
+                        }).on('changeDate', function (ev) {
+                            $(this).datepicker('hide');
+                        });
+
+                        $('#todate').datepicker({
+                            numberOfMonths: 1,
+                            format: 'DD/MM/YYYY',
+                            autoclose: true,
+                            //startDate: minDate,
+                            //endDate: "today",
+                            minDate: '-3M',
+                            maxDate: '+28D',
+                            setDate: minsetDate
+                        }).on('changeDate', function (ev) {
+                            $(this).datepicker('hide');
+                        });
+
+                        $('#hdnfromdate').val($('#fromdate').val());
+                        $('#hdntodate').val($('#todate').val());
+                        PopulateTable();
                     },
                     error: function () {
                     }
                 });
             }
             totalfilledDays = [];
+
         }
 
         function CheckTimesheet(id, startingdate) {
@@ -607,78 +648,9 @@
                     return false;
                 }
             }
-            //var data = CKEDITOR.instances.editor1.getData();
 
             $('#demoGrid').dataTable({
             });
-            //var start = moment();
-            //var end = moment();
-
-            //function cb(start, end) {
-            //    $('#daterange span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
-            //    //$('#todate span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
-            //}
-
-            //$('#daterange').daterangepicker({
-            //    startDate: start,
-            //    endDate: end,
-            //    locale: {
-            //        format: 'DD-MM-YYYY'
-            //    },
-            //    ranges: {
-            //        'Today': [moment(), moment()],
-            //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-            //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            //    },
-
-            //}, cb);
-            //$('#hdnrange').val($('#daterange').val());
-
-            //if ('@ViewBag.daterange' != '')
-            //    $('#daterange').val('@ViewBag.daterange');
-
-
-            const yyyy = today.getFullYear();
-            let mm = today.getMonth() + 1; // Months start at 0!
-            let dd = today.getDate();
-
-            if (dd < 10) dd = '0' + dd;
-            if (mm < 10) mm = '0' + mm;
-
-            const formattedToday = dd + '/' + mm + '/' + yyyy;
-            $('#fromdate').val(formattedToday);
-            $('#todate').val(formattedToday);
-            $('#fromdate').datepicker({
-                numberOfMonths: 1,
-                format: 'DD/MM/YYYY',
-                autoclose: true,
-                //startDate: minDate,
-                //endDate: "today",
-                minDate: '-3M',
-                maxDate: '+28D',
-                setDate: today
-            }).on('changeDate', function (ev) {
-                $(this).datepicker('hide');
-            });
-
-            $('#todate').datepicker({
-                numberOfMonths: 1,
-                format: 'DD/MM/YYYY',
-                autoclose: true,
-                //startDate: minDate,
-                //endDate: "today",
-                minDate: '-3M',
-                maxDate: '+28D',
-                setDate: today
-            }).on('changeDate', function (ev) {
-                $(this).datepicker('hide');
-            });
-
-            $('#hdnfromdate').val($('#fromdate').val());
-            $('#hdntodate').val($('#todate').val());
 
             if ('@ViewBag.fromdaterange' != '')
                 $('#fromdate').val('@ViewBag.fromdaterange');
@@ -697,7 +669,7 @@
             $('.select2').select2();
             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                 $("#employeeId").val(parseInt('@ViewBag.userId'));
-                $("#date").attr("disabled", "disabled");
+                //$("#date").attr("disabled", "disabled");
             }
             else {
                 $("#date").removeAttr("disabled");
@@ -718,9 +690,8 @@
                 $.each(dates, function (i, saturday) {
                     saturdays.push(saturday.holidaydate);
                 });
+
             });
-
-
 
         });
 
@@ -835,12 +806,31 @@
         }
 
         function PopulateTable() {
+            debugger
             var projectId = $("#projectId option:selected").val();
-            var employeeId = $("#employeeId option:selected").val();
+            var employeeId = $("#employeeId").val();
             var fromdateRange = $("#fromdate").val();
             var todateRange = $("#todate").val();
             //var dateRange = $("#daterange").val();
-            window.location.href = '@Url.Action("Index", "Timesheet")?pId=' + projectId + '&eId=' + employeeId + '&fd=' + fromdateRange + '&td=' + todateRange;
+            $.ajax({
+                type: 'GET',
+                url: 'Timesheet/Index',
+                contentType: 'application/json; charset=utf-8',
+                data: { pId: projectId, eId: employeeId, fd: fromdateRange, td: todateRange },
+                dataType: 'json',
+                success: function (response) {
+                    var res = JSON.parse(response);
+                    var row = '<tr>';
+                    $.each(d, function (j, e) {
+                        row += '<td>' + e + '</td>';
+                    });
+                    row += '</tr>';
+                    $('#demoGrid tbody').append(row);
+                },
+                error: function (response) { alert("Data Not Found"); }
+            });
+
+            //window.location.href = '@Url.Action("Index", "Timesheet")?pId=' + projectId + '&eId=' + employeeId + '&fd=' + fromdateRange + '&td=' + todateRange;
         }
     </script>
     @{
