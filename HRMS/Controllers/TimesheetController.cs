@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using NuGet.Protocol.Core.Types;
 using NuGet.Protocol.Plugins;
 using Repositories;
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using WebSite.Common;
@@ -56,8 +57,8 @@ namespace HRMS.Controllers
             if (TempData["msg"] != null)
                 ViewBag.msg = TempData["msg"].ToString();
 
-            var now = DateTime.Now; // get the current DateTime 
-
+            string now = DateTime.Now.ToShortDateString();  // get the current DateTime 
+            now = Convert.ToDateTime(now).Day.ToString().PadLeft(2, '0') + "/" + Convert.ToDateTime(now).Month.ToString().PadLeft(2, '0') + "/" + Convert.ToDateTime(now).Year.ToString();
             //Get the number of days in the current month
             //int daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
 
@@ -77,9 +78,9 @@ namespace HRMS.Controllers
             }
             else
             {
-                startDate = firstDay.ToString("MM/dd/yyyy");
+                startDate = firstDay.ToString();
                 //DateTime dt = DateTime.ParseExact(startDate, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                endDate = lastDay.ToString("MM/dd/yyyy");
+                endDate = lastDay.ToString();
             }
             if (eId == null)
                 eId = "ALL";
@@ -108,20 +109,104 @@ namespace HRMS.Controllers
             t.taskId = 0;
             t.TimeSheetList = response.Response;
             //t.daterange = ViewBag.daterange;
-          
+
             return View(t);
             //return View(response.Response);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Index(TimesheetModel timesheet)
+        public JsonResult Index(string fd, string td, string pId, string eId,TimesheetModel ts)
         {
-            if (ModelState.IsValid)
+            string mesg = "";
+            ViewBag.StateEnabled = false;
+            ProjectRepository project = new ProjectRepository();
+            var response1 = project.ListProjects(ViewBag.userId, out mesg);
+            ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName");
+
+            ViewBag.fromdaterange = fd;
+            ViewBag.todaterange = td;
+
+            EmployeeRepository employee = new EmployeeRepository();
+            var response2 = employee.ListEmployees(ViewBag.userId, out mesg);
+            if (ViewBag.userTypeId != 3)
             {
 
+                ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName");
             }
-            return View(timesheet);
+            else if (eId == null || ViewBag.userTypeId == 3)
+            {
+                ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", ViewBag.userId);
+                loginedempId = ViewBag.userId;
+                eId = ViewBag.userId.ToString();
+            }
+
+            TaskRepository task = new TaskRepository();
+            var responsetask = task.ListTasks(0, ViewBag.userId, out mesg);
+            ViewBag.Tasks = new SelectList(responsetask.Response, "taskId", "taskName");
+
+            TimesheetRepository timesheet = new TimesheetRepository();
+            var response3 = timesheet.ListReasons(ViewBag.userId, out mesg);
+            ViewBag.Reasons = new SelectList(response3.Response, "reasonId", "reasonCode");
+
+            TimesheetRepository repository = new TimesheetRepository();
+            if (TempData["msg"] != null)
+                ViewBag.msg = TempData["msg"].ToString();
+
+            string now = DateTime.Now.ToShortDateString();  // get the current DateTime 
+            now = Convert.ToDateTime(now).Day.ToString().PadLeft(2, '0') + "/" + Convert.ToDateTime(now).Month.ToString().PadLeft(2, '0') + "/" + Convert.ToDateTime(now).Year.ToString();
+            //Get the number of days in the current month
+            //int daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+
+            //First day of the month is always 1
+            var firstDay = now;
+            //var firstDay = new DateTime(now.Year, now.Month, 1);
+
+            //Last day will be similar to the number of days calculated above
+            var lastDay = now;
+            //var lastDay = new DateTime(now.Year, now.Month, daysInMonth);
+            string startDate;
+            string endDate;
+            if (fd != null && td != null)
+            {
+                startDate = fd;
+                endDate = td;
+            }
+            else
+            {
+                startDate = firstDay.ToString();
+                //DateTime dt = DateTime.ParseExact(startDate, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                endDate = lastDay.ToString();
+            }
+            if (eId == null)
+                eId = "ALL";
+
+            if (pId == null)
+                pId = "ALL";
+            var response = repository.GetTimesheet(pId, eId, startDate, endDate, ViewBag.userId, out mesg);
+
+            //ViewBag.TimesheetList = response.Response;
+            if (pId.Equals("0") == false || pId.Equals("ALL") == false)
+                ViewBag.Projects = new SelectList(response1.Response, "projectId", "projectName", pId);
+            if (eId.Equals("0") == false && eId.Equals("ALL") == false)
+            {
+                ViewBag.Employees = new SelectList(response2.Response, "employeeId", "firstName", eId);
+            }
+
+            TimesheetModel t = new TimesheetModel();
+            if (eId != "ALL")
+                t.employeeId = Convert.ToInt32(eId);
+            else
+                t.employeeId = 0;
+            if (pId != "ALL")
+                t.projectId = Convert.ToInt32(pId);
+            else
+                t.projectId = 0;
+            t.taskId = 0;
+            t.TimeSheetList = response.Response;
+            //t.daterange = ViewBag.daterange;
+
+            return new JsonResult(JsonConvert.SerializeObject(t));
+            //return View(response.Response);
         }
 
         public IActionResult Create()
@@ -374,7 +459,7 @@ namespace HRMS.Controllers
                                 ModelState.AddModelError("hours", rest.Message);
                             else if (t == "Leave")
                                 ModelState.AddModelError("leavehours", rest.Message);
-                            return View("Index",timesheet);
+                            return View("Index", timesheet);
                         }
                     }
 
@@ -398,7 +483,7 @@ namespace HRMS.Controllers
             var response31 = timesheet1.ListReasons(ViewBag.userId, out msg1);
             ViewBag.Reasons = new SelectList(response31.Response, "reasonId", "reasonCode", timesheet.reasonCode);
 
-            return View("Index",timesheet);
+            return View("Index", timesheet);
         }
         public IActionResult Delete(int id)
         {
@@ -418,14 +503,14 @@ namespace HRMS.Controllers
         {
             string msg = "";
             TaskRepository material = new TaskRepository();
-            var response = material.ListTasks(projectId,empId, out msg);
+            var response = material.ListTasks(projectId, empId, out msg);
             return new JsonResult(JsonConvert.SerializeObject(response));
         }
         public JsonResult GetProject(int userId)
         {
             string msg = "";
             ProjectRepository project = new ProjectRepository();
-            var response = project.ListProjects(userId,out msg);
+            var response = project.ListProjects(userId, out msg);
             return new JsonResult(JsonConvert.SerializeObject(response));
         }
 
@@ -470,10 +555,10 @@ namespace HRMS.Controllers
             var response = timesheet.GetLastDayOftimeSheet(employeeId);
             return new JsonResult(JsonConvert.SerializeObject(response.Response));
         }
-        public JsonResult CheckTimesheet(string date,int id)
+        public JsonResult CheckTimesheet(string date, int id)
         {
             TimesheetRepository timesheet = new TimesheetRepository();
-            var response = timesheet.CheckTimesheet(id,date);
+            var response = timesheet.CheckTimesheet(id, date);
             return new JsonResult(JsonConvert.SerializeObject(response.Response));
         }
         public JsonResult GetLaunchDate()

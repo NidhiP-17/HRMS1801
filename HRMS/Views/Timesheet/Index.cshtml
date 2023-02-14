@@ -211,9 +211,12 @@
                         <input type="hidden" name="employeeId" id="employeeId" class="form-control" value="@ViewBag.Employee" />
                     }
                 }
-                <div class="align-items-center col-md-1 d-flex justify-content-center" style="text-align:right">
-                    <input type="button" class="btn btn-success" id="btnFilter" value="Filter" onclick="PopulateTable()" />
-                </div>
+                @using (Html.BeginForm("Index", "Timesheet", FormMethod.Post))
+                {
+                    <div class="align-items-center col-md-1 d-flex justify-content-center" style="text-align:right">
+                        <input type="button" class="btn btn-success" id="btnFilter" value="Filter" onclick="PopulateTable()" />
+                    </div>
+                }
             </div>
         </div>
 
@@ -327,7 +330,7 @@
     <script>
         function ShowTotalhours(date) {
             date = date.value;
-            var id = $("#employeeId option:selected").val();
+            var id = $("#employeeId").val();
             if (id == undefined)
                 id = 0;
             $.ajax({
@@ -354,6 +357,7 @@
             PopulateProject();
             totalfilledDays = [];
             var minsetDate = "";
+            var changeDate = "";
 
             const yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!
@@ -370,7 +374,7 @@
                 id = '@ViewBag.userId';
             }
             else {
-                id = $("#employeeId option:selected").val();
+                id = $("#employeeId").val();
             }
             launchdate = GetLaunchdate();
             var sd = "";
@@ -390,7 +394,7 @@
                                 //if (day.totalhours >= 8.75)
                                 totalfilledDays.push(day.holidaydate);
                             });
-
+                            debugger
                             $('#date').val(totalfilledDays[0]);
                             $('#hdnDate').val(totalfilledDays[0]);
 
@@ -405,8 +409,10 @@
                                 $("#date").removeAttr("disabled");
                             }
                         }
-
-                        minsetDate = new Date(sd);
+                        debugger
+                        changeDate = sd.split("/");
+                        //sd = new Date(sd[2], sd[1] - 1, from[0]);
+                        minsetDate = new Date(changeDate[2], changeDate[1] - 1, changeDate[0]);
                         var r = noSundaysOrHolidays(new Date(sd));
 
                         if (r[0] == false && r[1] == 'SatDay') {
@@ -460,13 +466,17 @@
                                 $("#date").removeAttr("disabled");
                             }
                         }
-                        else
-                            minsetDate = new Date(sd);
-
+                        else {
+                            debugger
+                            changeDate = sd.split("/");
+                            //sd = new Date(sd[2], sd[1] - 1, from[0]);
+                            minsetDate = new Date(changeDate[2], changeDate[1] - 1, changeDate[0]);
+                        }
+                        debugger
                         $('#date').datepicker({
                             beforeShowDay: noSundaysOrHolidays,
                             numberOfMonths: 1,
-                            format: 'DD/MM/YYYY',
+                            dateFormat: 'dd/mm/yy',
                             autoclose: true,
                             //startDate: minDate,
                             //endDate: "today",
@@ -474,9 +484,9 @@
                             maxDate: today,
                             setDate: minsetDate
                         }).on('changeDate', function (ev) {
-                            $(this).datepicker('hide');
+                            //$("#date").datepicker("option", "minDate", minsetDate);
                         });
-                        $("#date").datepicker("option", "minDate", minsetDate);
+
                         $("#date").datepicker("refresh");
 
                         //const yyyy = today.getFullYear();
@@ -665,6 +675,7 @@
 
             GetFilledDates();
 
+
             var joiningDate = "";
             $('.select2').select2();
             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
@@ -674,7 +685,6 @@
             else {
                 $("#date").removeAttr("disabled");
             }
-
 
             var url = "/Timesheet/HolidayList";
             $.get(url, null, function (data) {
@@ -698,7 +708,6 @@
         var sat = new Array();
 
         function noSundaysOrHolidays(date) {
-
             var day = date.getDay();
             if (day != 0) {
                 var d = ('0' + date.getDate()).slice(-2);
@@ -749,7 +758,7 @@
             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                 $("#employeeId").val(parseInt('@ViewBag.userId'));
             }
-            var id = $("#employeeId option:selected").val();
+            var id = $("#employeeId").val();
             if (id != 0) {
                 $.ajax({
                     cache: false,
@@ -757,6 +766,7 @@
                     url: '@Url.Action("GetProject", "Timesheet")',
                     data: { "userId": id },
                     success: function (response) {
+                        debugger
                         response = JSON.parse(response).Response;
                         $("#projectId").empty();
                         if (response.length > 0) {
@@ -777,9 +787,9 @@
             if ('@ViewBag.designation' == 'Developer' || '@ViewBag.designation' == 'Trainee' || '@ViewBag.designation' == 'Experienced') {
                 $("#employeeId").val(parseInt('@ViewBag.userId'));
             }
-            var empid = $("#employeeId option:selected").val();
+            var empid = $("#employeeId").val();
             $("#divTask").hide();
-            var id = $("#projectId option:selected").val();
+            var id = $("#projectId").val();
             if (id != 0) {
                 $.ajax({
                     cache: false,
@@ -806,26 +816,29 @@
         }
 
         function PopulateTable() {
-            debugger
-            var projectId = $("#projectId option:selected").val();
+            var projectId = $("#projectId").val();
             var employeeId = $("#employeeId").val();
             var fromdateRange = $("#fromdate").val();
             var todateRange = $("#todate").val();
-            //var dateRange = $("#daterange").val();
+            var dateRange = $("#daterange").val();
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'Timesheet/Index',
-                contentType: 'application/json; charset=utf-8',
-                data: { pId: projectId, eId: employeeId, fd: fromdateRange, td: todateRange },
                 dataType: 'json',
+                //contentType: 'application/json; charset=utf-8',
+                data: { pId: projectId, eId: employeeId, fd: fromdateRange, td: todateRange },
                 success: function (response) {
                     var res = JSON.parse(response);
-                    var row = '<tr>';
-                    $.each(d, function (j, e) {
-                        row += '<td>' + e + '</td>';
-                    });
-                    row += '</tr>';
-                    $('#demoGrid tbody').append(row);
+                    if (res.TimeSheetList.length > 0) {
+                        $('#demoGrid tbody').empty();
+                        var row = '';
+                        $.each(res.TimeSheetList, function (j, e) {
+                            row += '<tr><td hidden>' + e.timesheetId + '</td><td hidden>' + e.projectId + '</td><td>' + e.holidaydate + '</td><td>' + e.type + '</td><td>' + e.projectName + '</td><td>' + e.employeeName + '</td><td hidden>' + e.taskId + '</td><td>' + e.taskName + '</td><td>' + e.hours + '</td><td>' + e.trackerFlagVal + '</td><td>' + e.notes + '</td><td> <a href="/Timesheet/Details/' + e.timesheetId + '"><i style = "font-size: 20px; text-align: center;color:#323591" class="fa fa-eye" > </i></a > <a href = "/Timesheet/Details/' + e.timesheetId + '" > <i style="font-size: 20px; text-align: center;color:#e55656" class="fa fa-trash" > </i></a></td></tr>';
+                        });
+                        //row += '</tr>';
+                        $("#demoGrid tbody tr:first-child").remove();
+                        $('#demoGrid tbody').append(row);
+                    }
                 },
                 error: function (response) { alert("Data Not Found"); }
             });
